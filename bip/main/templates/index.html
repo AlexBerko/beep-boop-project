@@ -1,16 +1,16 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Сервис благотворительности для ресторанов</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
+
     <h1>Сервис благотворительности для ресторанов</h1>
     <p>Данный сервис предначначен для ресторанов, которые готовы пожертвовать продукты питания благотворительным организациям.
     Многие продукты выкидаваются, потому что из них не успевают ничего приготовить. Это вредит экологии нашей планеты.
     Чтобы сократить количество мусора и помочь нуждающимся, воспользуйтесь данным сервисом!</p>
-</body>
-</html>
+
+    {% if list_of_helps %}
+               {% for i in help_list %}
+                    <a href="{% url 'help' i.id %}">{{i.list_of_helps}}</a>
+               {% endfor %}
+    {% endif %}
+
+{% endblock %}
