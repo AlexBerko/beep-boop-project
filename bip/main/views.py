@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
 from .models import Help
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -25,10 +27,12 @@ def help_list(request):
     if request.method == 'GET':  # получить данные от сервера
         data = Help.objects.all()  # получить список всех просьб
         serializer = HelpSerializer(data, context={'request': request}, many=True)  # получить данные в сериализованном виде
-        return Response(serializer.data)  # отправить ответ
+        json = JSONRenderer().render(serializer.data)
+        return Response(json)  # отправить ответ
     elif request.method == 'POST':  # отправить данные на сервер
         print('post')
-        serializer = HelpSerializer(data=request.data)  # получить данные в сериализованном виде
+        data_raw = JSONParser().parse(request.data)  # data after parsing
+        serializer = HelpSerializer(data=data_raw)  # получить данные в сериализованном виде
         if serializer.is_valid():  # проверка корректности
             serializer.save()  # сохранить данные в сериализованном виде
             return Response(status=status.HTTP_201_CREATED)  # success
@@ -41,7 +45,8 @@ def help_detail(request, id):
     except Help.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)  # error
     if request.method == 'PUT':  # обновление
-        serializer = HelpSerializer(help, data=request.data, context={'request': request})  # update serialized data
+        data_raw = JSONParser().parse(request.data)  # data after parsing
+        serializer = HelpSerializer(help, data=data_raw, context={'request': request})  # update serialized data
         if serializer.is_valid():  # is it ok?
             serializer.save()  # save
             return Response(status=status.HTTP_204_NO_CONTENT)  # success
