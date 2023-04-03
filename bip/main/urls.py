@@ -22,7 +22,12 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('<int:help_id>/', views.help, name='help'),
+    path('<int:help_id>/', views.help_list, name='help'),  # read from main page
+    re_path(r'^my/helps/(\d+)$', views.help_detail),
+
+    # re_path(r'^api/students/$', views.help_list),  # read from main page
+    # also needed read from profile and write/change from profile
+    # re_path(r'^api/students/(\d+)$', views.help_detail),
     # Swagger
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
