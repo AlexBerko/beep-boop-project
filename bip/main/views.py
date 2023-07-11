@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from rest_framework.parsers import JSONParser
@@ -22,15 +23,23 @@ def help(request, help_id):
 
     return render(request, "help.html", {'help': h})
 
-@api_view(['GET', 'POST'])
+# @api_view(['GET'])
 def help_list(request):
     if request.method == 'GET':  # получить данные от сервера
         data = Help.objects.all()  # получить список всех просьб
         serializer = HelpSerializer(data, context={'request': request}, many=True)  # получить данные в сериализованном виде
         json = JSONRenderer().render(serializer.data)
         return Response(json)  # отправить ответ
-    elif request.method == 'POST':  # отправить данные на сервер
+
+# @api_view('POST')
+#  @blago_required
+def create_help(request):
+    if request.method == 'POST':  # отправить данные на сервер
         print('post')
+        name = request.POST['title']
+        text = request.POST['full_info']
+        elem = Help(title=name, full_info=text, pub_date=datetime.now())
+        elem.save()
         data_raw = JSONParser().parse(request.data)  # data after parsing
         serializer = HelpSerializer(data=data_raw)  # получить данные в сериализованном виде
         if serializer.is_valid():  # проверка корректности
@@ -38,10 +47,11 @@ def help_list(request):
             return Response(status=status.HTTP_201_CREATED)  # success
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # something went wrong...
 
-@api_view(['PUT', 'DELETE'])
+
+#  @api_view(['PUT', 'DELETE', 'POST'])
 def help_detail(request, id):
     try:
-        help = Help.objects.get(id=id)  # search by id
+        help = Help.objects.get(pk=id)  # search by id
     except Help.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)  # error
     if request.method == 'PUT':  # обновление
