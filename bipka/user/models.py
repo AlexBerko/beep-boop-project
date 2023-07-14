@@ -7,6 +7,12 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import *
 
+#################################################
+#                                               #
+#                   USER MODEL                  #
+#                                               #
+#################################################
+
 class CustomUserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifiers
@@ -46,7 +52,7 @@ class CustomUser(AbstractBaseUser):
     email = models.EmailField(max_length=200, unique=True)
     # user = models.OneToOneField(AbstractBaseUser, on_delete=models.CASCADE)
     username = models.CharField(max_length=50, blank=False, null=True, default='def')  # название организации
-    phone_no = models.CharField(max_length=10, default='def')
+    phone_no = models.CharField(max_length=10, blank=False, default='def')
     form = models.CharField(max_length=32, blank=False, default='def')  # Форма организации
     head = models.CharField(max_length=100, blank=False, default='def')  # Руководитель
     ogrn = models.CharField(max_length=15, blank=False, default='def')  # ОГРНИП/ОГРН unique=True,
@@ -143,6 +149,11 @@ class Restaurant(CustomUser):
         self.is_rest = True
         return super().save(*args, **kwargs)
 
+#################################################
+#                                               #
+#                   OTP  MODEL                  #
+#                                               #
+#################################################
 
 class OtpModel(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -152,4 +163,20 @@ class OtpModel(models.Model):
 
     def __str__(self):
         return self.otp
+
+#################################################
+#                                               #
+#                   HELP MODEL                  #
+#                                               #
+#################################################
+
+class Help(models.Model):
+    # id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=255, blank=False, default='def')
+    full_info = models.TextField(blank=False, default='def')
+    org_info = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    pubdate = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
 

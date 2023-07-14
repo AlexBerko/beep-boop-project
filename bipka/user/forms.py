@@ -14,3 +14,8 @@ class RegisterForm(UserCreationForm):
         fields = ['username', 'email', 'phone_no', 'head', 'ogrn', 'inn', 'kpp', 'address_reg',
                   'address_fact', 'is_rest', 'is_blago', 'password1', 'password2']
 
+class HelpForm(forms.ModelForm):
+    class Meta:
+        model = Help
+        fields = ['title', 'full_info']
+        # model.org_info

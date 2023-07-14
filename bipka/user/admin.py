@@ -1,10 +1,10 @@
 from django.contrib import admin
 from .models import *
 
-# Register your models here.
 admin.site.register(CustomUser)
 admin.site.register(Restaurant)
 admin.site.register(Fund)
+admin.site.register(Help)
 
 @admin.register(OtpModel)
 class OtpModelAdmin(admin.ModelAdmin):

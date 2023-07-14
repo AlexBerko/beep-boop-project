@@ -1,12 +1,32 @@
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+from .decorators import *
 from .forms import RegisterForm
-from django.shortcuts import render, redirect
-from .models import OtpModel
+from .models import *
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 import math, random
 from django.conf import settings
 from django.core.mail import send_mail
+import datetime
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse, Http404
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+from .serializers import *
+from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
+from .forms import *
 
+#################################################
+#                                               #
+#                   OTP  VIEWS                  #
+#                                               #
+#################################################
 
 # for alpha numeric OTP
 def otp_provider():
@@ -26,24 +46,45 @@ def send_otp_in_mail(user, otp):
     recipient_list = [user.email, ]
     send_mail(subject, message, email_from, recipient_list)
 
+def OtpVerifyView(request):
+    if request.method == "POST":
+        otp = request.POST.get('otp')
+        verify_otp = OtpModel.objects.filter(otp=otp)
+        if verify_otp.exists():
+            login(request, verify_otp[0].user)
+            return redirect('/accounts/profile/')
+        else:
+            messages.error(request, "Invalid otp!")
+            return redirect('/otp/')
+    else:
+        return render(request, 'otp.html')
+
+
+#################################################
+#                                               #
+#                   USER VIEWS                  #
+#                                               #
+#################################################
+
 def homePage(request):
     return render(request, "homePage.html")
 
+
 def sign_up(request):
-        if request.method == 'GET':
-            form = RegisterForm()
+    if request.method == 'GET':
+        form = RegisterForm()
+        return render(request, 'register.html', {'form': form})
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            messages.success(request, 'You have singed up successfully.')
+            login(request, user)
+            return redirect('/accounts/profile/')
+        else:
             return render(request, 'register.html', {'form': form})
-        if request.method == 'POST':
-            form = RegisterForm(request.POST)
-            if form.is_valid():
-                user = form.save(commit=False)
-                user.username = user.username.lower()
-                user.save()
-                messages.success(request, 'You have singed up successfully.')
-                login(request, user)
-                return redirect('/accounts/profile/')
-            else:
-                return render(request, 'register.html', {'form': form})
 
 
 # User Signin
@@ -83,16 +124,85 @@ def logoutView(request):
         messages.info(request, '☹︎ Please Login First')
     return redirect('/')
 
+#################################################
+#                                               #
+#                   HELP VIEWS                  #
+#                                               #
+#################################################
 
-def OtpVerifyView(request):
-    if request.method == "POST":
-        otp = request.POST.get('otp')
-        verify_otp = OtpModel.objects.filter(otp=otp)
-        if verify_otp.exists():
-            login(request, verify_otp[0].user)
-            return redirect('/accounts/profile/')
-        else:
-            messages.error(request, "Invalid otp!")
-            return redirect('/otp/')
+
+class Help_list(APIView):
+    # @csrf_exempt
+    def get(self, request):
+        data = Help.objects.all()  # получить список всех просьб
+        serializer = HelpListSerializer(data, context={'request': 1}, many=True)  # получить данные в сериализованном виде
+        json = JSONRenderer().render(serializer.data)
+        # print('/nRESPONSE: %d' %(json))
+        return Response(json)  # отправить ответ
+
+# help list without serializers
+# def help_list(request):
+#     # return HttpResponse("<h4>Главная сраница</h4>")
+#     list_of_helps = Help.objects.all().order_by('-pubdate')
+#     return render(request, "index.html", {'list_of_helps': list_of_helps})
+
+class HelpDetailView(APIView):
+    def get(self, request, pk):
+        try:
+            h = Help.objects.get(id=pk)  # search by id
+        except Help.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)  # error
+        serializer = HelpDetailSerializer(h)
+        json = JSONRenderer().render(serializer.data)
+        return Response(json)
+
+    @method_decorator([login_required, blago_required], name='dispatch')
+    def edit_delete_view(self, request, pk):
+        try:
+            help = Help.objects.get(id=pk)  # search by id
+        except Help.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)  # error
+        if request.method == 'PUT':  # обновление
+            data_raw = JSONParser().parse(request.data)  # data after parsing
+            serializer = HelpDetailSerializer(help, data=data_raw, context={'request': request})  # update serialized data
+            if serializer.is_valid():  # is it ok?
+                serializer.save()  # save
+                return Response(status=status.HTTP_204_NO_CONTENT)  # success
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # data is invalid...
+        elif request.method == 'DELETE':
+            help.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+# help without serializers
+# def help(request, name):
+#     try:
+#         h = Help.objects.get(title__contains=name)
+#     except:
+#         raise Http404("Страница не найдена!")
+#     return render(request, "help.html", {'h': h})
+
+@api_view(['POST', ])
+def ad_create(request):
+    if request.method == 'POST':
+        form = HelpForm(request.POST)
+        # try:
+        #     org = CustomUser.objects.get(id=request.userюшв)  # search by id
+        # except CustomUser.DoesNotExist:
+        #     return Response(status=status.HTTP_404_NOT_FOUND)  # error
+        # возможно закомменченный вариант лучше
+        org = request.user  # get_object_or_404(CustomUser, pk=CustomUser.inn)
+        if form.is_valid():
+            h = form.save(commit=False)
+            h.pub_date = datetime.datetime.now()
+            h.org_info = org
+            h.save()
+        data_raw = JSONParser().parse(request.data)  # data after parsing
+        serializer = HelpDetailSerializer(data=data_raw)  # получить данные в сериализованном виде
+        if serializer.is_valid():  # проверка корректности
+            serializer.save()  # сохранить данные в сериализованном виде
+            return redirect('help', pk=h.id)
+            # return Response(status=status.HTTP_201_CREATED)  # success
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # something went wrong...
     else:
-        return render(request, 'otp.html')
+        form = HelpForm()
+    return render(request, 'create_help.html', {'form': form})
