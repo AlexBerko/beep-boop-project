@@ -174,9 +174,8 @@ class Help(models.Model):
     # id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=255, blank=False, default='def')
     full_info = models.TextField(blank=False, default='def')
-    org_info = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    # org_info = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True)
     pubdate = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
-

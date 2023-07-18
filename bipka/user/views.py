@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
@@ -69,9 +71,9 @@ def OtpVerifyView(request):
 def homePage(request):
     return render(request, "homePage.html")
 
-
+@api_view(['POST', 'GET'])
 def sign_up(request):
-    if request.method == 'GET':
+    if request.method == 'GET':  # выводит форму
         form = RegisterForm()
         return render(request, 'register.html', {'form': form})
     if request.method == 'POST':
@@ -82,7 +84,14 @@ def sign_up(request):
             user.save()
             messages.success(request, 'You have singed up successfully.')
             login(request, user)
-            return redirect('/accounts/profile/')
+            json_object = json.loads(request.body)
+            data_raw = JSONParser().parse(json_object)  # data after parsing
+            serializer = HelpDetailSerializer(data=data_raw)  # получить данные в сериализованном виде
+            if serializer.is_valid():  # проверка корректности
+                serializer.save()  # сохранить данные в сериализованном виде
+                return redirect('/accounts/profile/')
+                # return Response(status=status.HTTP_201_CREATED)  # success
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # something went wrong...
         else:
             return render(request, 'register.html', {'form': form})
 
@@ -98,7 +107,6 @@ def SigninView(request):
 
         user = authenticate(email=email, password=upass)
         OtpModel.objects.filter(user=user).delete()
-        print(user)
         if user is None:
             messages.error(request, 'Please Enter Correct Credinatial')
             return redirect('/')
@@ -135,7 +143,10 @@ class Help_list(APIView):
     # @csrf_exempt
     def get(self, request):
         data = Help.objects.all()  # получить список всех просьб
-        serializer = HelpListSerializer(data, context={'request': 1}, many=True)  # получить данные в сериализованном виде
+        title = request.query_params.get('title', None)
+        if title is not None:
+            data = data.filter(title__icontains=title)
+        serializer = HelpListSerializer(data, context={'request': self.request}, many=True)  # получить данные в сериализованном виде
         json = JSONRenderer().render(serializer.data)
         # print('/nRESPONSE: %d' %(json))
         return Response(json)  # отправить ответ
@@ -156,22 +167,24 @@ class HelpDetailView(APIView):
         json = JSONRenderer().render(serializer.data)
         return Response(json)
 
-    @method_decorator([login_required, blago_required], name='dispatch')
-    def edit_delete_view(self, request, pk):
+    # @method_decorator([login_required, blago_required], name='dispatch')
+    def put(self, request, pk):
+        json_object = json.loads(request.body)
+        data_raw = JSONParser().parse(json_object)  # data after parsing
+        serializer = HelpDetailSerializer(data=data_raw, context={'request': request})  # update serialized data
+        if serializer.is_valid():  # is it ok?
+            serializer.save()  # save
+            return Response(status=status.HTTP_204_NO_CONTENT)  # success
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # data is invalid...
+
+    # @method_decorator([login_required, blago_required], name='dispatch')
+    def delete(self, request, pk):
         try:
             help = Help.objects.get(id=pk)  # search by id
         except Help.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)  # error
-        if request.method == 'PUT':  # обновление
-            data_raw = JSONParser().parse(request.data)  # data after parsing
-            serializer = HelpDetailSerializer(help, data=data_raw, context={'request': request})  # update serialized data
-            if serializer.is_valid():  # is it ok?
-                serializer.save()  # save
-                return Response(status=status.HTTP_204_NO_CONTENT)  # success
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # data is invalid...
-        elif request.method == 'DELETE':
-            help.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        help.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # help without serializers
 # def help(request, name):
@@ -185,21 +198,21 @@ class HelpDetailView(APIView):
 def ad_create(request):
     if request.method == 'POST':
         form = HelpForm(request.POST)
-        # try:
-        #     org = CustomUser.objects.get(id=request.userюшв)  # search by id
-        # except CustomUser.DoesNotExist:
-        #     return Response(status=status.HTTP_404_NOT_FOUND)  # error
-        # возможно закомменченный вариант лучше
-        org = request.user  # get_object_or_404(CustomUser, pk=CustomUser.inn)
         if form.is_valid():
             h = form.save(commit=False)
-            h.pub_date = datetime.datetime.now()
-            h.org_info = org
+            h.pub_date = datetime.date.now()
+            # try:
+            #     org = CustomUser.objects.get(id=request.user.id)  # search by id
+            # except CustomUser.DoesNotExist:
+            #     return Response(status=status.HTTP_404_NOT_FOUND)  # error
+            # возможно закомменченный вариант лучше
+#            org = request.user  # get_object_or_404(CustomUser, pk=CustomUser.inn)
+            # h.org_info = org
             h.save()
         data_raw = JSONParser().parse(request.data)  # data after parsing
         serializer = HelpDetailSerializer(data=data_raw)  # получить данные в сериализованном виде
         if serializer.is_valid():  # проверка корректности
-            serializer.save()  # сохранить данные в сериализованном виде
+            serializer.save()  # created_by=request.user)  # сохранить данные в сериализованном виде
             return redirect('help', pk=h.id)
             # return Response(status=status.HTTP_201_CREATED)  # success
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # something went wrong...

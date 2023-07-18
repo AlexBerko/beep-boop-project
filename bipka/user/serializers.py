@@ -16,6 +16,7 @@ class HelpDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Help
         fields = '__all__'
+        # extra_kwargs = {'created_by': {'read_only': True}}
 
 
 #################################################
