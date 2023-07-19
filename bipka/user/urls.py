@@ -8,7 +8,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 
 urlpatterns = [
-    path("accounts/profile/", homePage, name='home-page'),
+    path("accounts/profile/", OrgDetailView.as_view(), name='home-page'),
     path('', SigninView, name='login-user'),
     path('register/', sign_up, name='signup'),
     path('logout/', logoutView, name='logout'),

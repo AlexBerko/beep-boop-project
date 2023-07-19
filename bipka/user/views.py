@@ -70,8 +70,16 @@ def OtpVerifyView(request):
 #                                               #
 #################################################
 
-def homePage(request):
-    return render(request, "homePage.html")
+class OrgDetailView(APIView):
+    def get(self, request):  # тут добавить аргумент pk
+        try:
+            usr = CustomUser.objects.get(id=9)  # тут поставить id=pk, значения 2 и 9 выдают ответ для тестирования
+        except CustomUser.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)  # error
+        serializer = OrgDetailSerializer(usr)
+        json = JSONRenderer().render(serializer.data)
+        return Response(json)
+    # return render(request, "homePage.html")
 
 @api_view(['POST', 'GET'])
 def sign_up(request):

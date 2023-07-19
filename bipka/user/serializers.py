@@ -20,12 +20,17 @@ class HelpDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
         # extra_kwargs = {'created_by': {'read_only': True}}
 
-
 #################################################
 #                                               #
 #              USER SERIALIZERS                 #
 #                                               #
 #################################################
+
+class OrgDetailSerializer(serializers.Serializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'  # ['username', 'email', 'phone_no', 'head', 'ogrn', 'inn', 'kpp', 'address_reg',
+                  #'address_fact', 'is_rest', 'is_blago']
 
 class UserRegSerializer(serializers.Serializer):
     class Meta:
