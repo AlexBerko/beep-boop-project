@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Announcement from "./components/Announcement";
+import Header from "./components/Header";
 
 class App extends Component {
   constructor(props) {
@@ -16,23 +17,26 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
-        {!this.state.flag && (
-          <div>
-            <p>Это страница со списком всех просьб</p>
-            <button
-              onClick={() => {
-                this.onBtn();
-                this.apiFunc();
-              }}
-            >
-              Перейти к конкретному объявлению
-            </button>
-          </div>
-        )}
-        {this.state.flag && (
-          <Announcement apiFunc={this.apiFunc} records={this.state.records} />
-        )}
+      <div>
+        <Header />
+        <div className="container">
+          {!this.state.flag && (
+            <div>
+              <p>Это страница со списком всех просьб</p>
+              <button
+                onClick={() => {
+                  this.onBtn();
+                  this.apiFunc();
+                }}
+              >
+                Перейти к конкретному объявлению
+              </button>
+            </div>
+          )}
+          {this.state.flag && (
+            <Announcement apiFunc={this.apiFunc} records={this.state.records} />
+          )}
+        </div>
       </div>
     );
   }
