@@ -8,7 +8,8 @@ class App extends Component {
 
     this.state = {
       flag: false,
-      records: [],
+      recordsJS: [],
+      recordsObj: [],
     };
 
     this.apiFunc = this.apiFunc.bind(this);
@@ -26,7 +27,11 @@ class App extends Component {
               <button
                 onClick={() => {
                   this.onBtn();
-                  this.apiFunc();
+                  this.apiFunc("http://127.0.0.1:8000/help/24/", "GET");
+                  this.apiFunc(
+                    "https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=org&query=ПАО Ростелеком&limit=1",
+                    "GET"
+                  );
                 }}
               >
                 Перейти к конкретному объявлению
@@ -34,7 +39,11 @@ class App extends Component {
             </div>
           )}
           {this.state.flag && (
-            <Announcement apiFunc={this.apiFunc} records={this.state.records} />
+            <Announcement
+              apiFunc={this.apiFunc}
+              recordsJS={this.state.recordsJS}
+              recordsObj={this.state.recordsObj}
+            />
           )}
         </div>
       </div>
@@ -45,23 +54,27 @@ class App extends Component {
     this.setState({ flag: !this.state.flag });
   }
 
-  async apiFunc() {
+  async apiFunc(url, method) {
     let requestOptions;
 
     requestOptions = {
-      method: "GET",
+      method: method,
     };
 
-    const response = await fetch(
-      `http://127.0.0.1:8000/help/2/`,
-      requestOptions
-    );
+    const response = await fetch(url, requestOptions);
     const json = await response.json();
-    console.log(JSON.parse(json));
-    this.setState({
-      records: JSON.parse(json),
-    });
-    return json;
+
+    if (typeof json === "string") {
+      this.setState({
+        recordsJS: JSON.parse(json),
+      });
+      return JSON.parse(json);
+    } else {
+      this.setState({
+        recordsObj: json,
+      });
+      return json;
+    }
   }
 
   // apiFunc() {

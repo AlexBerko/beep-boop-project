@@ -3,8 +3,39 @@
   margin-left: 15px;
 }
 
+.main {
+  display: flex;
+  justify-content: space-between;
+}
+
 .info {
   margin-bottom: 5px;
+  text-align: justify;
+  text-indent: 30px;
+}
+
+.second_block {
+  margin-bottom: 15px;
+  margin-left: 15px;
+}
+
+.org_info {
+  padding: 10px;
+  border: 1px solid;
+  border-radius: 20px;
+  width: 45%;
+  color: black;
+}
+
+.orgData {
+  padding: 5px;
+}
+
+.text_block {
+  background-color: rgb(255, 255, 255);
+  width: 45%;
+  padding: 15px;
+  border-radius: 20px;
 }
 
 .date {
@@ -12,12 +43,15 @@
 }
 
 .answer {
-  margin-left: 100px;
-  padding: 10px;
+  margin-left: 22%;
+  padding: 15px;
+  font-size: medium;
+  font-weight: 300;
   background-color: rgb(9, 180, 9);
   border: none;
   border-radius: 20px;
   color: aliceblue;
+  cursor: pointer;
 }
 
 .loading {
