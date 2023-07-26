@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Announcement from "./components/Announcement";
 import Header from "./components/Header";
+import List from "./components/List";
 
 class App extends Component {
   constructor(props) {
@@ -10,10 +11,15 @@ class App extends Component {
       flag: false,
       recordsJS: [],
       recordsObj: [],
+      list: [],
     };
 
     this.apiFunc = this.apiFunc.bind(this);
     this.onBtn = this.onBtn.bind(this);
+  }
+
+  componentDidMount() {
+    this.apiFunc("http://127.0.0.1:8000/list/", "GET");
   }
 
   render() {
@@ -21,23 +27,20 @@ class App extends Component {
       <div>
         <Header />
         <div className="container">
-          {!this.state.flag && (
-            <div>
-              <p>Это страница со списком всех просьб</p>
-              <button
-                onClick={() => {
-                  this.onBtn();
-                  this.apiFunc("http://127.0.0.1:8000/help/24/", "GET");
-                  this.apiFunc(
-                    "https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=org&query=ПАО Ростелеком&limit=1",
-                    "GET"
-                  );
-                }}
-              >
-                Перейти к конкретному объявлению
-              </button>
-            </div>
-          )}
+          {!this.state.flag &&
+            (() => {
+              const options = [];
+
+              console.log(this.state.recordsJS);
+
+              for (let i = 0; i < this.state.recordsJS.length; i++) {
+                options.push(
+                  <List key={i} apiFunc={this.apiFunc} onBtn={this.onBtn} />
+                );
+              }
+
+              return options;
+            })()}
           {this.state.flag && (
             <Announcement
               apiFunc={this.apiFunc}
