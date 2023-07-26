@@ -1,0 +1,27 @@
+.list {
+  width: 60%;
+}
+
+.summary {
+  margin-top: 15px;
+  text-indent: 30px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  line-height: 1.3em;
+}
+
+.open {
+  margin-top: 15px;
+  margin-left: 15px;
+  margin-bottom: 50px;
+  padding: 10px 20px;
+  font-size: medium;
+  font-weight: 300;
+  background-color: rgb(9, 180, 9);
+  border: none;
+  border-radius: 20px;
+  color: aliceblue;
+  cursor: pointer;
+}

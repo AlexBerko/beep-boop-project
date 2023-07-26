@@ -31,11 +31,17 @@ class App extends Component {
             (() => {
               const options = [];
 
-              console.log(this.state.recordsJS);
+              console.log(this.state.recordsObj);
 
-              for (let i = 0; i < this.state.recordsJS.length; i++) {
+              for (let i = 0; i < this.state.recordsObj.length; i++) {
                 options.push(
-                  <List key={i} apiFunc={this.apiFunc} onBtn={this.onBtn} />
+                  <List
+                    key={i}
+                    arrayId={i}
+                    apiFunc={this.apiFunc}
+                    onBtn={this.onBtn}
+                    recordsObj={this.state.recordsObj}
+                  />
                 );
               }
 
