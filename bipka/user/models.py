@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
@@ -171,7 +172,7 @@ class OtpModel(models.Model):
 #################################################
 
 class Help(models.Model):
-    # id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255, blank=False, default='def')
     full_info = models.TextField(blank=False, default='def')
     # org_info = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True)

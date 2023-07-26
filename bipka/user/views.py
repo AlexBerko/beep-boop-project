@@ -25,6 +25,7 @@ from .serializers import *
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 from .forms import *
+from rest_framework import generics
 
 #################################################
 #                                               #
@@ -149,8 +150,11 @@ def logoutView(request):
 #################################################
 
 
-class Help_list(APIView):
-    # @csrf_exempt
+class Help_list(generics.ListAPIView):
+    ''''''
+    queryset = Help.objects.all()  # получить список всех просьб
+    serializer_class = HelpListSerializer
+    '''
     def get(self, request):
         data = Help.objects.all()  # получить список всех просьб
         title = request.query_params.get('title', None)
@@ -160,6 +164,7 @@ class Help_list(APIView):
         json = JSONRenderer().render(serializer.data)
         # print('/nRESPONSE: %d' %(json))
         return Response(json)  # отправить ответ
+    '''
 
 # help list without serializers
 # def help_list(request):

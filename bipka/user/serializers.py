@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
-from .models import *
+from .models import Help, CustomUser
 
 #################################################
 #                                               #
@@ -9,10 +9,12 @@ from .models import *
 #                                               #
 #################################################
 
-class HelpListSerializer(serializers.Serializer):
+
+class HelpListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Help
-        fields = ('title')
+        fields = '__all__'
+
 
 class HelpDetailSerializer(serializers.ModelSerializer):
     class Meta:
