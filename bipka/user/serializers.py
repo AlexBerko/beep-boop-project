@@ -28,13 +28,13 @@ class HelpDetailSerializer(serializers.ModelSerializer):
 #                                               #
 #################################################
 
-class OrgDetailSerializer(serializers.Serializer):
+class OrgDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'  # ['username', 'email', 'phone_no', 'head', 'ogrn', 'inn', 'kpp', 'address_reg',
+        fields = '__all__'  #['username', 'email', 'phone_no', 'head', 'ogrn', 'inn', 'kpp', 'address_reg',
                   #'address_fact', 'is_rest', 'is_blago']
 
-class UserRegSerializer(serializers.Serializer):
+class UserRegSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'phone_no', 'head', 'ogrn', 'inn', 'kpp', 'address_reg',
