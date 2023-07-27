@@ -42,36 +42,32 @@ class CustomUserManager(BaseUserManager):
             email=self.normalize_email(email),
             password=password
         )
-        user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
 
 class CustomUser(AbstractBaseUser):
-    email = models.EmailField(max_length=200, unique=True)
-    # user = models.OneToOneField(AbstractBaseUser, on_delete=models.CASCADE)
-    username = models.CharField(max_length=50, blank=False, null=True, default='def')  # название организации
-    phone_no = models.CharField(max_length=10, blank=False, default='def')
-    form = models.CharField(max_length=32, blank=False, default='def')  # Форма организации
-    head = models.CharField(max_length=100, blank=False, default='def')  # Руководитель
-    ogrn = models.CharField(max_length=15, blank=False, default='def')  # ОГРНИП/ОГРН unique=True,
-    inn = models.CharField(max_length=12, blank=False, default='def')  # ИНН unique=True,
-    kpp = models.CharField(max_length=9, blank=False, default='def')  # КПП unique=True,
-    address_reg = models.CharField(max_length=150, blank=False, default='def')  # Адрес регистрации
-    address_fact = models.CharField(max_length=150, blank=False, default='def')  # Фактический адрес
-    # date_reg = models.DateField(blank=False)  # Дата регистрации
+    email = models.EmailField(max_length=200, blank=False, unique=True)  # почта
+    username = models.CharField(max_length=50, blank=False)  # название организации
+    phone_no = models.CharField(max_length=10, blank=False)  # Телефон
+    head = models.CharField(max_length=100, blank=False)  # Руководитель
+    ogrn = models.CharField(max_length=15, blank=False, unique=True)  # ОГРНИП/ОГРН
+    inn = models.CharField(max_length=12, blank=False, unique=True)  # ИНН
+    address_reg = models.CharField(max_length=150, blank=False)  # Адрес регистрации
+    address_fact = models.CharField(max_length=150, blank=False)  # Фактический адрес
+    date_reg = models.DateTimeField(auto_now_add=True)  # Дата регистрации
+    is_rest = models.BooleanField(default=False) # Ресторан или благотворительная организация
+    # form = models.CharField(max_length=32, blank=False, default='def')  # Форма организации
+    # kpp = models.CharField(max_length=9, blank=False, default='def')  # КПП unique=True,
 
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+
+    is_active = models.BooleanField(default=False) # прошел ли пользователь регистрацию через почту + есть ли такая организация вообще
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-
-    # special permission which define that
-    # the new user is Restaurant or student
-    is_rest = models.BooleanField(default=False)
-    is_blago = models.BooleanField(default=False)
+    #is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
 
@@ -82,7 +78,7 @@ class CustomUser(AbstractBaseUser):
         return str(self.email)
 
     def has_perm(self, perm, obj=None):
-        return self.is_admin
+        return self.is_superuser
 
     def has_module_perms(self, app_label):
         return True

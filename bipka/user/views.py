@@ -1,13 +1,18 @@
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
+from bipka.settings import EMAIL_HOST_USER
 from .decorators import *
 from .forms import RegisterForm
 from .models import *
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 import math, random
 from django.conf import settings
 from django.core.mail import send_mail
@@ -26,6 +31,9 @@ from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 from .forms import *
 from rest_framework import generics
+from .token import account_activation_token
+from django.core.mail import EmailMessage
+
 
 #################################################
 #                                               #
@@ -43,6 +51,7 @@ def otp_provider():
         generate_OTP += corpus[math.floor(random.random() * length)]
     return generate_OTP
 
+
 # Otp email sender
 def send_otp_in_mail(user, otp):
     subject = 'Otp for signin'
@@ -50,6 +59,7 @@ def send_otp_in_mail(user, otp):
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [user.email, ]
     send_mail(subject, message, email_from, recipient_list)
+
 
 def OtpVerifyView(request):
     if request.method == "POST":
@@ -73,16 +83,21 @@ def OtpVerifyView(request):
 
 class OrgDetailView(APIView):
     def get(self, request):  # тут добавить аргумент pk
-        try:
-            usr = CustomUser.objects.get(id=9)  # тут поставить id=pk, значения 2 и 9 выдают ответ для тестирования
-        except CustomUser.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)  # error
-        serializer = OrgDetailSerializer(usr)
-        json = JSONRenderer().render(serializer.data)
-        return Response(json)
+        if request.user.is_authenticated:
+            try:
+                usr = request.user  # тут поставить id=pk, значения 2 и 9 выдают ответ для тестирования
+            except:
+                return Response(status=status.HTTP_404_NOT_FOUND)  # error
+            serializer = OrgDetailSerializer(usr)
+            json = JSONRenderer().render(serializer.data)
+            return Response(json)
+        else:
+            return redirect('/signin/')
+
     # return render(request, "homePage.html")
 
-@api_view(['POST', 'GET'])
+
+#@api_view(['POST', 'GET'])
 def sign_up(request):
     if request.method == 'GET':  # выводит форму
         form = RegisterForm()
@@ -91,8 +106,30 @@ def sign_up(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.username = user.username.lower()
+            # user.username = user.username.lower()
             user.save()
+
+            # Составляем письмо с ссылкой для подтверждения регистрации
+            current_site = get_current_site(request)
+            mail_subject = 'Подтверждение регистрации'
+            message = render_to_string('acc_active_email.html', {
+                'user': user.email,
+                'domain': current_site.domain,
+                'uid': user.id,
+                'token': account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+
+            email.send()
+
+            messages.info(request,
+                          'Данные успешно сохранены! Для завершения регистрации подтвердите адрес электронной почты.')
+            return redirect('/signin/')
+
+            '''
             messages.success(request, 'You have singed up successfully.')
             login(request, user)
             json_object = json.loads(request.body)
@@ -103,8 +140,33 @@ def sign_up(request):
                 return redirect('/accounts/profile/')
                 # return Response(status=status.HTTP_201_CREATED)  # success
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # something went wrong...
+            '''
         else:
             return render(request, 'register.html', {'form': form})
+
+
+def activate(request, uidb64, token):
+    if request.method == 'GET':
+        User = get_user_model()
+        try:
+            user = User.objects.get(id=uidb64)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            messages.success(request, 'Учетная запись успешно подтверждена!')
+            return redirect('/')
+        else:
+            messages.error(request, 'Некорректная ссылка активации!')
+        return redirect('/')
+
+def main_page(request):
+    if request.method == 'GET':
+        if not request.user.is_authenticated:
+            return redirect('/signin/')
+        else:
+            return redirect("/accounts/profile/")
 
 
 # User Signin
@@ -143,6 +205,7 @@ def logoutView(request):
         messages.info(request, '☹︎ Please Login First')
     return redirect('/')
 
+
 #################################################
 #                                               #
 #                   HELP VIEWS                  #
@@ -165,6 +228,7 @@ class Help_list(generics.ListAPIView):
         # print('/nRESPONSE: %d' %(json))
         return Response(json)  # отправить ответ
     '''
+
 
 # help list without serializers
 # def help_list(request):
@@ -201,6 +265,7 @@ class HelpDetailView(APIView):
         help.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 # help without serializers
 # def help(request, name):
 #     try:
@@ -221,7 +286,7 @@ def ad_create(request):
             # except CustomUser.DoesNotExist:
             #     return Response(status=status.HTTP_404_NOT_FOUND)  # error
             # возможно закомменченный вариант лучше
-#            org = request.user  # get_object_or_404(CustomUser, pk=CustomUser.inn)
+            #            org = request.user  # get_object_or_404(CustomUser, pk=CustomUser.inn)
             # h.org_info = org
             h.save()
         data_raw = JSONParser().parse(request.data)  # data after parsing

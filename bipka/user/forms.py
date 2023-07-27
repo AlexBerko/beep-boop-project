@@ -11,8 +11,19 @@ from django.contrib.auth.forms import UserCreationForm
 class RegisterForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'phone_no', 'head', 'ogrn', 'inn', 'kpp', 'address_reg',
-                  'address_fact', 'is_rest', 'is_blago', 'password1', 'password2']
+        fields = ['username', 'email', 'phone_no', 'head', 'ogrn', 'inn', 'address_reg',
+                  'address_fact', 'is_rest', 'password1', 'password2']
+        labels = {
+            'username': 'Полное имя организации',
+            'email': 'Адрес электронной почты',
+            'phone_no': 'Телефон',
+            'head': 'Руководитель организации',
+            'address_reg': 'Адрес регистрации',
+            'address_fact': 'Фактический адрес',
+            'ogrn': 'ОГРН/ОГРНИП',
+            'inn': 'ИНН',
+            'is_rest': 'Ресторан?'
+        }
 
 class HelpForm(forms.ModelForm):
     class Meta:
