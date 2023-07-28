@@ -52,7 +52,7 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(max_length=200, blank=False, unique=True)  # почта
     username = models.CharField(max_length=50, blank=False)  # название организации
-    phone_no = models.CharField(max_length=10, blank=False)  # Телефон
+    phone_no = models.CharField(max_length=11, blank=False)  # Телефон
     head = models.CharField(max_length=100, blank=False)  # Руководитель
     ogrn = models.CharField(max_length=15, blank=False, unique=True)  # ОГРНИП/ОГРН
     inn = models.CharField(max_length=12, blank=False, unique=True)  # ИНН
@@ -60,7 +60,7 @@ class CustomUser(AbstractBaseUser):
     address_fact = models.CharField(max_length=150, blank=False)  # Фактический адрес
     date_reg = models.DateTimeField(auto_now_add=True)  # Дата регистрации
     is_rest = models.BooleanField(default=False) # Ресторан или благотворительная организация
-    # form = models.CharField(max_length=32, blank=False, default='def')  # Форма организации
+    is_ind_pred = models.BooleanField(default=False) # ИП или юридическое лицо
     # kpp = models.CharField(max_length=9, blank=False, default='def')  # КПП unique=True,
 
 

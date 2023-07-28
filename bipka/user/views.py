@@ -33,6 +33,8 @@ from .forms import *
 from rest_framework import generics
 from .token import account_activation_token
 from django.core.mail import EmailMessage
+import requests
+from django.http import JsonResponse
 
 
 #################################################
@@ -54,8 +56,8 @@ def otp_provider():
 
 # Otp email sender
 def send_otp_in_mail(user, otp):
-    subject = 'Otp for signin'
-    message = f'Hi {user.email}, here we sent otp for secure login \n Otp is - {otp.otp}'
+    subject = 'Код подтверждения аутентификации'
+    message = f'Здравствуйте, {user.email}!\n Для завершения аутентификации введите следующий код: {otp.otp}'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [user.email, ]
     send_mail(subject, message, email_from, recipient_list)
@@ -107,6 +109,59 @@ def sign_up(request):
         if form.is_valid():
             user = form.save(commit=False)
             # user.username = user.username.lower()
+
+            ###################################################
+            #                   ДОП ЗАДАНИЕ                   #
+            ###################################################
+
+            # Проверка, что такая организация существует с помощью стороннего API
+            inn = user.inn
+            ogrn = user.ogrn
+            api_key = 'CAYR4QAsioUmKS5o'
+            site = ''
+            if user.is_ind_pred:
+                site = 'entrepreneur'
+            else:
+                site = 'company'
+
+            is_org_found = False
+
+            response = requests.get(
+                'https://api.checko.ru/v2/' + site +'?key=' + api_key + '&inn=' + inn + '&source=true')
+            #если запрос завершился успешно
+            if response.status_code == 200:
+                data = response.json()
+                #если отсутствует сообщение об ошибке
+                if 'message' not in data['meta']:
+                    is_org_found = True
+
+            if not is_org_found:
+                response = requests.get(
+                    'https://api.checko.ru/v2/' + site + '?key=' + api_key + '&ogrn=' + ogrn + '&source=true')
+                if response.status_code == 200:
+                    data = response.json()
+                    # если есть сообщение об ошибке
+                    if 'message' in data['meta']:
+                        error_message = 'Не удалось найти организацию с указанными данными!'
+                        return render(request, 'register.html', {'form': form, 'error_message': error_message})
+                else:
+                    error_message = 'Ошибка запроса при поиске организации!'
+                    return render(request, 'register.html', {'form': form, 'error_message': error_message})
+
+            data = response.json()
+            info = data['data']
+
+            if user.is_ind_pred:
+                api_ogrn = info['ОГРНИП']
+            else:
+                api_ogrn = info['ОГРН']
+            api_inn = info['ИНН']
+
+            if api_inn != inn or api_ogrn != ogrn:
+                error_message = 'Ошибка! Не удалось найти организацию с текущей комбинацией ИНН и ОГРН.'
+                return render(request, 'register.html', {'form': form, 'error_message': error_message})
+
+            # После проверки сохраняем пользователя в БД
             user.save()
 
             # Составляем письмо с ссылкой для подтверждения регистрации
@@ -175,7 +230,7 @@ def SigninView(request):
         email = request.POST.get('email')
         upass = request.POST.get('password')
         if (email == "") or (upass == ""):
-            messages.error(request, 'Missing email or password')
+            messages.error(request, 'Пропущен пароля или почта')
             return redirect('/')
 
         user = authenticate(email=email, password=upass)
