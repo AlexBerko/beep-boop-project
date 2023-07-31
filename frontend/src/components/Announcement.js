@@ -4,6 +4,7 @@ import "./Announcement.css";
 export default function Announcement(props) {
   let datestring;
   let full_info;
+
   if (props.recordsJS.pubdate !== undefined) {
     datestring = `${props.recordsJS.pubdate.substr(
       8,
@@ -15,8 +16,6 @@ export default function Announcement(props) {
 
     full_info = props.recordsJS.full_info.split("\r\n");
   }
-
-  console.log(props.recordsJS);
 
   if (
     props.recordsJS.title === undefined ||

@@ -1,17 +1,34 @@
 import React from "react";
 import "./Header.css";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
     <header>
       <div className="head">
         <ul className="nav">
-          <li>Главная</li>
-          <li>Профиль</li>
-          <li>Подать заявку</li>
+          <li>
+            <Link to="/" className="link">
+              Главная
+            </Link>
+          </li>
+          <li>
+            <Link to="/profile" className="link">
+              Профиль
+            </Link>
+          </li>
+          <li>
+            <Link to="/submit" className="link">
+              Подать заявку
+            </Link>
+          </li>
         </ul>
         <ul className="login_logout">
-          <li>Войти</li>
+          <li>
+            <Link to="/signin" className="link">
+              Войти
+            </Link>
+          </li>
           <li>Выйти</li>
         </ul>
       </div>

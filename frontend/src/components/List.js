@@ -1,5 +1,6 @@
 import React from "react";
 import "./List.css";
+import { Link } from "react-router-dom";
 
 export default function List(props) {
   let full_info;
@@ -26,22 +27,25 @@ export default function List(props) {
           return options;
         })()}
       </div>
-      <button
-        className="open"
-        onClick={() => {
-          props.onBtn();
-          props.apiFunc(
-            `http://127.0.0.1:8000/help/${props.recordsObj[props.arrayId].id}/`,
-            "GET"
-          );
-          props.apiFunc(
-            "https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=org&query=ПАО Ростелеком&limit=1",
-            "GET"
-          );
-        }}
-      >
-        Открыть
-      </button>
+      <Link to="/announcement">
+        <button
+          className="open"
+          onClick={() => {
+            props.apiFunc(
+              `http://127.0.0.1:8000/help/${
+                props.recordsObj[props.arrayId].id
+              }/`,
+              "GET"
+            );
+            props.apiFunc(
+              "https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=org&query=ПАО Ростелеком&limit=1",
+              "GET"
+            );
+          }}
+        >
+          Открыть
+        </button>
+      </Link>
     </div>
   );
 }

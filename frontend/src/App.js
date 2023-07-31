@@ -1,66 +1,64 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Announcement from "./components/Announcement";
 import Header from "./components/Header";
-import List from "./components/List";
+import Lists from "./components/Lists";
+import Profile from "./components/Profile";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      flag: false,
       recordsJS: [],
       recordsObj: [],
-      list: [],
     };
 
     this.apiFunc = this.apiFunc.bind(this);
-    this.onBtn = this.onBtn.bind(this);
-  }
-
-  componentDidMount() {
-    this.apiFunc("http://127.0.0.1:8000/list/", "GET");
   }
 
   render() {
     return (
-      <div>
-        <Header />
-        <div className="container">
-          {!this.state.flag &&
-            (() => {
-              const options = [];
-
-              console.log(this.state.recordsObj);
-
-              for (let i = 0; i < this.state.recordsObj.length; i++) {
-                options.push(
-                  <List
-                    key={i}
-                    arrayId={i}
+      <div className="App">
+        <Router>
+          <Header />
+          <div className="container">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Lists
                     apiFunc={this.apiFunc}
-                    onBtn={this.onBtn}
                     recordsObj={this.state.recordsObj}
+                    changeId={this.changeId}
                   />
-                );
-              }
-
-              return options;
-            })()}
-          {this.state.flag && (
-            <Announcement
-              apiFunc={this.apiFunc}
-              recordsJS={this.state.recordsJS}
-              recordsObj={this.state.recordsObj}
-            />
-          )}
-        </div>
+                }
+              />
+              <Route
+                path="/announcement"
+                element={
+                  <Announcement
+                    apiFunc={this.apiFunc}
+                    recordsJS={this.state.recordsJS}
+                    recordsObj={this.state.recordsObj}
+                    id={this.state.id}
+                  />
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <Profile
+                    apiFunc={this.apiFunc}
+                    recordsJS={this.state.recordsJS}
+                  />
+                }
+              />
+            </Routes>
+          </div>
+        </Router>
       </div>
     );
-  }
-
-  onBtn() {
-    this.setState({ flag: !this.state.flag });
   }
 
   async apiFunc(url, method) {
@@ -72,6 +70,7 @@ class App extends Component {
 
     const response = await fetch(url, requestOptions);
     const json = await response.json();
+    console.log(json);
 
     if (typeof json === "string") {
       this.setState({
@@ -85,26 +84,6 @@ class App extends Component {
       return json;
     }
   }
-
-  // apiFunc() {
-  //   let requestOptions;
-
-  //   requestOptions = {
-  //     method: "GET",
-  //   };
-
-  //   fetch(`http://127.0.0.1:8000/help/2/`, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((records) => {
-  //       this.setState({
-  //         records: records,
-  //       });
-  //       console.log(records);
-  //     })
-  //     .catch((error) => console.log(error));
-
-  //   return this.state.records;
-  // }
 }
 
 export default App;
