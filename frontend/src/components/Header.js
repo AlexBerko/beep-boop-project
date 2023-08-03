@@ -1,8 +1,10 @@
 import React from "react";
 import "./Header.css";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import * as actions from "../store/actions/auth";
 
-export default function Header() {
+function Header(props) {
   return (
     <header>
       <div className="head">
@@ -24,14 +26,29 @@ export default function Header() {
           </li>
         </ul>
         <ul className="login_logout">
-          <li>
-            <Link to="/signin" className="link">
-              Войти
-            </Link>
-          </li>
-          <li>Выйти</li>
+          {props.isAuthenticated ? (
+            <li>
+              <Link className="link" onClick={props.logout}>
+                Выйти
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link to="/login" className="link">
+                Войти
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </header>
   );
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    logout: () => dispatch(actions.logout()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Header);

@@ -230,7 +230,7 @@ def SigninView(request):
         email = request.POST.get('email')
         upass = request.POST.get('password')
         if (email == "") or (upass == ""):
-            messages.error(request, 'Пропущен пароля или почта')
+            messages.error(request, 'Пропущен пароль или почта')
             return redirect('/')
 
         user = authenticate(email=email, password=upass)

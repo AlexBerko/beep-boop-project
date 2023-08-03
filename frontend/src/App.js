@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { connect } from "react-redux";
 import Announcement from "./components/Announcement";
 import Header from "./components/Header";
 import Lists from "./components/Lists";
 import Profile from "./components/Profile";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import * as actions from "./store/actions/auth";
 
 class App extends Component {
   constructor(props) {
@@ -17,11 +21,15 @@ class App extends Component {
     this.apiFunc = this.apiFunc.bind(this);
   }
 
+  componentDidMount() {
+    this.props.onTryAutoSignup();
+  }
+
   render() {
     return (
       <div className="App">
         <Router>
-          <Header />
+          <Header {...this.props} />
           <div className="container">
             <Routes>
               <Route
@@ -54,6 +62,8 @@ class App extends Component {
                   />
                 }
               />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
             </Routes>
           </div>
         </Router>
@@ -86,4 +96,16 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.token !== null,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTryAutoSignup: () => dispatch(actions.authCheckState()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -30,6 +30,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000"
 ]
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS.copy()
 
 
 # Application definition
@@ -41,11 +42,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
     'drf_yasg',
-    'rest_framework',
+
     'corsheaders',
+
+    'rest_auth.registration',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
     'user',
 ]
+
+SITE_ID = 1
 
 AUTH_USER_MODEL = "user.CustomUser"
 
@@ -53,7 +67,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -141,3 +154,4 @@ EMAIL_HOST_USER = "heatherhoneyy@mail.ru"
 EMAIL_HOST_PASSWORD = "swusvqV1RUNRiciwLrvq"
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
