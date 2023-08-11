@@ -109,7 +109,7 @@ def sign_up(request):
         if form.is_valid():
             user = form.save(commit=False)
             # user.username = user.username.lower()
-
+            '''
             ###################################################
             #                   ДОП ЗАДАНИЕ                   #
             ###################################################
@@ -158,7 +158,7 @@ def sign_up(request):
             if api_inn != inn or api_ogrn != ogrn:
                 error_message = 'Ошибка! Не удалось найти организацию с текущей комбинацией ИНН и ОГРН.'
                 return render(request, 'register.html', {'form': form, 'error_message': error_message})
-
+            '''
             # После проверки сохраняем пользователя в БД
             user.save()
 

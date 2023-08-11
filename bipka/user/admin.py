@@ -41,6 +41,31 @@ class CustomUserAddForm(UserCreationForm):
         if not is_superuser:
             inn = cleaned_data.get('inn')
             ogrn = cleaned_data.get('ogrn')
+            phone_no = cleaned_data.get('phone_no')
+
+            flag_check = False
+            if not inn or not ogrn:
+                return cleaned_data
+
+            if not inn.isdigit():
+                self.add_error('inn',
+                               'Ошибка! ИНН должно быть числом.')
+                flag_check = True
+            if not ogrn.isdigit():
+                self.add_error('ogrn',
+                               'Ошибка! ОГРН/ОГРНИП должно быть числом.')
+                flag_check = True
+
+            if phone_no:
+                if not phone_no.isdigit():
+                    self.add_error('phone_no',
+                                   'Ошибка! Номер телефона начинается с 8, далее идут цифры без тире и пробелов.')
+                    flag_check = True
+
+            if flag_check:
+                return cleaned_data
+
+
             api_key = 'CAYR4QAsioUmKS5o'
             site = 'company'
             if is_ind_pred:
