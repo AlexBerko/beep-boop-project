@@ -109,7 +109,7 @@ def sign_up(request):
         if form.is_valid():
             user = form.save(commit=False)
             # user.username = user.username.lower()
-
+            '''
             ###################################################
             #                   ДОП ЗАДАНИЕ                   #
             ###################################################
@@ -118,11 +118,9 @@ def sign_up(request):
             inn = user.inn
             ogrn = user.ogrn
             api_key = 'CAYR4QAsioUmKS5o'
-            site = ''
+            site = 'company'
             if user.is_ind_pred:
                 site = 'entrepreneur'
-            else:
-                site = 'company'
 
             is_org_found = False
 
@@ -160,7 +158,7 @@ def sign_up(request):
             if api_inn != inn or api_ogrn != ogrn:
                 error_message = 'Ошибка! Не удалось найти организацию с текущей комбинацией ИНН и ОГРН.'
                 return render(request, 'register.html', {'form': form, 'error_message': error_message})
-
+            '''
             # После проверки сохраняем пользователя в БД
             user.save()
 
@@ -177,8 +175,11 @@ def sign_up(request):
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
-
-            email.send()
+            try:
+                email.send()
+            except:
+                error_message = 'Ошибка! Указанная почта не существует.'
+                return render(request, 'register.html', {'form': form, 'error_message': error_message})
 
             messages.info(request,
                           'Данные успешно сохранены! Для завершения регистрации подтвердите адрес электронной почты.')
@@ -230,20 +231,23 @@ def SigninView(request):
         email = request.POST.get('email')
         upass = request.POST.get('password')
         if (email == "") or (upass == ""):
-            messages.error(request, 'Пропущен пароль или почта')
+            messages.error(request, 'Пропущен пароль или почта.')
             return redirect('/')
 
         user = authenticate(email=email, password=upass)
         OtpModel.objects.filter(user=user).delete()
         if user is None:
-            messages.error(request, 'Please Enter Correct Credinatial')
+            messages.error(request, 'Пожалуйста, введите правильные учетные данные.')
             return redirect('/')
         else:
-            # login(request, user)
-            messages.success(request, 'Please verify otp')
-            otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
-            send_otp_in_mail(user, otp_stuff)
-            return redirect('/otp/')
+            if user.is_superuser:
+                login(request, user)
+                return redirect('/')
+            else:
+                messages.success(request, 'Please verify otp')
+                otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
+                send_otp_in_mail(user, otp_stuff)
+                return redirect('/otp/')
     else:
         if request.user.is_authenticated:
             return redirect('/accounts/profile/')
