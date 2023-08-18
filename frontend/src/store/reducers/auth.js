@@ -5,6 +5,7 @@ const initialState = {
   token: null,
   error: null,
   loading: false,
+  regDone: false,
 };
 
 const authStart = (state, action) => {
@@ -17,6 +18,20 @@ const authStart = (state, action) => {
 const authSuccess = (state, action) => {
   return updateObject(state, {
     token: action.token,
+    error: null,
+    loading: false,
+  });
+};
+
+const authRegDone = (state, action) => {
+  return updateObject(state, {
+    error: null,
+    regDone: true,
+  });
+};
+
+const authLoading = (state, action) => {
+  return updateObject(state, {
     error: null,
     loading: false,
   });
@@ -41,6 +56,10 @@ const reducer = (state = initialState, action) => {
       return authStart(state, action);
     case actionTypes.AUTH_SUCCESS:
       return authSuccess(state, action);
+    case actionTypes.AUTH_REGDONE:
+      return authRegDone(state, action);
+    case actionTypes.AUTH_LOADING:
+      return authLoading(state, action);
     case actionTypes.AUTH_FAIL:
       return authFail(state, action);
     case actionTypes.AUTH_LOGOUT:

@@ -1,5 +1,4 @@
 import React from "react";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
@@ -19,9 +18,9 @@ const App = (props) => {
   const navigate = useNavigate();
 
   const onFinish = (values) => {
-    // console.log("Received values of form: ", values);
-    props.onAuth(values.email, values.password);
-    navigate("/otp", { replace: true });
+    console.log("Received values of form: ", values);
+    props.onAuth(values.otp);
+    navigate("/", { replace: true });
   };
 
   let errorMessage = null;
@@ -32,9 +31,7 @@ const App = (props) => {
   return (
     <div>
       {errorMessage}
-      {props.regDone &&
-        "На почту отправлено письмо для подтверждения регистрации!"}
-
+      <p>Двухфакторная аутентификация</p>
       {props.loading ? (
         <Spin indicator={antIcon} />
       ) : (
@@ -47,38 +44,15 @@ const App = (props) => {
           onFinish={onFinish}
         >
           <Form.Item
-            name="email"
-            rules={[
-              {
-                type: "email",
-                message: "The input is not valid E-mail!",
-              },
-              {
-                required: true,
-                message: "Please input your E-mail!",
-              },
-            ]}
-          >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Email"
-            />
-          </Form.Item>
-
-          <Form.Item
-            name="password"
+            name="otp"
             rules={[
               {
                 required: true,
-                message: "Please input your Password!",
+                message: "Please input your secret code from email!",
               },
             ]}
           >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="Password"
-            />
+            <Input />
           </Form.Item>
 
           <Form.Item>
@@ -104,14 +78,13 @@ const App = (props) => {
 const mapStateToProps = (state) => {
   return {
     loading: state.loading,
-    regDone: state.regDone,
     error: state.error,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAuth: (email, password) => dispatch(actions.authLogin(email, password)),
+    onAuth: (otp) => dispatch(actions.authOtp(otp)),
   };
 };
 

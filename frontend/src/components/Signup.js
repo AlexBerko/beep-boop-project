@@ -10,22 +10,23 @@ const App = (props) => {
   const navigate = useNavigate();
 
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
+    // console.log("Received values of form: ", values);
     props.onAuth(
       values.username,
       values.email,
-      values.telephone,
+      values.phone_no,
       values.head,
       values.ogrn,
       values.inn,
-      values.regAdr,
-      values.factAdr,
+      values.address_reg,
+      values.address_fact,
       values.is_rest,
       values.is_ind_pred,
       values.password1,
-      values.password2
+      values.password2,
+      props.regDone
     );
-    navigate("/profile", { replace: true });
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -37,6 +38,7 @@ const App = (props) => {
         maxWidth: 600,
       }}
       scrollToFirstError
+      id="regForm"
     >
       <Form.Item
         name="username"
@@ -70,7 +72,7 @@ const App = (props) => {
       </Form.Item>
 
       <Form.Item
-        name="telephone"
+        name="phone_no"
         label="Телефон"
         rules={[
           {
@@ -83,6 +85,7 @@ const App = (props) => {
           style={{
             width: "100%",
           }}
+          prefix={"+"}
         />
       </Form.Item>
 
@@ -129,7 +132,7 @@ const App = (props) => {
       </Form.Item>
 
       <Form.Item
-        name="regAdr"
+        name="address_reg"
         label="Адрес регистрации:"
         rules={[
           {
@@ -143,7 +146,7 @@ const App = (props) => {
       </Form.Item>
 
       <Form.Item
-        name="factAdr"
+        name="address_fact"
         label="Фактический адрес:"
         rules={[
           {
@@ -251,31 +254,33 @@ const mapDispatchToProps = (dispatch) => {
     onAuth: (
       username,
       email,
-      telephone,
+      phone_no,
       head,
       ogrn,
       inn,
-      regAdr,
-      factAdr,
+      address_reg,
+      address_fact,
       is_rest,
       is_ind_pred,
       password1,
-      password2
+      password2,
+      regDone
     ) =>
       dispatch(
         actions.authSignup(
           username,
           email,
-          telephone,
+          phone_no,
           head,
           ogrn,
           inn,
-          regAdr,
-          factAdr,
+          address_reg,
+          address_fact,
           is_rest,
           is_ind_pred,
           password1,
-          password2
+          password2,
+          regDone
         )
       ),
   };
