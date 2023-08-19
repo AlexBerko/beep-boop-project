@@ -9,6 +9,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import * as actions from "./store/actions/auth";
 import Otp from "./components/Otp";
+import Submit from "./components/Submit";
 
 class App extends Component {
   constructor(props) {
@@ -63,6 +64,7 @@ class App extends Component {
                   />
                 }
               />
+              <Route path="/submit" element={<Submit />} />
               <Route path="/login" element={<Login />} />
               <Route path="/otp" element={<Otp {...this.props} />} />
               <Route path="/signup" element={<Signup />} />

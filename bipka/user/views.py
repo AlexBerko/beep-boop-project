@@ -220,9 +220,9 @@ def activate(request, uidb64, token):
 def main_page(request):
     if request.method == 'GET':
         if not request.user.is_authenticated:
-            return redirect('/signin/')
+            return redirect('http://localhost:3000/login')
         else:
-            return redirect("/accounts/profile/")
+            return redirect("http://localhost:3000/accounts/profile/")
 
 
 # User Signin
