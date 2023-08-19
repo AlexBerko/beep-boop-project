@@ -18,6 +18,7 @@ from django.urls import path, re_path, include
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from user import views as usr
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -31,8 +32,15 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include("user.urls")),
+    path('', include("main.urls")),
+    path('admin/', admin.site.urls), #Панель админа
+
+    #Ссылки в приложении user для авторизации и регистрации
+    path('signin/', usr.SigninView, name='login-user'),
+    path('register/', usr.sign_up, name='signup'),
+    path('otp/', usr.OtpVerifyView, name='otp'),
+    path('activate/<str:uidb64>/<str:token>/', usr.activate, name='activate'),
+
     path('rest-auth/', include('rest_auth.urls')),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)', schema_view.without_ui(cache_timeout=0), name='schema-json'),

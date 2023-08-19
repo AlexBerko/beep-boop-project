@@ -122,9 +122,3 @@ class RegisterForm(UserCreationForm):
             return cleaned_data
 
         return cleaned_data
-
-class HelpForm(forms.ModelForm):
-    class Meta:
-        model = Help
-        fields = ['title', 'full_info']
-        # model.org_info

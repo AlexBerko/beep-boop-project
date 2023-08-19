@@ -1,11 +1,3 @@
-import uuid
-from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
-from django.utils.translation import gettext_lazy as _
-from django.conf import settings
-from datetime import date
-from django.contrib.auth.base_user import BaseUserManager
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import *
 
 #################################################
@@ -61,13 +53,10 @@ class CustomUser(AbstractBaseUser):
     date_reg = models.DateTimeField(auto_now_add=True)  # Дата регистрации
     is_rest = models.BooleanField(default=False) # Ресторан или благотворительная организация
     is_ind_pred = models.BooleanField(default=False) # ИП или юридическое лицо
-    # kpp = models.CharField(max_length=9, blank=False, default='def')  # КПП unique=True,
 
-
-    is_active = models.BooleanField(default=False) # прошел ли пользователь регистрацию через почту + есть ли такая организация вообще
+    is_active = models.BooleanField(default=False) # прошел ли пользователь регистрацию через почту
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    #is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
 
@@ -86,7 +75,7 @@ class CustomUser(AbstractBaseUser):
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
 
-
+'''
 class FundManager(models.Manager):
     def create_user(self, email, password=None):
         if not email or len(email) <= 0:
@@ -145,7 +134,7 @@ class Restaurant(CustomUser):
     def save(self, *args, **kwargs):
         self.is_rest = True
         return super().save(*args, **kwargs)
-
+'''
 #################################################
 #                                               #
 #                   OTP  MODEL                  #
@@ -160,19 +149,3 @@ class OtpModel(models.Model):
 
     def __str__(self):
         return self.otp
-
-#################################################
-#                                               #
-#                   HELP MODEL                  #
-#                                               #
-#################################################
-
-class Help(models.Model):
-    id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=255, blank=False, default='def')
-    full_info = models.TextField(blank=False, default='def')
-    # org_info = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True)
-    pubdate = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.title

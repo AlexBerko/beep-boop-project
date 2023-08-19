@@ -1,9 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django import forms
-from django.core.exceptions import ValidationError
-from django.shortcuts import redirect, render
 from django.utils.translation import gettext, gettext_lazy as _
 from django.contrib import messages
 from django.template.loader import render_to_string
@@ -12,7 +9,6 @@ import requests
 from django.contrib.sites.shortcuts import get_current_site
 from .token import account_activation_token
 from django.core.mail import EmailMessage
-from django.http import HttpResponseRedirect
 
 class CustomUserAddForm(UserCreationForm):
     class Meta:
@@ -198,9 +194,8 @@ class MyUserAdmin(UserAdmin):
         # Действия по удалению экземпляра модели
         return super().delete_model(request, obj)
 
-admin.site.register(Restaurant)
-admin.site.register(Fund)
-admin.site.register(Help)
+#admin.site.register(Restaurant)
+#admin.site.register(Fund)
 
 @admin.register(OtpModel)
 class OtpModelAdmin(admin.ModelAdmin):
