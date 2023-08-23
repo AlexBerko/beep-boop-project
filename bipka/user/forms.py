@@ -34,6 +34,7 @@ class RegisterForm(UserCreationForm):
             'ogrn': 'ОГРН/ОГРНИП',
             'inn': 'ИНН'
         }
+    '''
     def clean(self):
         cleaned_data = super().clean()  # Вызываем реализацию метода clean() родительского класса
 
@@ -60,13 +61,6 @@ class RegisterForm(UserCreationForm):
                 self.add_error('phone_no',
                                'Ошибка! Номер телефона начинается с 8, далее идут цифры без тире и пробелов.')
                 flag_check = True
-        '''
-        if email:
-            if not validate_email(email, verify=True):
-                self.add_error('email',
-                               'Ошибка! Указанная почта не существует!')
-                flag_check = True
-        '''
 
         if flag_check:
             return cleaned_data
@@ -122,3 +116,4 @@ class RegisterForm(UserCreationForm):
             return cleaned_data
 
         return cleaned_data
+    '''

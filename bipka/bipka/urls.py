@@ -35,11 +35,7 @@ urlpatterns = [
     path('', include("main.urls")),
     path('admin/', admin.site.urls), #Панель админа
 
-    #Ссылки в приложении user для авторизации и регистрации
-    path('signin/', usr.SigninView, name='login-user'),
-    path('register/', usr.sign_up, name='signup'),
-    path('otp/', usr.OtpVerifyView, name='otp'),
-    path('activate/<str:uidb64>/<str:token>/', usr.activate, name='activate'),
+    path('user/', include("user.urls")),
 
     path('rest-auth/', include('rest_auth.urls')),
     path('rest-auth/registration/', include('rest_auth.registration.urls')),

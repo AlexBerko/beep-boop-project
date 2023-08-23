@@ -9,11 +9,8 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('', main_page, name='main_page'),
-    path('logout/', logoutView, name='logout'),
-    path('accounts/profile/', OrgDetailView.as_view(), name='home-page'),
-    path('help/<int:pk>/', HelpDetailView.as_view(), name='help'),  # <int:pk>
-    path('list/', Help_list.as_view(), name='help_list'),  # read from main page
-    # path('main/', Help_list.as_view()),
+    path('help/<int:pk>/', HelpDetailView.as_view(), name='help_info'),
+    path('help/list/', Help_list.as_view(), name='help_list'),  # read from main page
     #re_path(r'^my/helps/(\d+)$', views.help_detail),
     path('help/create/', AddHelp.as_view(), name='create_help'),
 ]

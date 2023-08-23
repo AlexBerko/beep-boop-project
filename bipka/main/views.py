@@ -6,47 +6,24 @@ from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from .serializers import *
 from rest_framework.views import APIView
 from rest_framework import generics
 from .forms import *
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django.contrib.auth import get_user
 
 
 def main_page(request):
     if request.method == 'GET':
         if not request.user.is_authenticated:
             return redirect('http://localhost:3000/login')
-            #return redirect('/signin')
+            # return redirect('/signin')
         else:
             return redirect("http://localhost:3000/accounts/profile/")
-            #return redirect("/accounts/profile/")
-
-
-class OrgDetailView(APIView):
-    def get(self, request):
-        if request.user.is_authenticated:
-            try:
-                usr = CustomUser.objects.get(id=request.user.id)
-            except CustomUser.DoesNotExist:
-                return Response({'error': 'Пользователь не найден'}, status=status.HTTP_404_NOT_FOUND)
-            serializer = OrgDetailSerializer(usr)
-            json = JSONRenderer().render(serializer.data)
-            return Response(json)
-        else:
-            return redirect('/')
-
-
-
-def logoutView(request):
-    if request.user.is_authenticated:
-        logout(request)
-        messages.info(request, '🙋‍ You are Successfully Logged Out !')
-        return redirect('/')
-    else:
-        messages.info(request, '☹︎ Please Login First')
-    return redirect('/')
+            # return redirect("/accounts/profile/")
 
 
 #################################################
@@ -56,77 +33,81 @@ def logoutView(request):
 #################################################
 
 
-class Help_list(generics.ListAPIView):
-    ''''''
-    queryset = Help.objects.all()  # получить список всех просьб
-    serializer_class = HelpListSerializer
-    '''
+@permission_classes([IsAuthenticated])
+class Help_list(APIView):
     def get(self, request):
-        data = Help.objects.all()  # получить список всех просьб
-        title = request.query_params.get('title', None)
-        if title is not None:
-            data = data.filter(title__icontains=title)
-        serializer = HelpListSerializer(data, context={'request': self.request}, many=True)  # получить данные в сериализованном виде
-        json = JSONRenderer().render(serializer.data)
-        # print('/nRESPONSE: %d' %(json))
-        return Response(json)  # отправить ответ
-    '''
+        help_objects = Help.objects.filter(is_completed=False)
+        serializer = HelpListSerializer(help_objects, many=True)
+        return Response(serializer.data, status=200)
 
 
-# help list without serializers
-# def help_list(request):
-#     # return HttpResponse("<h4>Главная сраница</h4>")
-#     list_of_helps = Help.objects.all().order_by('-pubdate')
-#     return render(request, "index.html", {'list_of_helps': list_of_helps})
-
+@permission_classes([IsAuthenticated])
 class HelpDetailView(APIView):
     def get(self, request, pk):
         try:
             h = Help.objects.get(id=pk)  # search by id
         except Help.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)  # error
+            return Response({'error': 'Просьба с данным id не обнаружена'}, status=400)
         serializer = HelpDetailSerializer(h)
-        json = JSONRenderer().render(serializer.data)
-        return Response(json)
+        return Response(serializer.data, status=200)
 
-    # @method_decorator([login_required, blago_required], name='dispatch')
     def put(self, request, pk):
-        json_object = json.loads(request.body)
-        data_raw = JSONParser().parse(json_object)  # data after parsing
-        serializer = HelpDetailSerializer(data=data_raw, context={'request': request})  # update serialized data
-        if serializer.is_valid():  # is it ok?
-            serializer.save()  # save
-            return Response(status=status.HTTP_204_NO_CONTENT)  # success
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # data is invalid...
+        try:
+            help = Help.objects.get(id=pk)
+        except Help.DoesNotExist:
+            return Response({'error': 'Просьба с данным id не обнаружена'}, status=400)
+        current_user = get_user(request)
 
-    # @method_decorator([login_required, blago_required], name='dispatch')
+        if help.who_asked == current_user:
+            data = request.data
+            if 'title' in data:
+                help.title = data['title']
+            if 'full_info' in data:
+                help.full_info = data['full_info']
+            help.save()
+            return Response(status=200)
+        else:
+            return Response({'error': 'Пользователь не является автором просьбы'}, status=400)
+
+
     def delete(self, request, pk):
         try:
-            help = Help.objects.get(id=pk)  # search by id
+            help = Help.objects.get(id=pk)
         except Help.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)  # error
-        help.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({'error': 'Просьба с данным id не обнаружена'}, status=400)
+        current_user = get_user(request)
+        if help.who_asked == current_user:
+            help.delete()
+            return Response(status=200)
+        else:
+            return Response({'error': 'Пользователь не является автором просьбы'}, status=400)
 
 
+
+
+@permission_classes([IsAuthenticated])
 class AddHelp(APIView):
     def get(self, request):
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=200)
 
     def post(self, request):
         form = HelpForm(request.data)
         if form.is_valid():
             h = form.save(commit=False)
-            try:
-                usr = CustomUser.objects.get(id=request.user.id)  # search by id
-                #usr = CustomUser.objects.get(id=2)  # ТЕСТ
-            except CustomUser.DoesNotExist:
-                return Response({'error': 'Пользователь не найден'}, status=status.HTTP_404_NOT_FOUND)
+
+            # try:
+            #    usr = CustomUser.objects.get(id=request.user.id)  # search by id
+            # usr = CustomUser.objects.get(id=2)  # ТЕСТ
+            # except CustomUser.DoesNotExist:
+            #    return Response({'error': 'Пользователь не найден'}, status=status.HTTP_404_NOT_FOUND)
+
+            # usr = CustomUser.objects.get(id=9)  # ТЕСТ
+            usr = CustomUser.objects.get(id=request.user.id)  # search by id
             h.who_asked = usr
             h.save()
             serializer = HelpDetailSerializer(h)
             json = JSONRenderer().render(serializer.data)
-            return Response(json)
+            return Response(json, status=200)
 
         else:
             return Response(form.errors, status=400)

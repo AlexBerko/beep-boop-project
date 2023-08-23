@@ -9,6 +9,7 @@ import requests
 from django.contrib.sites.shortcuts import get_current_site
 from .token import account_activation_token
 from django.core.mail import EmailMessage
+from bipka.settings import API_KEY
 
 class CustomUserAddForm(UserCreationForm):
     class Meta:
@@ -62,7 +63,6 @@ class CustomUserAddForm(UserCreationForm):
                 return cleaned_data
 
 
-            api_key = 'CAYR4QAsioUmKS5o'
             site = 'company'
             if is_ind_pred:
                 site = 'entrepreneur'
@@ -70,7 +70,7 @@ class CustomUserAddForm(UserCreationForm):
             is_org_found = False
 
             response = requests.get(
-                'https://api.checko.ru/v2/' + site + '?key=' + api_key + '&inn=' + inn + '&source=true')
+                'https://api.checko.ru/v2/' + site + '?key=' + API_KEY + '&inn=' + inn + '&source=true')
             # если запрос завершился успешно
             if response.status_code == 200:
                 data = response.json()
@@ -80,7 +80,7 @@ class CustomUserAddForm(UserCreationForm):
 
             if not is_org_found:
                 response = requests.get(
-                    'https://api.checko.ru/v2/' + site + '?key=' + api_key + '&ogrn=' + ogrn + '&source=true')
+                    'https://api.checko.ru/v2/' + site + '?key=' + API_KEY + '&ogrn=' + ogrn + '&source=true')
                 if response.status_code == 200:
                     data = response.json()
                     # если есть сообщение об ошибке
