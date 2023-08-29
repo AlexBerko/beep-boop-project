@@ -65,7 +65,11 @@ class App extends Component {
                 }
               />
               <Route path="/submit" element={<Submit />} />
-              <Route path="/login" element={<Login />} />
+              <Route path="/login" element={<Login apiFunc={this.apiFunc} />} />
+              <Route
+                path="/login/:id/:token"
+                element={<Login apiFunc={this.apiFunc} />}
+              />
               <Route path="/otp" element={<Otp {...this.props} />} />
               <Route path="/signup" element={<Signup />} />
             </Routes>

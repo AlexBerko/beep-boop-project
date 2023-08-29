@@ -33,9 +33,19 @@ export const authFail = (error) => {
   };
 };
 
-export const logout = () => {
+export const logout = (dispatch) => {
   localStorage.removeItem("token");
   localStorage.removeItem("expirationDate");
+
+  // axios
+  //   .get("http://127.0.0.1:8000/user/logout")
+  //   .then((res) => {
+  //     dispatch(authLoading());
+  //   })
+  //   .catch((err) => {
+  //     dispatch(authFail(err));
+  //   });
+
   return {
     type: actionTypes.AUTH_LOGOUT,
   };
@@ -57,7 +67,7 @@ export const authLogin = (email, password) => {
     formData.append("password", password);
 
     axios
-      .post("http://127.0.0.1:8000/signin/", formData)
+      .post("http://127.0.0.1:8000/user/signin/", formData)
       .then((res) => {
         dispatch(authLoading());
       })
@@ -74,7 +84,7 @@ export const authOtp = (otp) => {
     formData.append("otp", otp);
 
     axios
-      .post("http://127.0.0.1:8000/otp/", formData)
+      .post("http://127.0.0.1:8000/user/otp/", formData)
       .then((res) => {
         const token = res.data.key;
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
@@ -120,7 +130,7 @@ export const authSignup = (
     formData.append("password2", password2);
 
     axios
-      .post("http://127.0.0.1:8000/register/", formData)
+      .post("http://127.0.0.1:8000/user/register/", formData)
       .then((res) => {
         dispatch(authLoading());
         dispatch(authRegDone());

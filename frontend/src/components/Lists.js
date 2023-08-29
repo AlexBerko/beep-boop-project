@@ -9,7 +9,7 @@ class Lists extends Component {
   }
 
   componentDidMount() {
-    this.props.apiFunc("http://127.0.0.1:8000/list/", "GET");
+    this.props.apiFunc("http://127.0.0.1:8000//help/list/", "GET");
   }
 
   render() {

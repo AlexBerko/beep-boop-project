@@ -33,7 +33,7 @@ def main_page(request):
 #################################################
 
 
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 class Help_list(APIView):
     def get(self, request):
         help_objects = Help.objects.filter(is_completed=False)

@@ -204,7 +204,7 @@ class ActivateAccount_API(APIView):
 
 
 #### API-профиля ######
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 class OrgDetailView(APIView):
     def get(self, request):
         try:

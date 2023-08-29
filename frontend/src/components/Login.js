@@ -3,7 +3,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import * as actions from "../store/actions/auth";
 
 const antIcon = (
@@ -17,6 +17,9 @@ const antIcon = (
 
 const App = (props) => {
   const navigate = useNavigate();
+  console.log(useParams());
+  const { id, token } = useParams();
+  console.log(id, token);
 
   const onFinish = (values) => {
     // console.log("Received values of form: ", values);
@@ -27,6 +30,10 @@ const App = (props) => {
   let errorMessage = null;
   if (props.error) {
     errorMessage = <p>{props.error.message}</p>;
+  }
+
+  if (id !== undefined && token !== undefined) {
+    props.apiFunc(`http://127.0.0.1:8000/user/activate/${id}/${token}/`, "GET");
   }
 
   return (
