@@ -59,7 +59,7 @@ class OtpVerifyView_API(APIView):
         otp = request.data.get('otp')
         verify_otp = OtpModel.objects.filter(otp=otp)
         if verify_otp.exists():
-            login(request, verify_otp[0].user)
+            #login(request, verify_otp[0].user)
             return Response(status=200)
         else:
             return Response({'error': 'Ошибка! Неверный код'}, status=400)
@@ -212,6 +212,24 @@ class OrgDetailView(APIView):
 
 
 
+class OTP_send(APIView):
+    def post(self, request):
+        if 'email' not in request.data:
+            return Response({'error': 'Почта не указана.'}, status=400)
+
+        email = request.data.get('email')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'Пользователя не существует.'}, status=400)
+
+        if not user.is_active:
+            return Response({'error': 'Сначала подтвердите почту.'}, status=400)
+
+        OtpModel.objects.filter(user=user).delete()
+        otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
+        send_otp_in_mail(user, otp_stuff)
+        return Response(status=200)
 
 
 
@@ -269,12 +287,6 @@ class LogOUT_API(APIView):
     def get(self, request):
         logout(request)
         return Response(status=200)
-
-
-
-
-
-
 
 
 
