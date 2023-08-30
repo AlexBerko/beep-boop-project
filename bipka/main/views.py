@@ -14,16 +14,27 @@ from rest_framework import generics
 from .forms import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.contrib.auth import get_user
+from rest_framework.authtoken.models import Token
 
+def get_user_from_header(request):
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        token = auth_header.split(' ')[1]
+        if token:
+            token_obj = Token.objects.filter(key=token).first()
+            if token_obj:
+                user = CustomUser.objects.get(id=token_obj.user_id)
+                return user
+    return None
 
 def main_page(request):
     if request.method == 'GET':
         if not request.user.is_authenticated:
             return redirect('http://localhost:3000/login')
-            # return redirect('/signin')
+            # return redirect('/user/signin/')
         else:
             return redirect("http://localhost:3000/accounts/profile/")
-            # return redirect("/accounts/profile/")
+            # return redirect("/user/profile/")
 
 
 #################################################
@@ -33,7 +44,7 @@ def main_page(request):
 #################################################
 
 
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 class Help_list(APIView):
     def get(self, request):
         help_objects = Help.objects.filter(is_completed=False)
@@ -56,7 +67,9 @@ class HelpDetailView(APIView):
             help = Help.objects.get(id=pk)
         except Help.DoesNotExist:
             return Response({'error': 'Просьба с данным id не обнаружена'}, status=400)
-        current_user = get_user(request)
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
 
         if help.who_asked == current_user:
             data = request.data
@@ -75,7 +88,10 @@ class HelpDetailView(APIView):
             help = Help.objects.get(id=pk)
         except Help.DoesNotExist:
             return Response({'error': 'Просьба с данным id не обнаружена'}, status=400)
-        current_user = get_user(request)
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
         if help.who_asked == current_user:
             help.delete()
             return Response(status=200)

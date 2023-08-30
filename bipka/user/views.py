@@ -22,6 +22,7 @@ from django.contrib.auth import get_user
 from .forms import *
 from .serializers import *
 from .token import account_activation_token
+from main.views import get_user_from_header
 
 
 #################################################
@@ -158,6 +159,79 @@ class SignUP(APIView):
             return Response(form.errors, status=400)
 
 
+#### API-подтверждение почты ######
+class ActivateAccount_API(APIView):
+    def get(self, request, uidb64, token):
+        User = get_user_model()
+        try:
+            user = User.objects.get(id=uidb64)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return Response(status=200)
+        else:
+            return Response(status=400)
+
+
+
+#### API-профиля ######
+@permission_classes([IsAuthenticated])
+class OrgDetailView(APIView):
+    def get(self, request):
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+        serializer = OrgDetailSerializer(current_user)
+        json = JSONRenderer().render(serializer.data)
+        return Response(json, status=200)
+
+    def post(self, request):
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
+        if 'new_password' not in request.data:
+            return Response({'error': 'Новый пароль не получен.'}, status=400)
+
+        new_pwd = request.data.get('new_password')
+        current_user.password = make_password(new_pwd)
+        current_user.save()
+        return Response(status=200)
+
+    '''
+    def delete(self, request):
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
+        current_user.delete()
+        return Response(status=200)
+    '''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#################################################
+#                                               #
+#              СТАРЫЕ НАРАБОТКИ                 #
+#                                               #
+#################################################
+
+
 #### API-авторизация ######
 class SignIN(APIView):
     def get(self, request):
@@ -181,63 +255,14 @@ class SignIN(APIView):
                 return Response({'message': 'Суперпользователь.'}, status=200)
                 # return redirect('/').
             else:
+                if not user.is_active:
+                    return Response({'error': 'Ошибка! Почта не подтверждена.'}, status=400)
                 OtpModel.objects.filter(user=user).delete()
                 otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
                 send_otp_in_mail(user, otp_stuff)
                 return Response(status=200)
 
 
-#### API-подтверждение почты ######
-class ActivateAccount_API(APIView):
-    def get(self, request, uidb64, token):
-        User = get_user_model()
-        try:
-            user = User.objects.get(id=uidb64)
-        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-            user = None
-        if user is not None and account_activation_token.check_token(user, token):
-            user.is_active = True
-            user.save()
-            return Response(status=200)
-        else:
-            return Response(status=400)
-
-
-#### API-профиля ######
-# @permission_classes([IsAuthenticated])
-class OrgDetailView(APIView):
-    def get(self, request):
-        try:
-            usr = CustomUser.objects.get(id=request.user.id)
-        except CustomUser.DoesNotExist:
-            return Response({'error': 'Пользователь не найден'}, status=400)
-        serializer = OrgDetailSerializer(usr)
-        json = JSONRenderer().render(serializer.data)
-        return Response(json, status=200)
-
-    def post(self, request):
-        try:
-            user = CustomUser.objects.get(id=request.user.id)
-        except CustomUser.DoesNotExist:
-            return Response({'error': 'Пользователь не найден'}, status=400)
-
-        if 'new_password' not in request.data:
-            return Response({'error': 'Новый пароль не получен.'}, status=400)
-
-        new_pwd = request.data.get('new_password')
-        user.password = make_password(new_pwd)
-        user.save()
-        return Response(status=200)
-
-    def delete(self, request):
-        try:
-            user = CustomUser.objects.get(id=request.user.id)
-            #user = CustomUser.objects.get(id=9)  # ДЛЯ ТЕСТА
-        except CustomUser.DoesNotExist:
-            return Response({'error': 'Пользователь не найден'}, status=400)
-
-        user.delete()
-        return Response(status=200)
 
 
 class LogOUT_API(APIView):
@@ -246,9 +271,14 @@ class LogOUT_API(APIView):
         return Response(status=200)
 
 
-#######
-# СТАРАЯ ВЕРСИЯ
-#######
+
+
+
+
+
+
+
+
 # @api_view(['POST', 'GET'])
 def sign_up(request):
     if request.method == 'GET':  # выводит форму
