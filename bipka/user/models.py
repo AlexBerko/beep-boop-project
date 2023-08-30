@@ -75,6 +75,9 @@ class CustomUser(AbstractBaseUser):
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        super().delete(*args, **kwargs)
+
 '''
 class FundManager(models.Manager):
     def create_user(self, email, password=None):

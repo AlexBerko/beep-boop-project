@@ -43,10 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django.contrib.sites',
     'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
     'drf_yasg',
     'corsheaders',
     'rest_auth.registration',
@@ -55,6 +52,7 @@ INSTALLED_APPS = [
     'rest_auth',
     'user',
     'main',
+    'djoser',
 ]
 
 SITE_ID = 1
@@ -155,3 +153,10 @@ SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
 API_KEY = 'CAYR4QAsioUmKS5o' # Ключ для API подключения (доп задание)
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
