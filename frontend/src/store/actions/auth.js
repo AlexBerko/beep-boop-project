@@ -67,7 +67,7 @@ export const authLogin = (email, password) => {
     formData.append("password", password);
 
     axios
-      .post("http://127.0.0.1:8000/user/signin/", formData)
+      .post("http://127.0.0.1:8000//user/auth/token/login/", formData)
       .then((res) => {
         dispatch(authLoading());
       })
