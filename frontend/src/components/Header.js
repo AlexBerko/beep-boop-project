@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import * as actions from "../store/actions/auth";
 
 function Header(props) {
+  const token = localStorage.getItem("token");
+
   return (
     <header>
       <div className="head">
@@ -28,7 +30,17 @@ function Header(props) {
         <ul className="login_logout">
           {props.isAuthenticated ? (
             <li>
-              <Link className="link" onClick={props.logout}>
+              <Link
+                className="link"
+                onClick={() => {
+                  props.logout();
+                  props.apiFunc(
+                    "http://127.0.0.1:8000/user/auth/token/logout/",
+                    "POST",
+                    token
+                  );
+                }}
+              >
                 Выйти
               </Link>
             </li>

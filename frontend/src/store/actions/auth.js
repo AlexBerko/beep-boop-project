@@ -33,18 +33,9 @@ export const authFail = (error) => {
   };
 };
 
-export const logout = (dispatch) => {
+export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("expirationDate");
-
-  // axios
-  //   .get("http://127.0.0.1:8000/user/logout")
-  //   .then((res) => {
-  //     dispatch(authLoading());
-  //   })
-  //   .catch((err) => {
-  //     dispatch(authFail(err));
-  //   });
 
   return {
     type: actionTypes.AUTH_LOGOUT,
@@ -67,7 +58,17 @@ export const authLogin = (email, password) => {
     formData.append("password", password);
 
     axios
-      .post("http://127.0.0.1:8000//user/auth/token/login/", formData)
+      .post("http://127.0.0.1:8000/user/auth/token/login/", formData)
+      .then((res) => {
+        const tokenTmp = res.data.auth_token;
+        localStorage.setItem("tokenTmp", tokenTmp);
+      })
+      .catch((err) => {
+        dispatch(authFail(err));
+      });
+
+    axios
+      .post("http://127.0.0.1:8000/user/send/otp/", formData)
       .then((res) => {
         dispatch(authLoading());
       })
@@ -86,10 +87,11 @@ export const authOtp = (otp) => {
     axios
       .post("http://127.0.0.1:8000/user/otp/", formData)
       .then((res) => {
-        const token = res.data.key;
+        const token = localStorage.getItem("tokenTmp");
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
         localStorage.setItem("token", token);
         localStorage.setItem("expirationDate", expirationDate);
+        localStorage.removeItem("tokenTmp");
         dispatch(authSuccess(token));
         dispatch(checkAuthTimeout(3600));
       })

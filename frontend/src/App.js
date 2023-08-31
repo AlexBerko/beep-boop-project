@@ -21,6 +21,7 @@ class App extends Component {
     };
 
     this.apiFunc = this.apiFunc.bind(this);
+    this.handler = this.handler.bind(this);
   }
 
   componentDidMount() {
@@ -31,7 +32,7 @@ class App extends Component {
     return (
       <div className="App">
         <Router>
-          <Header {...this.props} />
+          <Header {...this.props} apiFunc={this.apiFunc} />
           <div className="container">
             <Routes>
               <Route
@@ -41,6 +42,7 @@ class App extends Component {
                     apiFunc={this.apiFunc}
                     recordsObj={this.state.recordsObj}
                     changeId={this.changeId}
+                    handler={this.handler}
                   />
                 }
               />
@@ -79,16 +81,25 @@ class App extends Component {
     );
   }
 
-  async apiFunc(url, method) {
+  handler(res) {
+    this.setState({
+      recordsJS: res,
+    });
+  }
+
+  async apiFunc(url, method, token) {
     let requestOptions;
 
     requestOptions = {
       method: method,
+      headers: {
+        Authorization: `Token ${token}`,
+      },
     };
 
     const response = await fetch(url, requestOptions);
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
 
     if (typeof json === "string") {
       this.setState({

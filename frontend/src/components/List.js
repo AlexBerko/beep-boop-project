@@ -1,8 +1,10 @@
 import React from "react";
+import axios from "axios";
 import "./List.css";
 import { Link } from "react-router-dom";
 
 export default function List(props) {
+  const token = localStorage.getItem("token");
   let full_info;
 
   if (props.recordsObj.length > 0) {
@@ -35,12 +37,20 @@ export default function List(props) {
               `http://127.0.0.1:8000/help/${
                 props.recordsObj[props.arrayId].id
               }/`,
-              "GET"
+              "GET",
+              token
             );
-            props.apiFunc(
-              "https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=org&query=ПАО Ростелеком&limit=1",
-              "GET"
-            );
+            axios
+              .get(
+                "https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=org&query=ПАО Ростелеком&limit=1/"
+              )
+              .then((res) => {
+                console.log(res);
+                props.handler(res);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
           }}
         >
           Открыть

@@ -9,7 +9,8 @@ class Lists extends Component {
   }
 
   componentDidMount() {
-    this.props.apiFunc("http://127.0.0.1:8000//help/list/", "GET");
+    const token = localStorage.getItem("token");
+    this.props.apiFunc("http://127.0.0.1:8000//help/list/", "GET", token);
   }
 
   render() {
@@ -25,6 +26,7 @@ class Lists extends Component {
                 arrayId={i}
                 apiFunc={this.props.apiFunc}
                 recordsObj={this.props.recordsObj}
+                handler={this.props.handler}
               />
             );
           }
