@@ -66,7 +66,10 @@ class App extends Component {
                   />
                 }
               />
-              <Route path="/submit" element={<Submit />} />
+              <Route
+                path="/submit"
+                element={<Submit apiFunc={this.apiFunc} />}
+              />
               <Route path="/login" element={<Login apiFunc={this.apiFunc} />} />
               <Route
                 path="/login/:id/:token"
@@ -87,7 +90,7 @@ class App extends Component {
     });
   }
 
-  async apiFunc(url, method, token) {
+  async apiFunc(url, method, token, data) {
     let requestOptions;
 
     requestOptions = {
@@ -95,6 +98,7 @@ class App extends Component {
       headers: {
         Authorization: `Token ${token}`,
       },
+      body: data,
     };
 
     const response = await fetch(url, requestOptions);

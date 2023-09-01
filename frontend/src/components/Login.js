@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -33,7 +34,14 @@ const App = (props) => {
   }
 
   if (id !== undefined && token !== undefined) {
-    props.apiFunc(`http://127.0.0.1:8000/user/activate/${id}/${token}/`, "GET");
+    axios
+      .get(`http://127.0.0.1:8000/user/activate/${id}/${token}/`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   return (

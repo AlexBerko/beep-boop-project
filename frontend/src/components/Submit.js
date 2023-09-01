@@ -1,5 +1,4 @@
 import React from "react";
-import axios from "axios";
 import { Button, Form, Input, DatePicker } from "antd";
 
 const { RangePicker } = DatePicker;
@@ -35,34 +34,33 @@ const rangeConfig = {
   ],
 };
 
-const onFinish = (values) => {
-  // Should format date value before submit.
-  //   const rangeValue = fieldsValue["range-picker"];
-  //   const values = {
-  //     ...fieldsValue,
-  //     "range-picker": [
-  //       rangeValue[0].format("YYYY-MM-DD"),
-  //       rangeValue[1].format("YYYY-MM-DD"),
-  //     ],
-  //   };
-  const formData = new FormData();
-  formData.append("name", values.name);
-  formData.append("introduction", values.introduction);
-  formData.append("date", values.range_picker);
+const App = (props) => {
+  const onFinish = (values) => {
+    // Should format date value before submit.
+    //   const rangeValue = fieldsValue["range-picker"];
+    //   const values = {
+    //     ...fieldsValue,
+    //     "range-picker": [
+    //       rangeValue[0].format("YYYY-MM-DD"),
+    //       rangeValue[1].format("YYYY-MM-DD"),
+    //     ],
+    //   };
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("full_info", values.full_info);
+    formData.append("date", values.range_picker);
 
-  axios
-    .post("http://127.0.0.1:8000/create/", formData)
-    .then((res) => {
-      if (res.status < 400) {
-        alert("Заявка создана!");
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  console.log(values);
-};
-const App = () => {
+    props.apiFunc(
+      "http://127.0.0.1:8000/help/create/",
+      "POST",
+      token,
+      formData
+    );
+
+    console.log(values);
+  };
+
   return (
     <div>
       Введите данные заявки
@@ -76,7 +74,7 @@ const App = () => {
         validateMessages={validateMessages}
       >
         <Form.Item
-          name="name"
+          name="title"
           label="Название"
           rules={[
             {
@@ -87,7 +85,7 @@ const App = () => {
           <Input />
         </Form.Item>
 
-        <Form.Item name="introduction" label="Описание">
+        <Form.Item name="full_info" label="Описание">
           <Input.TextArea />
         </Form.Item>
 
