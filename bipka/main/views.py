@@ -47,7 +47,7 @@ def main_page(request):
 @permission_classes([IsAuthenticated])
 class Help_list(APIView):
     def get(self, request):
-        help_objects = Help.objects.filter(is_completed=False)
+        help_objects = Help.objects.filter(is_completed=False, who_complete__isnull=True)
         serializer = HelpListSerializer(help_objects, many=True)
         return Response(serializer.data, status=200)
 
@@ -82,6 +82,26 @@ class HelpDetailView(APIView):
         else:
             return Response({'error': 'Пользователь не является автором просьбы'}, status=400)
 
+    def post(self, request, pk):
+        try:
+            help = Help.objects.get(id=pk)
+        except Help.DoesNotExist:
+            return Response({'error': 'Просьба с данным id не обнаружена'}, status=400)
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
+
+        if not current_user.is_rest:
+            help.is_completed = True
+            help.complete_date = timezone.now()
+            help.save()
+            return Response({'message': 'Просьба успешно выполнена.'}, status=200)
+        else:
+            help.who_complete = current_user
+            help.save()
+            return Response({'message': 'Пользователь откликнулся на просьбу.'}, status=200)
+
 
     def delete(self, request, pk):
         try:
@@ -92,11 +112,19 @@ class HelpDetailView(APIView):
         if not current_user:
             return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
 
-        if help.who_asked == current_user:
-            help.delete()
-            return Response(status=200)
+        if not current_user.is_rest:
+            if help.who_asked == current_user:
+                help.delete()
+                return Response(status=200)
+            else:
+                return Response({'error': 'Пользователь не является автором просьбы'}, status=400)
         else:
-            return Response({'error': 'Пользователь не является автором просьбы'}, status=400)
+            if help.who_complete == current_user:
+                help.who_complete = None
+                help.save()
+                return Response(status=200)
+            else:
+                return Response({'error': 'Пользователь не откликался на данную помощь'}, status=400)
 
 
 
@@ -111,14 +139,9 @@ class AddHelp(APIView):
         if form.is_valid():
             h = form.save(commit=False)
 
-            # try:
-            #    usr = CustomUser.objects.get(id=request.user.id)  # search by id
-            # usr = CustomUser.objects.get(id=2)  # ТЕСТ
-            # except CustomUser.DoesNotExist:
-            #    return Response({'error': 'Пользователь не найден'}, status=status.HTTP_404_NOT_FOUND)
-
-            # usr = CustomUser.objects.get(id=9)  # ТЕСТ
-            usr = CustomUser.objects.get(id=request.user.id)  # search by id
+            usr = get_user_from_header(request)
+            if not usr:
+                return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
             h.who_asked = usr
             h.save()
             serializer = HelpDetailSerializer(h)
@@ -127,3 +150,35 @@ class AddHelp(APIView):
 
         else:
             return Response(form.errors, status=400)
+
+@permission_classes([IsAuthenticated])
+class MyHelps(APIView):
+    def get(self, request):
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
+        if current_user.is_rest:
+            helps = current_user.my_completed.all()
+        else:
+            helps = current_user.my_requests.all()
+
+        serializer = HelpListSerializer(helps, many=True)
+        return Response(serializer.data, status=200)
+
+'''
+@permission_classes([IsAuthenticated])
+class MyHelps_current(APIView):
+    def get(self, request):
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
+        if current_user.is_rest:
+            helps = current_user.my_completed.filter(is_completed=False)
+        else:
+            helps = current_user.my_requests.filter(is_completed=False)
+
+        serializer = HelpListSerializer(helps, many=True)
+        return Response(serializer.data, status=200)
+'''

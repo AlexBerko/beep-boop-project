@@ -13,4 +13,5 @@ urlpatterns = [
     path('help/list/', Help_list.as_view(), name='help_list'),  # read from main page
     #re_path(r'^my/helps/(\d+)$', views.help_detail),
     path('help/create/', AddHelp.as_view(), name='create_help'),
+    path('help/my/', MyHelps.as_view(), name='my_helps_list'),
 ]

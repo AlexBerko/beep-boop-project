@@ -8,6 +8,7 @@ class Help(models.Model):
     who_asked = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=True, related_name='my_requests')
     who_complete = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL, blank=True, related_name='my_completed')
     pub_date = models.DateTimeField(auto_now_add=True)
+    deadline_date = models.DateTimeField(null=True, blank=True)
     complete_date = models.DateTimeField(null=True, blank=True)
     is_completed = models.BooleanField(default=False)
     #image = models.ImageField(upload_to='images') # можно добавить изображение к просьбе
