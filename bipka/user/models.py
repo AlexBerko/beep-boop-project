@@ -43,7 +43,7 @@ class CustomUserManager(BaseUserManager):
 
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(max_length=200, blank=False, unique=True)  # почта
-    username = models.CharField(max_length=50, blank=False)  # название организации
+    username = models.CharField(max_length=150, blank=False)  # название организации
     phone_no = models.CharField(max_length=11, blank=False)  # Телефон
     head = models.CharField(max_length=100, blank=False)  # Руководитель
     ogrn = models.CharField(max_length=15, blank=False, unique=True)  # ОГРНИП/ОГРН

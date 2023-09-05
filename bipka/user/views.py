@@ -8,6 +8,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.hashers import make_password
+import re
 
 from bipka import settings
 
@@ -127,6 +128,34 @@ class SignUP(APIView):
             if api_inn != inn or api_ogrn != ogrn:
                 return Response({'error': 'Ошибка! Не удалось найти организацию с текущей комбинацией ИНН и ОГРН.'},
                                 status=400)
+
+            if user.is_ind_pred:
+                fio = info['ФИО']
+                if fio != user.head:
+                    return Response({'error': 'Ошибка! Неверное имя владельца ИП.'}, status=400)
+                pattern = r'^ИП\s+[А-Яа-я]+\s+[А-Яа-я]+\s*[А-Яа-я]*$'
+                if not re.match(pattern, user.username):
+                    return Response({'error': 'Ошибка! Неверный формат имени ИП.'}, status=400)
+                str_name = user.username
+                str_name_split = str_name.split('ИП', 1)[-1].strip()
+                if not str_name_split == user.head:
+                    return Response({'error': 'Ошибка! Указанное имя ИП и владелей не совпадают.'}, status=400)
+
+            else:
+                ruk_array = info['Руковод']
+                is_fio_found = False
+                for fio in ruk_array:
+                    if fio['ФИО'] == user.head:
+                        is_fio_found = True
+                        break
+                if not is_fio_found:
+                    return Response({'error': 'Ошибка! Указанный пользователь не был найден в списке руководителей'
+                                              ' организации'}, status=400)
+
+                if user.username != info['НаимПолн']:
+                    return Response({'error': 'Ошибка в наименовании организации (необходимо указать полное имя).'},
+                                    status=400)
+
 
             # После проверки сохраняем пользователя в БД
             user.save()
