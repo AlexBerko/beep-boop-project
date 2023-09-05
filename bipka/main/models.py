@@ -11,7 +11,7 @@ class Help(models.Model):
     deadline_date = models.DateTimeField(null=True, blank=True)
     complete_date = models.DateTimeField(null=True, blank=True)
     is_completed = models.BooleanField(default=False)
-    #image = models.ImageField(upload_to='images') # можно добавить изображение к просьбе
+    is_taken = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
