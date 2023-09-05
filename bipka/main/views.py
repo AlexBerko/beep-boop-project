@@ -15,6 +15,8 @@ from .forms import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.contrib.auth import get_user
 from rest_framework.authtoken.models import Token
+from datetime import datetime
+import re
 
 def get_user_from_header(request):
     auth_header = request.headers.get('Authorization')
@@ -47,7 +49,8 @@ def main_page(request):
 @permission_classes([IsAuthenticated])
 class Help_list(APIView):
     def get(self, request):
-        help_objects = Help.objects.filter(is_completed=False, who_complete__isnull=True)
+        current_time = datetime.now()
+        help_objects = Help.objects.filter(is_completed=False, is_taken=False, deadline_date__lt=current_time)
         serializer = HelpListSerializer(help_objects, many=True)
         return Response(serializer.data, status=200)
 
@@ -77,6 +80,8 @@ class HelpDetailView(APIView):
                 help.title = data['title']
             if 'full_info' in data:
                 help.full_info = data['full_info']
+            if 'deadline_date' in data:
+                help.deadline_date = data['deadline_date']
             help.save()
             return Response(status=200)
         else:
@@ -99,6 +104,7 @@ class HelpDetailView(APIView):
             return Response({'message': 'Просьба успешно выполнена.'}, status=200)
         else:
             help.who_complete = current_user
+            help.is_taken = True
             help.save()
             return Response({'message': 'Пользователь откликнулся на просьбу.'}, status=200)
 
@@ -135,21 +141,38 @@ class AddHelp(APIView):
         return Response(status=200)
 
     def post(self, request):
-        form = HelpForm(request.data)
-        if form.is_valid():
-            h = form.save(commit=False)
+        usr = get_user_from_header(request)
+        if not usr:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
 
-            usr = get_user_from_header(request)
-            if not usr:
-                return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
-            h.who_asked = usr
-            h.save()
-            serializer = HelpDetailSerializer(h)
-            json = JSONRenderer().render(serializer.data)
-            return Response(json, status=200)
-
+        data = request.data
+        if 'title' in data:
+            title = data['title']
         else:
-            return Response(form.errors, status=400)
+            return Response({'error': 'Отсутствует поле title'}, status=400)
+
+        if 'full_info' in data:
+            full_info = data['full_info']
+        else:
+            return Response({'error': 'Отсутствует поле full_info'}, status=400)
+
+        if 'deadline_date' in data:
+            deadline = data['deadline_date']
+        else:
+            return Response({'error': 'Отсутствует поле deadline_date.'}, status=400)
+
+        pattern = r"\d{2}.\d{2}.\d{4}, \d{2}:\d{2}:\d{2}"
+        if not re.match(pattern, deadline):
+            return Response({'error': 'Неправильный формат поля deadline_date'}, status=400)
+        datetime_obj = datetime.strptime(deadline, "%d.%m.%Y, %H:%M:%S")
+        deadline_date = datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
+        h = Help.objects.create(title=title, full_info=full_info, deadline_date=deadline_date, who_asked=usr)
+
+        h.save()
+        serializer = HelpDetailSerializer(h)
+        json = JSONRenderer().render(serializer.data)
+        return Response(json, status=200)
+
 
 @permission_classes([IsAuthenticated])
 class MyHelps(APIView):
