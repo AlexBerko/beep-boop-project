@@ -1,7 +1,6 @@
 import React from "react";
 import { Button, Form, Input, DatePicker } from "antd";
 
-const { RangePicker } = DatePicker;
 const layout = {
   labelCol: {
     span: 8,
@@ -24,32 +23,23 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-const rangeConfig = {
-  rules: [
-    {
-      type: "array",
-      required: true,
-      message: "Please select time!",
-    },
-  ],
-};
-
 const App = (props) => {
   const onFinish = (values) => {
-    // Should format date value before submit.
-    //   const rangeValue = fieldsValue["range-picker"];
-    //   const values = {
-    //     ...fieldsValue,
-    //     "range-picker": [
-    //       rangeValue[0].format("YYYY-MM-DD"),
-    //       rangeValue[1].format("YYYY-MM-DD"),
-    //     ],
-    //   };
     const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("title", values.title);
     formData.append("full_info", values.full_info);
-    formData.append("date", values.range_picker);
+    formData.append(
+      "deadline_date",
+      new Intl.DateTimeFormat("ru", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(values.deadline_date)
+    );
 
     props.apiFunc(
       "http://127.0.0.1:8000/help/create/",
@@ -89,12 +79,8 @@ const App = (props) => {
           <Input.TextArea />
         </Form.Item>
 
-        <Form.Item
-          name="range_picker"
-          label="Сроки выполнения"
-          {...rangeConfig}
-        >
-          <RangePicker />
+        <Form.Item name="deadline_date" label="Срок выполнения">
+          <DatePicker />
         </Form.Item>
 
         <Form.Item

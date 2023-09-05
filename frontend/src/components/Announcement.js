@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Announcement.css";
 
 export default function Announcement(props) {
+  const token = localStorage.getItem("token");
   let datestring;
   let full_info;
 
@@ -73,7 +75,20 @@ export default function Announcement(props) {
         </div>
         <div className="date">
           <time>{datestring}</time>
-          <button className="answer">Откликнуться</button>
+          <Link to="/response">
+            <button
+              className="answer"
+              onClick={() => {
+                props.apiFunc(
+                  `http://127.0.0.1:8000/help/${props.recordsObj.id}/`,
+                  "POST",
+                  token
+                );
+              }}
+            >
+              Откликнуться
+            </button>
+          </Link>
         </div>
       </div>
     );
