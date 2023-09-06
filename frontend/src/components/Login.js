@@ -6,6 +6,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import * as actions from "../store/actions/auth";
+import "./Login.css";
 
 const antIcon = (
   <LoadingOutlined
@@ -45,7 +46,7 @@ const App = (props) => {
   }
 
   return (
-    <div>
+    <div className="login">
       {errorMessage}
       {props.regDone &&
         "На почту отправлено письмо для подтверждения регистрации!"}
@@ -106,7 +107,7 @@ const App = (props) => {
             </Button>
             Или
             <NavLink style={{ marginRight: "10px" }} to="/signup/">
-              {" "}
+              {"  "}
               Зарегистрироваться
             </NavLink>
           </Form.Item>

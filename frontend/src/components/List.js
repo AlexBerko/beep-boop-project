@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import "./List.css";
 import { Link } from "react-router-dom";
@@ -10,6 +10,13 @@ export default function List(props) {
   if (props.recordsObj.length > 0) {
     full_info = props.recordsObj[props.arrayId].full_info.split("\r\n");
   }
+
+  useEffect(() => {
+    props.apiFunc("http://127.0.0.1:8000/user/profile/", "GET", token);
+  }, [token]);
+
+  console.log(props.recordsObj);
+  console.log(props.recordsJS);
 
   return (
     <div className="list">
@@ -42,7 +49,9 @@ export default function List(props) {
             );
             axios
               .get(
-                "https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=org&query=ПАО Ростелеком&limit=1/"
+                `https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=${
+                  props.recordsJS.is_ind_pred ? "ent" : "org"
+                }&query=${props.recordsJS.username}&limit=1/`
               )
               .then((res) => {
                 console.log(res);

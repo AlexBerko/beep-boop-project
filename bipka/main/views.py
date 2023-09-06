@@ -50,7 +50,7 @@ def main_page(request):
 class Help_list(APIView):
     def get(self, request):
         current_time = datetime.now()
-        help_objects = Help.objects.filter(is_completed=False, is_taken=False, deadline_date__lt=current_time)
+        help_objects = Help.objects.filter(is_completed=False, is_taken=False, deadline_date__gt=current_time)
         serializer = HelpListSerializer(help_objects, many=True)
         return Response(serializer.data, status=200)
 

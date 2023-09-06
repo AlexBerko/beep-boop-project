@@ -4,6 +4,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import * as actions from "../store/actions/auth";
+import "./Otp.css";
 
 const antIcon = (
   <LoadingOutlined
@@ -29,7 +30,7 @@ const App = (props) => {
   }
 
   return (
-    <div>
+    <div className="otp">
       {errorMessage}
       <p>Двухфакторная аутентификация</p>
       {props.loading ? (

@@ -53,23 +53,36 @@ export default function Announcement(props) {
           <div className="org_info">
             <h2 className="second_block">Данные о компании</h2>
             <p className="orgData">
-              {props.recordsJS.data.data.Записи[0].НаимПолн}
+              {props.recordsJS.data.data.Записи[0].НаимПолн
+                ? props.recordsJS.data.data.Записи[0].НаимПолн
+                : props.recordsJS.data.data.Записи[0].Тип}
             </p>
             <p className="orgData">
-              ОГРН: {props.recordsJS.data.data.Записи[0].ОГРН}
+              ОГРН:{" "}
+              {props.recordsJS.data.data.Записи[0].ОГРН
+                ? props.recordsJS.data.data.Записи[0].ОГРН
+                : props.recordsJS.data.data.Записи[0].ОГРНИП}
             </p>
             <p className="orgData">
-              {props.recordsJS.data.data.Записи[0].ОКВЭД}
+              ОКВЭД: {props.recordsJS.data.data.Записи[0].ОКВЭД}
             </p>
             <p className="orgData">
               Статус: {props.recordsJS.data.data.Записи[0].Статус}
             </p>
             <p className="orgData">
-              {props.recordsJS.data.data.Записи[0].Руковод[0].НаимДолжн}:{" "}
-              {props.recordsJS.data.data.Записи[0].Руковод[0].ФИО}
+              {props.recordsJS.data.data.Записи[0].ОГРН
+                ? "Директор: "
+                : "ФИО: "}
+              :{" "}
+              {props.recordsJS.data.data.Записи[0].ОГРН
+                ? props.recordsJS.data.data.Записи[0].Руковод[0].ФИО
+                : props.recordsJS.data.data.Записи[0].ФИО}
             </p>
             <p className="orgData">
-              Юр. адрес: {props.recordsJS.data.data.Записи[0].ЮрАдрес}
+              Юр. адрес:{" "}
+              {props.recordsJS.data.data.Записи[0].ЮрАдрес
+                ? props.recordsJS.data.data.Записи[0].ЮрАдрес
+                : "-"}
             </p>
           </div>
         </div>

@@ -42,6 +42,7 @@ class App extends Component {
                   <Lists
                     apiFunc={this.apiFunc}
                     recordsObj={this.state.recordsObj}
+                    recordsJS={this.state.recordsJS}
                     changeId={this.changeId}
                     handler={this.handler}
                   />
