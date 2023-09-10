@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import "./Profile.css";
 
 export default function Profile(props) {
   const token = localStorage.getItem("token");
@@ -10,26 +11,26 @@ export default function Profile(props) {
   console.log(props.recordsJS);
   return (
     <div>
-      <h1>{props.recordsJS.username}</h1>
-      <p>Руководитель: {props.recordsJS.head}</p>
-      <p>Инн: {props.recordsJS.inn}</p>
-      <p>ОГРН: {props.recordsJS.ogrn}</p>
-      <p>Тел: +{props.recordsJS.phone_no}</p>
-      <p>Email: {props.recordsJS.email}</p>
-      <p>
+      <h1 className="username">{props.recordsJS.username}</h1>
+      <p className="useinfo">Руководитель: {props.recordsJS.head}</p>
+      <p className="useinfo">Инн: {props.recordsJS.inn}</p>
+      <p className="useinfo">ОГРН: {props.recordsJS.ogrn}</p>
+      <p className="useinfo">Тел: +{props.recordsJS.phone_no}</p>
+      <p className="useinfo">Email: {props.recordsJS.email}</p>
+      <p className="useinfo">
         Вид деятельности:{" "}
-        {props.recordsJS.is_ind_pred ? <p>ИП</p> : <p>Юридическое лицо</p>}
+        {props.recordsJS.is_ind_pred ? "ИП" : "Юридическое лицо"}
       </p>
-      <p>
+      <p className="useinfo">
         Тип организации:{" "}
-        {props.recordsJS.is_rest ? (
-          <p>Ресторан</p>
-        ) : (
-          <p>Благотворительная организация</p>
-        )}
+        {props.recordsJS.is_rest ? "Ресторан" : "Благотворительная организация"}
       </p>
-      <p>Адрес регистрации: {props.recordsJS.address_fact}</p>
-      <p>Фактический адрес: {props.recordsJS.address_reg}</p>
+      <p className="useinfo">
+        Адрес регистрации: {props.recordsJS.address_fact}
+      </p>
+      <p className="useinfo">
+        Фактический адрес: {props.recordsJS.address_reg}
+      </p>
     </div>
   );
 }

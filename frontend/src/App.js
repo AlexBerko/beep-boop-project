@@ -31,7 +31,7 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="app">
         <Router>
           <Header {...this.props} apiFunc={this.apiFunc} />
           <div className="container">

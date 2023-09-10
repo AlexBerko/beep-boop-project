@@ -53,7 +53,7 @@ const App = (props) => {
 
   return (
     <div>
-      Введите данные заявки
+      <h2 style={{ marginBottom: "20px" }}>Введите данные заявки</h2>
       <Form
         {...layout}
         name="nest-messages"
@@ -76,7 +76,7 @@ const App = (props) => {
         </Form.Item>
 
         <Form.Item name="full_info" label="Описание">
-          <Input.TextArea />
+          <Input.TextArea rows={9} />
         </Form.Item>
 
         <Form.Item name="deadline_date" label="Срок выполнения">

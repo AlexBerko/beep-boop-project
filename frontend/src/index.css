@@ -12,7 +12,22 @@ body {
   font-weight: 300;
 }
 
+.app {
+  min-height: 700px;
+  background-image: url("./img/plus 1.svg");
+  background-repeat: no-repeat;
+  background-size: 300px;
+  background-position: bottom 5% left -5%;
+  background-attachment: fixed;
+}
+
 .container {
   width: 1280px;
+  min-height: 400px;
   margin: 80px auto;
+  background-image: url("./img/plus 1.svg");
+  background-repeat: no-repeat;
+  background-size: 300px;
+  background-position: top 35% right 20%;
+  background-attachment: fixed;
 }
