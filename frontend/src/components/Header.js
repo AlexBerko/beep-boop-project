@@ -35,7 +35,7 @@ function Header(props) {
                 onClick={() => {
                   props.logout();
                   props.apiFunc(
-                    "http://127.0.0.1:8000/user/auth/token/logout/",
+                    "http://berkoaqg.beget.tech/user/auth/token/logout/",
                     "POST",
                     token
                   );

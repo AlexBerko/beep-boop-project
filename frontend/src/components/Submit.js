@@ -42,7 +42,7 @@ const App = (props) => {
     );
 
     props.apiFunc(
-      "http://127.0.0.1:8000/help/create/",
+      "http://berkoaqg.beget.tech/help/create/",
       "POST",
       token,
       formData

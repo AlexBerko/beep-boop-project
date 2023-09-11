@@ -36,7 +36,7 @@ const App = (props) => {
 
   if (id !== undefined && token !== undefined) {
     axios
-      .get(`http://127.0.0.1:8000/user/activate/${id}/${token}/`)
+      .get(`http://berkoaqg.beget.tech/user/activate/${id}/${token}/`)
       .then((res) => {
         console.log(res);
       })

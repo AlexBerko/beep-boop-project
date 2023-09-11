@@ -58,7 +58,7 @@ export const authLogin = (email, password) => {
     formData.append("password", password);
 
     axios
-      .post("http://127.0.0.1:8000/user/auth/token/login/", formData)
+      .post("http://berkoaqg.beget.tech/user/auth/token/login/", formData)
       .then((res) => {
         const tokenTmp = res.data.auth_token;
         localStorage.setItem("tokenTmp", tokenTmp);
@@ -68,7 +68,7 @@ export const authLogin = (email, password) => {
       });
 
     axios
-      .post("http://127.0.0.1:8000/user/send/otp/", formData)
+      .post("http://berkoaqg.beget.tech/user/send/otp/", formData)
       .then((res) => {
         dispatch(authLoading());
       })
@@ -85,7 +85,7 @@ export const authOtp = (otp) => {
     formData.append("otp", otp);
 
     axios
-      .post("http://127.0.0.1:8000/user/otp/", formData)
+      .post("http://berkoaqg.beget.tech/user/otp/", formData)
       .then((res) => {
         const token = localStorage.getItem("tokenTmp");
         const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
@@ -132,7 +132,7 @@ export const authSignup = (
     formData.append("password2", password2);
 
     axios
-      .post("http://127.0.0.1:8000/user/register/", formData)
+      .post("http://berkoaqg.beget.tech/user/register/", formData)
       .then((res) => {
         dispatch(authLoading());
         dispatch(authRegDone());

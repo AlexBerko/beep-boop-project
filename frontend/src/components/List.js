@@ -12,7 +12,7 @@ export default function List(props) {
   }
 
   useEffect(() => {
-    props.apiFunc("http://127.0.0.1:8000/user/profile/", "GET", token);
+    props.apiFunc("http://berkoaqg.beget.tech/user/profile/", "GET", token);
   }, [token]);
 
   return (
@@ -38,7 +38,7 @@ export default function List(props) {
           className="open"
           onClick={() => {
             props.apiFunc(
-              `http://127.0.0.1:8000/help/${
+              `http://berkoaqg.beget.tech/help/${
                 props.recordsObj[props.arrayId].id
               }/`,
               "GET",

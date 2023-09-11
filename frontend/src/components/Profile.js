@@ -5,7 +5,7 @@ export default function Profile(props) {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    props.apiFunc("http://127.0.0.1:8000/user/profile/", "GET", token);
+    props.apiFunc("http://berkoaqg.beget.tech/user/profile/", "GET", token);
   }, [token]);
 
   console.log(props.recordsJS);

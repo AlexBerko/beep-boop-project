@@ -93,7 +93,7 @@ export default function Announcement(props) {
               className="answer"
               onClick={() => {
                 props.apiFunc(
-                  `http://127.0.0.1:8000/help/${props.recordsObj.id}/`,
+                  `http://berkoaqg.beget.tech/help/${props.recordsObj.id}/`,
                   "POST",
                   token
                 );
