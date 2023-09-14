@@ -32,9 +32,11 @@ class CustomUserAddForm(UserCreationForm):
     def clean(self):
         cleaned_data = super().clean()  # Вызываем реализацию метода clean() родительского класса
 
+        '''
         is_superuser = cleaned_data.get('is_superuser')
         is_ind_pred = cleaned_data.get('is_ind_pred')
-
+        
+        
         if not is_superuser:
             inn = cleaned_data.get('inn')
             ogrn = cleaned_data.get('ogrn')
@@ -110,7 +112,7 @@ class CustomUserAddForm(UserCreationForm):
                 self.add_error('ogrn',
                                'Ошибка! Не удалось найти организацию с текущей комбинацией ИНН и ОГРН.')
                 return cleaned_data
-
+        '''
         return cleaned_data
 
 class CustomUserChangeForm(UserChangeForm):
@@ -138,11 +140,12 @@ class MyUserAdmin(UserAdmin):
     add_form = CustomUserAddForm
     list_filter = ()
     list_display = ('email', 'phone_no', 'inn', 'ogrn', 'is_superuser', 'is_active')
+    search_fields = ('email', 'ogrn', 'inn')
     filter_horizontal = ()
     fieldsets = (
         (_('Изменить пароль'), {'fields': ('password', )}),
-        (_('Personal info'), {'fields': ('username', 'phone_no', 'head', 'address_reg', 'address_fact', 'is_rest',
-                                         'is_ind_pred', 'is_superuser')}),
+        (_('Personal info'), {'fields': ('username', 'phone_no', 'head', 'ogrn', 'inn', 'address_reg', 'address_fact',
+                                         'is_superuser')}),
     )
     add_fieldsets = (
         (_('Данные авторизации'), {'fields': ('email', 'password1', 'password2',)}),
@@ -152,31 +155,10 @@ class MyUserAdmin(UserAdmin):
     def save_model(self, request, obj, form, change):
         if not change:
             # Если добавляем пользователя
-            if not obj.is_superuser:
-                obj.save()
-
-                # Составляем письмо с ссылкой для подтверждения регистрации
-                current_site = get_current_site(request)
-                mail_subject = 'Подтверждение регистрации'
-                message = render_to_string('acc_active_email.html', {
-                    'user': obj.email,
-                    'domain': current_site.domain,
-                    'uid': obj.id,
-                    'token': account_activation_token.make_token(obj),
-                })
-                to_email = form.cleaned_data.get('email')
-                email = EmailMessage(
-                    mail_subject, message, to=[to_email]
-                )
-                try:
-                    email.send()
-                except:
-                    messages.error(request, 'Ошибка! Данная почта не существует.')
-                    return super().save_model(request, obj, form, change)
-            else:
+            if obj.is_superuser:
                 obj.is_staff = True
                 obj.is_active = True
-                obj.save()
+            obj.save()
         else:
             if obj.is_superuser:
                 obj.is_staff = True

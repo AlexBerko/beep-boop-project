@@ -1,7 +1,6 @@
 import json
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
-import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
@@ -9,14 +8,15 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from .serializers import *
+from .models import *
 from rest_framework.views import APIView
 from rest_framework import generics
 from .forms import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.contrib.auth import get_user
 from rest_framework.authtoken.models import Token
-from datetime import datetime
 import re
+import datetime
 
 def get_user_from_header(request):
     auth_header = request.headers.get('Authorization')
@@ -31,13 +31,7 @@ def get_user_from_header(request):
 
 def main_page(request):
     if request.method == 'GET':
-        if not request.user.is_authenticated:
-            return redirect('http://localhost:3000/login')
-            # return redirect('/user/signin/')
-        else:
-            return redirect("http://localhost:3000/accounts/profile/")
-            # return redirect("/user/profile/")
-
+        return redirect('http://u154062.test-handyhost.ru')
 
 #################################################
 #                                               #
@@ -49,10 +43,18 @@ def main_page(request):
 @permission_classes([IsAuthenticated])
 class Help_list(APIView):
     def get(self, request):
-        current_time = datetime.now()
+        current_time = datetime.datetime.now()
         help_objects = Help.objects.filter(is_completed=False, is_taken=False, deadline_date__gt=current_time)
         serializer = HelpListSerializer(help_objects, many=True)
-        return Response(serializer.data, status=200)
+        json = JSONRenderer().render(serializer.data)
+        return Response(json, status=200)
+        #return Response({}, status=200)
+        
+        #if help_objects:
+         #   json = JSONRenderer().render(serializer.data)
+          #  return Response(json, status=200)
+        #else:
+         #   return Response({}, status=200)
 
 
 @permission_classes([IsAuthenticated])
@@ -162,16 +164,23 @@ class AddHelp(APIView):
             return Response({'error': 'Отсутствует поле deadline_date.'}, status=400)
 
         pattern = r"\d{2}.\d{2}.\d{4}, \d{2}:\d{2}:\d{2}"
+        pattern2 = r"\d{2}.\d{2}.\d{4}"
         if not re.match(pattern, deadline):
-            return Response({'error': 'Неправильный формат поля deadline_date'}, status=400)
-        datetime_obj = datetime.strptime(deadline, "%d.%m.%Y, %H:%M:%S")
-        deadline_date = datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
+            if re.match(pattern2, deadline):
+                datetime_obj = datetime.datetime.strptime(deadline, "%d.%m.%Y")
+                deadline_date = datetime_obj.strftime("%Y-%m-%d 00:00:00")
+            else:
+                return Response({'error': 'Неправильный формат поля deadline_date'}, status=400)
+        else:
+            datetime_obj = datetime.datetime.strptime(deadline, "%d.%m.%Y, %H:%M:%S")
+            deadline_date = datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
         h = Help.objects.create(title=title, full_info=full_info, deadline_date=deadline_date, who_asked=usr)
 
         h.save()
         serializer = HelpDetailSerializer(h)
         json = JSONRenderer().render(serializer.data)
         return Response(json, status=200)
+        #return Response(serializer.data, status=200)
 
 
 @permission_classes([IsAuthenticated])
@@ -187,7 +196,8 @@ class MyHelps(APIView):
             helps = current_user.my_requests.all()
 
         serializer = HelpListSerializer(helps, many=True)
-        return Response(serializer.data, status=200)
+        json = JSONRenderer().render(serializer.data)
+        return Response(json, status=200)
 
 '''
 @permission_classes([IsAuthenticated])

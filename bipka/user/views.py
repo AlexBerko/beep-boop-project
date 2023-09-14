@@ -156,8 +156,7 @@ class SignUP(APIView):
                     return Response({'error': 'Ошибка в наименовании организации (необходимо указать полное имя).'},
                                     status=400)
 
-
-            # После проверки сохраняем пользователя в БД
+             # После проверки сохраняем пользователя в БД
             user.save()
 
             # Составляем письмо с ссылкой для подтверждения регистрации
@@ -177,6 +176,7 @@ class SignUP(APIView):
                 email.send()
             except:
                 return Response({'error': 'Ошибка отправки сообщения на почту.'}, status=400)
+                
 
             serializer = UserRegSerializer(user)
             json = JSONRenderer().render(serializer.data)

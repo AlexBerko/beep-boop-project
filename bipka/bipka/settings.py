@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+STATIC_ROOT = BASE_DIR.joinpath('static')
+STATIC_URL = '/static/'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -23,15 +25,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#a!$n0knax#%(e91sq9vs$*@)73j6zw^pqrp7t6ftx7e+e0)9i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
-CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = ['localhost:8000', 'localhost:3000']
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "http://localhost:8000"
 ]
-CORS_ORIGIN_WHITELIST = 'http://localhost:3000'
+
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS.copy()
+
 
 
 # Application definition
@@ -60,14 +64,14 @@ SITE_ID = 1
 AUTH_USER_MODEL = "user.CustomUser"
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'bipka.urls'
@@ -75,7 +79,7 @@ ROOT_URLCONF = 'bipka.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'collected_static')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -133,10 +137,9 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-STATIC_URL = 'static/'
+#TEMPLATE_DIRS = (
+#    os.path.join(PROJECT_ROOT, 'templates'),
+#)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -144,14 +147,19 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mail.ru'
-EMAIL_USE_SSL = True
-EMAIL_PORT = 465
-EMAIL_HOST_USER = "heatherhoneyy@mail.ru"
-EMAIL_HOST_PASSWORD = "swusvqV1RUNRiciwLrvq"
+#EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 465
+EMAIL_PORT = 587
+#EMAIL_HOST_USER = "heatherhoneyy@mail.ru"
+EMAIL_HOST_USER = 'beep.charity@gmail.com'
+#EMAIL_HOST_PASSWORD = "swusvqV1RUNRiciwLrvq"
+EMAIL_HOST_PASSWORD = 'akowbewycrscnywj'
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
 API_KEY = 'CAYR4QAsioUmKS5o' # Ключ для API подключения (доп задание)
 
 
