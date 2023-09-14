@@ -98,6 +98,7 @@ class App extends Component {
 
     requestOptions = {
       method: method,
+      mode: 'cors',
       headers: {
         Authorization: `Token ${token}`,
       },

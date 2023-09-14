@@ -8,7 +8,7 @@ export default function Lists(props) {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    props.apiFunc("http://berkoaqg.beget.tech//help/list/", "GET", token);
+    props.apiFunc("http://berkoaqg.beget.tech/help/list/", "GET", token);
   }, [token]);
 
   if (token === null) {
