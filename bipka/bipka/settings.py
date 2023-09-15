@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'user',
     'main',
     'djoser',
+    'sslserver',
 ]
 
 SITE_ID = 1

