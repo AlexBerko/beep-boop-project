@@ -40,7 +40,7 @@ urlpatterns = [
     path('user/', include("user.urls")),
     
     #Static файлы
-    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    re_path(r'^backend/static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 
     #SWAGGER
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
