@@ -10,23 +10,32 @@ function Header(props) {
   return (
     <header>
       <div className="head">
-        <ul className="nav">
-          <li>
-            <Link to="/" className="link">
-              Главная
-            </Link>
-          </li>
-          <li>
-            <Link to="/profile" className="link">
-              Профиль
-            </Link>
-          </li>
-          <li>
-            <Link to="/submit" className="link">
-              Подать заявку
-            </Link>
-          </li>
-        </ul>
+        {props.isAuthenticated ? (
+          <ul className="nav">
+            <li>
+              <Link to="/" className="link">
+                Главная
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" className="link">
+                Профиль
+              </Link>
+            </li>
+            <li>
+              <Link to="/submit" className="link">
+                Подать заявку
+              </Link>
+            </li>
+            <li>
+              <Link to="/requests" className="link">
+                Мои заявки
+              </Link>
+            </li>
+          </ul>
+        ) : (
+          <ul></ul>
+        )}
         <ul className="login_logout">
           {props.isAuthenticated ? (
             <li>
@@ -35,7 +44,7 @@ function Header(props) {
                 onClick={() => {
                   props.logout();
                   props.apiFunc(
-                    "http://berkoaqg.beget.tech/user/auth/token/logout/",
+                    "https://95.140.148.239/user/auth/token/logout/",
                     "POST",
                     token
                   );

@@ -11,6 +11,7 @@ import * as actions from "./store/actions/auth";
 import Otp from "./components/Otp";
 import Submit from "./components/Submit";
 import Response from "./components/Response";
+import MyRequests from "./components/MyRequests";
 
 class App extends Component {
   constructor(props) {
@@ -79,7 +80,25 @@ class App extends Component {
               />
               <Route path="/otp" element={<Otp {...this.props} />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/response" element={<Response />} />
+              <Route
+                path="/requests"
+                element={
+                  <MyRequests
+                    apiFunc={this.apiFunc}
+                    recordsJS={this.state.recordsJS}
+                    recordsObj={this.state.recordsObj}
+                  />
+                }
+              />
+              <Route
+                path="/response"
+                element={
+                  <Response
+                    recordsJS={this.state.recordsJS}
+                    recordsObj={this.state.recordsObj}
+                  />
+                }
+              />
             </Routes>
           </div>
         </Router>
@@ -98,7 +117,7 @@ class App extends Component {
 
     requestOptions = {
       method: method,
-      mode: 'cors',
+      mode: "cors",
       headers: {
         Authorization: `Token ${token}`,
       },

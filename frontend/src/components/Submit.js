@@ -1,5 +1,6 @@
 import React from "react";
 import { Button, Form, Input, DatePicker } from "antd";
+import { Link } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -42,7 +43,7 @@ const App = (props) => {
     );
 
     props.apiFunc(
-      "http://berkoaqg.beget.tech/help/create/",
+      "https://95.140.148.239/help/create/",
       "POST",
       token,
       formData
@@ -89,9 +90,11 @@ const App = (props) => {
             offset: 8,
           }}
         >
-          <Button type="primary" htmlType="submit">
-            Подать
-          </Button>
+          <Link to="/response">
+            <Button type="primary" htmlType="submit">
+              Подать
+            </Button>
+          </Link>
         </Form.Item>
       </Form>
     </div>
