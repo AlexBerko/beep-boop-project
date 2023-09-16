@@ -1,0 +1,36 @@
+header {
+  position: relative;
+  background-color: rgb(83, 100, 120);
+  color: aliceblue;
+}
+
+header .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 100px;
+  margin-right: 100px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+header ul {
+  float: right;
+  list-style: none;
+}
+
+header ul li {
+  display: inline;
+  margin-left: 25px;
+  cursor: pointer;
+  transition: opacity 500ms ease;
+}
+
+header ul li:hover {
+  opacity: 0.5;
+}
+
+.link {
+  text-decoration: none;
+  color: aliceblue;
+}

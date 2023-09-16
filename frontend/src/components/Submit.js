@@ -1,6 +1,6 @@
-import React from "react";
-import { Button, Form, Input, DatePicker } from "antd";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Button, Form, Input, DatePicker, Modal } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const layout = {
   labelCol: {
@@ -25,8 +25,11 @@ const validateMessages = {
 /* eslint-enable no-template-curly-in-string */
 
 const App = (props) => {
+  const navigate = useNavigate();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const token = localStorage.getItem("token");
+
   const onFinish = (values) => {
-    const token = localStorage.getItem("token");
     const formData = new FormData();
     formData.append("title", values.title);
     formData.append("full_info", values.full_info);
@@ -48,8 +51,14 @@ const App = (props) => {
       token,
       formData
     );
+    setIsModalVisible(true);
 
     console.log(values);
+  };
+
+  const handleModalOk = () => {
+    setIsModalVisible(false);
+    navigate("/requests", { replace: true });
   };
 
   return (
@@ -90,11 +99,20 @@ const App = (props) => {
             offset: 8,
           }}
         >
-          <Link to="/response">
-            <Button type="primary" htmlType="submit">
-              Подать
-            </Button>
-          </Link>
+          <Button type="primary" htmlType="submit">
+            Подать
+          </Button>
+
+          <Modal
+            title="Отлично!"
+            visible={isModalVisible}
+            onOk={handleModalOk}
+            closable={false}
+            maskClosable={false}
+            onCancel={handleModalOk}
+          >
+            <p>Вы подали заявку</p>
+          </Modal>
         </Form.Item>
       </Form>
     </div>

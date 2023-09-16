@@ -85,8 +85,10 @@ class App extends Component {
                 element={
                   <MyRequests
                     apiFunc={this.apiFunc}
-                    recordsJS={this.state.recordsJS}
                     recordsObj={this.state.recordsObj}
+                    recordsJS={this.state.recordsJS}
+                    changeId={this.changeId}
+                    handler={this.handler}
                   />
                 }
               />

@@ -15,6 +15,8 @@ export default function List(props) {
     props.apiFunc("https://95.140.148.239/user/profile/", "GET", token);
   }, [token]);
 
+  console.log(props.recordsObj);
+
   return (
     <div className="list">
       <h2>{props.recordsObj[props.arrayId].title}</h2>

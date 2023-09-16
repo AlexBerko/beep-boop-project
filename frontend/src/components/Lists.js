@@ -11,6 +11,8 @@ export default function Lists(props) {
     props.apiFunc("https://95.140.148.239/help/list/", "GET", token);
   }, [token]);
 
+  console.log(props.recordsObj);
+
   if (token === null) {
     navigate("/login", { replace: true });
   } else {

@@ -88,20 +88,24 @@ export default function Announcement(props) {
         </div>
         <div className="date">
           <time>{datestring}</time>
-          <Link to="/response">
-            <button
-              className="answer"
-              onClick={() => {
-                props.apiFunc(
-                  `https://95.140.148.239/help/${props.recordsObj.id}/`,
-                  "POST",
-                  token
-                );
-              }}
-            >
-              Откликнуться
-            </button>
-          </Link>
+          {props.recordsObj.who_complete_id ? (
+            <Link to="/response">
+              <button
+                className="answer"
+                onClick={() => {
+                  props.apiFunc(
+                    `https://95.140.148.239/help/${props.recordsObj.id}/`,
+                    "POST",
+                    token
+                  );
+                }}
+              >
+                Откликнуться
+              </button>
+            </Link>
+          ) : (
+            <p>Вы откликнулись на эту просьбу</p>
+          )}
         </div>
       </div>
     );
