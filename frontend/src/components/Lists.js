@@ -12,6 +12,7 @@ export default function Lists(props) {
   }, [token]);
 
   console.log(props.recordsObj);
+  console.log(props.recordsJS);
 
   if (token === null) {
     navigate("/login", { replace: true });
@@ -38,7 +39,7 @@ export default function Lists(props) {
           {(() => {
             const options = [];
 
-            for (let i = 0; i < props.recordsObj.length; i++) {
+            for (let i = 0; i < props.recordsJS.length; i++) {
               options.push(
                 <List
                   key={i}

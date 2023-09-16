@@ -7,19 +7,19 @@ export default function List(props) {
   const token = localStorage.getItem("token");
   let full_info;
 
-  if (props.recordsObj.length > 0) {
-    full_info = props.recordsObj[props.arrayId].full_info.split("\r\n");
+  if (props.recordsJS.length > 0) {
+    full_info = props.recordsJS[props.arrayId].full_info.split("\r\n");
   }
 
   useEffect(() => {
     props.apiFunc("https://95.140.148.239/user/profile/", "GET", token);
   }, [token]);
 
-  console.log(props.recordsObj);
+  console.log(props.recordsJS);
 
   return (
     <div className="list">
-      <h2>{props.recordsObj[props.arrayId].title}</h2>
+      <h2>{props.recordsJS[props.arrayId].title}</h2>
       <div className="summary">
         {(() => {
           const options = [];
@@ -41,7 +41,7 @@ export default function List(props) {
           onClick={() => {
             props.apiFunc(
               `https://95.140.148.239/help/${
-                props.recordsObj[props.arrayId].id
+                props.recordsJS[props.arrayId].id
               }/`,
               "GET",
               token

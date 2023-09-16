@@ -93,12 +93,12 @@ const App = (props) => {
           <DatePicker />
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           wrapperCol={{
             ...layout.wrapperCol,
             offset: 8,
           }}
-        >
+        > */}
           <Button type="primary" htmlType="submit">
             Подать
           </Button>

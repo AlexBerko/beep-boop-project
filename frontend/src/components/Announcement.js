@@ -1,8 +1,11 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Modal } from "antd";
+import { useNavigate } from "react-router-dom";
 import "./Announcement.css";
 
 export default function Announcement(props) {
+  const navigate = useNavigate();
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const token = localStorage.getItem("token");
   let datestring;
   let full_info;
@@ -21,6 +24,11 @@ export default function Announcement(props) {
 
     full_info = props.recordsObj.full_info.split("\r\n");
   }
+
+  const handleModalOk = () => {
+    setIsModalVisible(false);
+    navigate("/requests", { replace: true });
+  };
 
   console.log(props.recordsJS);
   console.log(props.recordsObj);
@@ -89,23 +97,32 @@ export default function Announcement(props) {
         <div className="date">
           <time>{datestring}</time>
           {props.recordsObj.who_complete_id ? (
-            <Link to="/response">
-              <button
-                className="answer"
-                onClick={() => {
-                  props.apiFunc(
-                    `https://95.140.148.239/help/${props.recordsObj.id}/`,
-                    "POST",
-                    token
-                  );
-                }}
-              >
-                Откликнуться
-              </button>
-            </Link>
+            <button
+              className="answer"
+              onClick={() => {
+                props.apiFunc(
+                  `https://95.140.148.239/help/${props.recordsObj.id}/`,
+                  "POST",
+                  token
+                );
+                setIsModalVisible(true);
+              }}
+            >
+              Откликнуться
+            </button>
           ) : (
             <p>Вы откликнулись на эту просьбу</p>
           )}
+          <Modal
+            title="Спасибо!"
+            visible={isModalVisible}
+            onOk={handleModalOk}
+            closable={false}
+            maskClosable={false}
+            onCancel={handleModalOk}
+          >
+            <p>Вы откликнулись на просьбу</p>
+          </Modal>
         </div>
       </div>
     );
