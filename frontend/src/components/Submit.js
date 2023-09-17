@@ -111,7 +111,6 @@ const App = (props) => {
         onOk={handleModalOk}
         closable={false}
         maskClosable={false}
-        onCancel={handleModalOk}
       >
         <p>Вы подали заявку</p>
       </Modal>

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Announcement.css";
@@ -9,6 +10,26 @@ export default function Announcement(props) {
   const token = localStorage.getItem("token");
   let datestring;
   let full_info;
+
+  useEffect(() => {
+    props.apiFunc("https://95.140.148.239/user/profile/", "GET", token);
+  }, [token]);
+
+  if (props.recordsJS.username !== undefined) {
+    axios
+      .get(
+        `https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=${
+          props.recordsJS.is_ind_pred ? "ent" : "org"
+        }&query=${props.recordsJS.username}&limit=1/`
+      )
+      .then((res) => {
+        console.log(res);
+        props.handler(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   if (props.recordsObj.pub_date !== undefined) {
     datestring = `${props.recordsObj.pub_date.substr(

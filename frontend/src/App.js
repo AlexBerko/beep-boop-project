@@ -57,6 +57,7 @@ class App extends Component {
                     recordsJS={this.state.recordsJS}
                     recordsObj={this.state.recordsObj}
                     id={this.state.id}
+                    handler={this.handler}
                   />
                 }
               />

@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import "./List.css";
 import { Link } from "react-router-dom";
 
@@ -10,10 +9,6 @@ export default function List(props) {
   if (props.recordsJS.length > 0) {
     full_info = props.recordsJS[props.arrayId].full_info.split("\r\n");
   }
-
-  useEffect(() => {
-    props.apiFunc("https://95.140.148.239/user/profile/", "GET", token);
-  }, [token]);
 
   console.log(props.recordsJS);
 
@@ -46,19 +41,6 @@ export default function List(props) {
               "GET",
               token
             );
-            axios
-              .get(
-                `https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=${
-                  props.recordsJS.is_ind_pred ? "ent" : "org"
-                }&query=${props.recordsJS.username}&limit=1/`
-              )
-              .then((res) => {
-                console.log(res);
-                props.handler(res);
-              })
-              .catch((err) => {
-                console.log(err);
-              });
           }}
         >
           Открыть

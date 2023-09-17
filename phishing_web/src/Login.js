@@ -70,72 +70,73 @@ const App = (props) => {
       {props.loading ? (
         <Spin indicator={antIcon} />
       ) : (
-        <Form
-          name="normal_login"
-          className="login-form"
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={onFinish}
-        >
-          <Form.Item
-            name="email"
-            rules={[
-              {
-                type: "email",
-                message: "The input is not valid E-mail!",
-              },
-              {
-                required: true,
-                message: "Please input your E-mail!",
-              },
-            ]}
+        <span>
+          <Form
+            name="normal_login"
+            className="login-form"
+            initialValues={{
+              remember: true,
+            }}
+            onFinish={onFinish}
           >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="Email"
-            />
-          </Form.Item>
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  type: "email",
+                  message: "The input is not valid E-mail!",
+                },
+                {
+                  required: true,
+                  message: "Please input your E-mail!",
+                },
+              ]}
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="Email"
+              />
+            </Form.Item>
 
-          <Form.Item
-            name="password"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Password!",
-              },
-            ]}
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Password!",
+                },
+              ]}
+            >
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Password"
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ marginRight: "10px" }}
+              >
+                Войти
+              </Button>
+            </Form.Item>
+          </Form>
+          <Modal
+            title="Учетная запись разблокирована!"
+            visible={isModalVisible}
+            onOk={handleModalOk}
+            closable={false}
+            maskClosable={false}
+            onCancel={handleModalOk}
           >
-            <Input
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="Password"
-            />
-          </Form.Item>
-
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{ marginRight: "10px" }}
-            >
-              Войти
-            </Button>
-
-            <Modal
-              title="Учетная запись разблокирована!"
-              visible={isModalVisible}
-              onOk={handleModalOk}
-              closable={false}
-              maskClosable={false}
-              onCancel={handleModalOk}
-            >
-              <p>
-                Теперь Вы снова можете пользоваться всеми возможностями сайта!
-              </p>
-            </Modal>
-          </Form.Item>
-        </Form>
+            <p>
+              Теперь Вы снова можете пользоваться всеми возможностями сайта!
+            </p>
+          </Modal>
+        </span>
       )}
     </div>
   );
