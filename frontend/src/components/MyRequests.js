@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import "./Announcement.css";
 import List from "./List";
 
 export default function MyRequests(props) {
@@ -12,7 +13,7 @@ export default function MyRequests(props) {
 
   return (
     <div className="announc">
-      <h1>Ваши заявки</h1>
+      <h1 className="title">Ваши заявки</h1>
       {(() => {
         const options = [];
 

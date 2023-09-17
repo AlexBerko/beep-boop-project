@@ -24,6 +24,7 @@ class App extends Component {
 
     this.apiFunc = this.apiFunc.bind(this);
     this.handler = this.handler.bind(this);
+    this.handlerObj = this.handlerObj.bind(this);
   }
 
   componentDidMount() {
@@ -46,6 +47,7 @@ class App extends Component {
                     recordsJS={this.state.recordsJS}
                     changeId={this.changeId}
                     handler={this.handler}
+                    handlerObj={this.handlerObj}
                   />
                 }
               />
@@ -57,6 +59,7 @@ class App extends Component {
                     recordsJS={this.state.recordsJS}
                     recordsObj={this.state.recordsObj}
                     id={this.state.id}
+                    handlerObj={this.handlerObj}
                     handler={this.handler}
                   />
                 }
@@ -89,6 +92,7 @@ class App extends Component {
                     recordsObj={this.state.recordsObj}
                     recordsJS={this.state.recordsJS}
                     changeId={this.changeId}
+                    handlerObj={this.handlerObj}
                     handler={this.handler}
                   />
                 }
@@ -112,6 +116,12 @@ class App extends Component {
   handler(res) {
     this.setState({
       recordsJS: res,
+    });
+  }
+
+  handlerObj(id) {
+    this.setState({
+      recordsObj: this.state.recordsJS[id],
     });
   }
 

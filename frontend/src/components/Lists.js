@@ -47,6 +47,7 @@ export default function Lists(props) {
                   apiFunc={props.apiFunc}
                   recordsObj={props.recordsObj}
                   recordsJS={props.recordsJS}
+                  handlerObj={props.handlerObj}
                   handler={props.handler}
                 />
               );

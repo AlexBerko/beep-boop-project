@@ -34,13 +34,14 @@ export default function List(props) {
         <button
           className="open"
           onClick={() => {
-            props.apiFunc(
-              `https://95.140.148.239/help/${
-                props.recordsJS[props.arrayId].id
-              }/`,
-              "GET",
-              token
-            );
+            props.handlerObj(props.arrayId);
+            // props.apiFunc(
+            //   `https://95.140.148.239/help/${
+            //     props.recordsJS[props.arrayId].id
+            //   }/`,
+            //   "GET",
+            //   token
+            // );
           }}
         >
           Открыть

@@ -13,7 +13,7 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        <Router>
+        <Router basename="/phishing">
           <Header {...this.props} apiFunc={this.apiFunc} />
           <div className="container">
             <Routes>
