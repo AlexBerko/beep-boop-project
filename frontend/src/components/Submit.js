@@ -93,28 +93,28 @@ const App = (props) => {
           <DatePicker />
         </Form.Item>
 
-        {/* <Form.Item
+        <Form.Item
           wrapperCol={{
             ...layout.wrapperCol,
             offset: 8,
           }}
-        > */}
+        >
           <Button type="primary" htmlType="submit">
             Подать
           </Button>
-
-          <Modal
-            title="Отлично!"
-            visible={isModalVisible}
-            onOk={handleModalOk}
-            closable={false}
-            maskClosable={false}
-            onCancel={handleModalOk}
-          >
-            <p>Вы подали заявку</p>
-          </Modal>
         </Form.Item>
       </Form>
+
+      <Modal
+        title="Отлично!"
+        visible={isModalVisible}
+        onOk={handleModalOk}
+        closable={false}
+        maskClosable={false}
+        onCancel={handleModalOk}
+      >
+        <p>Вы подали заявку</p>
+      </Modal>
     </div>
   );
 };
