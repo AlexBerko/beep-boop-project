@@ -27,7 +27,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ["95.140.148.239", "localhost:8080"]
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = ["http://95.140.148.239", "https://95.140.148.239", "http://localhost:3030", "http://localhost:8080", "https://localhost:3030", "https://localhost:8080"]
+CORS_ALLOWED_ORIGINS = ["http://95.140.148.239", "https://95.140.148.239", "http://localhost:3000", "http://localhost:8080", "https://localhost:3000", "https://localhost:8080"]
 
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS.copy()
 
