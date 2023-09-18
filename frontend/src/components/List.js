@@ -10,8 +10,6 @@ export default function List(props) {
     full_info = props.recordsJS[props.arrayId].full_info.split("\r\n");
   }
 
-  console.log(props.recordsJS);
-
   return (
     <div className="list">
       <h2>{props.recordsJS[props.arrayId].title}</h2>
@@ -34,14 +32,16 @@ export default function List(props) {
         <button
           className="open"
           onClick={() => {
-            props.handlerObj(props.arrayId);
-            // props.apiFunc(
-            //   `https://95.140.148.239/help/${
-            //     props.recordsJS[props.arrayId].id
-            //   }/`,
-            //   "GET",
-            //   token
-            // );
+            // props.handlerObj(props.arrayId);
+            props.apiFunc(
+              `https://95.140.148.239/help/${
+                props.recordsJS[props.arrayId].id
+              }/`,
+              "GET",
+              token
+            );
+            console.log(props.recordsJS);
+            console.log(props.recordsObj);
           }}
         >
           Открыть

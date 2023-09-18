@@ -14,13 +14,19 @@ class App extends Component {
     return (
       <div className="app">
         <Router basename="/phishing">
-          <Header {...this.props} apiFunc={this.apiFunc} />
+          <Header />
           <div className="container">
             <Routes>
+              <Route path="/" element={<Navigate to="/loogin" />} />
               <Route
-                path="/login/:from"
+                path="/loogin"
                 element={<Login apiFunc={this.apiFunc} />}
               />
+              <Route
+                path="/loogin/:from"
+                element={<Login apiFunc={this.apiFunc} />}
+              />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>
         </Router>
