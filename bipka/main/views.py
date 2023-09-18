@@ -65,7 +65,9 @@ class HelpDetailView(APIView):
         except Help.DoesNotExist:
             return Response({'error': 'Просьба с данным id не обнаружена'}, status=400)
         serializer = HelpDetailSerializer(h)
-        return Response(serializer.data, status=200)
+        json = JSONRenderer().render(serializer.data)
+        return Response(json, status=200)
+        #return Response(serializer.data, status=200)
 
     def put(self, request, pk):
         try:
