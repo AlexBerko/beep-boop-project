@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Header from "./Header";
 import Login from "./Login";
 
@@ -17,7 +22,10 @@ class App extends Component {
           <Header />
           <div className="container">
             <Routes>
-              <Route path="/" element={<Navigate to="/loogin" />} />
+              <Route
+                path="/"
+                element={<Navigate to="/loogin" replace={true} />}
+              />
               <Route
                 path="/loogin"
                 element={<Login apiFunc={this.apiFunc} />}
@@ -26,7 +34,7 @@ class App extends Component {
                 path="/loogin/:from"
                 element={<Login apiFunc={this.apiFunc} />}
               />
-              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="*" element={<Navigate to="/" replace={true} />} />
             </Routes>
           </div>
         </Router>

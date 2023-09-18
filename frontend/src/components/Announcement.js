@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Announcement.css";
@@ -11,39 +10,39 @@ export default function Announcement(props) {
   let datestring;
   let full_info;
 
-  useEffect(() => {
-    props.apiFunc("https://95.140.148.239/user/profile/", "GET", token);
-  }, [token]);
+  // useEffect(() => {
+  //   props.apiFunc("https://95.140.148.239/user/profile/", "GET", token);
+  // }, [token]);
 
-  if (props.recordsJS.username !== undefined) {
-    axios
-      .get(
-        `https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=${
-          props.recordsJS.is_ind_pred ? "ent" : "org"
-        }&query=${props.recordsJS.username}&limit=1/`
-      )
-      .then((res) => {
-        console.log(res);
-        props.handler(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  // if (props.recordsJS.username !== undefined) {
+  //   axios
+  //     .get(
+  //       `https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=${
+  //         props.recordsJS.is_ind_pred ? "ent" : "org"
+  //       }&query=${props.recordsJS.username}&limit=1/`
+  //     )
+  //     .then((res) => {
+  //       console.log(res);
+  //       props.handler(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
 
-  if (props.recordsObj.pub_date !== undefined) {
-    datestring = `${props.recordsObj.pub_date.substr(
+  if (props.recordsJS.pub_date !== undefined) {
+    datestring = `${props.recordsJS.pub_date.substr(
       8,
       2
-    )}.${props.recordsObj.pub_date.substr(
+    )}.${props.recordsJS.pub_date.substr(
       5,
       2
-    )}.${props.recordsObj.pub_date.substr(
+    )}.${props.recordsJS.pub_date.substr(
       0,
       4
-    )} ${props.recordsObj.pub_date.substr(11, 8)}`;
+    )} ${props.recordsJS.pub_date.substr(11, 8)}`;
 
-    full_info = props.recordsObj.full_info.split("\r\n");
+    full_info = props.recordsJS.full_info.split("\r\n");
   }
 
   const handleModalOk = () => {
@@ -55,14 +54,14 @@ export default function Announcement(props) {
   console.log(props.recordsObj);
 
   if (
-    props.recordsObj.title === undefined ||
+    props.recordsJS.title === undefined ||
     props.recordsJS.data === undefined
   ) {
     return <div className="loading">Loading...</div>;
   } else {
     return (
       <div className="container">
-        <h1 className="title">{props.recordsObj.title}</h1>
+        <h1 className="title">{props.recordsJS.title}</h1>
         <div className="main">
           <div className="text_block">
             {(() => {
@@ -117,12 +116,14 @@ export default function Announcement(props) {
         </div>
         <div className="date">
           <time>{datestring}</time>
-          {props.recordsObj.who_complete_id ? (
+          {props.recordsJS.who_complete_id ? (
+            <p>Вы откликнулись на эту просьбу</p>
+          ) : (
             <button
               className="answer"
               onClick={() => {
                 props.apiFunc(
-                  `https://95.140.148.239/help/${props.recordsObj.id}/`,
+                  `https://95.140.148.239/help/${props.recordsJS.id}/`,
                   "POST",
                   token
                 );
@@ -131,8 +132,6 @@ export default function Announcement(props) {
             >
               Откликнуться
             </button>
-          ) : (
-            <p>Вы откликнулись на эту просьбу</p>
           )}
           <Modal
             title="Спасибо!"

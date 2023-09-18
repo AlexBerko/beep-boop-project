@@ -32,7 +32,7 @@ export default function List(props) {
         <button
           className="open"
           onClick={() => {
-            props.handlerObj(props.recordsJS[props.arrayId]);
+            // props.handlerObj(props.recordsJS[props.arrayId]);
             props.apiFunc(
               `https://95.140.148.239/help/${
                 props.recordsJS[props.arrayId].id
@@ -40,8 +40,6 @@ export default function List(props) {
               "GET",
               token
             );
-            console.log(props.recordsJS);
-            console.log(props.recordsObj);
           }}
         >
           Открыть

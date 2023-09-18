@@ -23,8 +23,8 @@ class App extends Component {
     };
 
     this.apiFunc = this.apiFunc.bind(this);
-    this.handler = this.handler.bind(this);
-    this.handlerObj = this.handlerObj.bind(this);
+    // this.handler = this.handler.bind(this);
+    // this.handlerObj = this.handlerObj.bind(this);
   }
 
   componentDidMount() {
@@ -113,17 +113,17 @@ class App extends Component {
     );
   }
 
-  handler(res) {
-    this.setState({
-      recordsJS: res,
-    });
-  }
+  // handler(res) {
+  //   this.setState({
+  //     recordsJS: res,
+  //   });
+  // }
 
-  handlerObj(id) {
-    this.setState({
-      recordsObj: id,
-    });
-  }
+  // handlerObj(id) {
+  //   this.setState({
+  //     recordsObj: id,
+  //   });
+  // }
 
   async apiFunc(url, method, token, data) {
     let requestOptions;
