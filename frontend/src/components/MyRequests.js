@@ -26,6 +26,7 @@ export default function MyRequests(props) {
               recordsObj={props.recordsObj}
               recordsJS={props.recordsJS}
               handler={props.handler}
+              handlerObj={props.handlerObj}
             />
           );
         }
