@@ -121,7 +121,7 @@ class App extends Component {
 
   handlerObj(id) {
     this.setState({
-      recordsObj: this.state.recordsJS[id],
+      recordsObj: id,
     });
   }
 

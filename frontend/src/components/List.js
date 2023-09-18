@@ -32,7 +32,7 @@ export default function List(props) {
         <button
           className="open"
           onClick={() => {
-            // props.handlerObj(props.arrayId);
+            props.handlerObj(props.recordsJS[props.arrayId]);
             props.apiFunc(
               `https://95.140.148.239/help/${
                 props.recordsJS[props.arrayId].id
