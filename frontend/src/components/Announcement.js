@@ -53,10 +53,7 @@ export default function Announcement(props) {
   console.log(props.recordsJS);
   console.log(props.recordsObj);
 
-  if (
-    props.recordsJS.title === undefined ||
-    props.recordsJS.data === undefined
-  ) {
+  if (props.recordsJS.title === undefined) {
     return <div className="loading">Loading...</div>;
   } else {
     return (
@@ -80,37 +77,14 @@ export default function Announcement(props) {
           </div>
           <div className="org_info">
             <h2 className="second_block">Данные о компании</h2>
+            <p className="orgData">{props.recordsJS.username}</p>
+            <p className="orgData">ОГРН: {props.recordsJS.ogrn}</p>
+            <p className="orgData">ИНН: {props.recordsJS.inn}</p>
+            <p className="orgData">Ген. директор: {props.recordsJS.head}</p>
+            <p className="orgData">Статус: {props.recordsJS.email}</p>
+            <p className="orgData">Юр. адрес: {props.recordsJS.address_reg}</p>
             <p className="orgData">
-              {props.recordsJS.data.data.Записи[0].НаимПолн
-                ? props.recordsJS.data.data.Записи[0].НаимПолн
-                : props.recordsJS.data.data.Записи[0].Тип}
-            </p>
-            <p className="orgData">
-              ОГРН:{" "}
-              {props.recordsJS.data.data.Записи[0].ОГРН
-                ? props.recordsJS.data.data.Записи[0].ОГРН
-                : props.recordsJS.data.data.Записи[0].ОГРНИП}
-            </p>
-            <p className="orgData">
-              ОКВЭД: {props.recordsJS.data.data.Записи[0].ОКВЭД}
-            </p>
-            <p className="orgData">
-              Статус: {props.recordsJS.data.data.Записи[0].Статус}
-            </p>
-            <p className="orgData">
-              {props.recordsJS.data.data.Записи[0].ОГРН
-                ? "Директор: "
-                : "ФИО: "}
-              :{" "}
-              {props.recordsJS.data.data.Записи[0].ОГРН
-                ? props.recordsJS.data.data.Записи[0].Руковод[0].ФИО
-                : props.recordsJS.data.data.Записи[0].ФИО}
-            </p>
-            <p className="orgData">
-              Юр. адрес:{" "}
-              {props.recordsJS.data.data.Записи[0].ЮрАдрес
-                ? props.recordsJS.data.data.Записи[0].ЮрАдрес
-                : "-"}
+              Факт. адрес: {props.recordsJS.address_fact}
             </p>
           </div>
         </div>
@@ -148,3 +122,40 @@ export default function Announcement(props) {
     );
   }
 }
+
+// <div className="org_info">
+//           <h2 className="second_block">Данные о компании</h2>
+//           <p className="orgData">
+//             {props.recordsJS.data.data.Записи[0].НаимПолн
+//               ? props.recordsJS.data.data.Записи[0].НаимПолн
+//               : props.recordsJS.data.data.Записи[0].Тип}
+//           </p>
+//           <p className="orgData">
+//             ОГРН:{" "}
+//             {props.recordsJS.data.data.Записи[0].ОГРН
+//               ? props.recordsJS.data.data.Записи[0].ОГРН
+//               : props.recordsJS.data.data.Записи[0].ОГРНИП}
+//           </p>
+//           <p className="orgData">
+//             ОКВЭД: {props.recordsJS.data.data.Записи[0].ОКВЭД}
+//           </p>
+//           <p className="orgData">
+//             Статус: {props.recordsJS.data.data.Записи[0].Статус}
+//           </p>
+//           <p className="orgData">
+//             {props.recordsJS.data.data.Записи[0].ОГРН
+//               ? "Директор: "
+//               : "ФИО: "}
+//             :{" "}
+//             {props.recordsJS.data.data.Записи[0].ОГРН
+//               ? props.recordsJS.data.data.Записи[0].Руковод[0].ФИО
+//               : props.recordsJS.data.data.Записи[0].ФИО}
+//           </p>
+//           <p className="orgData">
+//             Юр. адрес:{" "}
+//             {props.recordsJS.data.data.Записи[0].ЮрАдрес
+//               ? props.recordsJS.data.data.Записи[0].ЮрАдрес
+//               : "-"}
+//           </p>
+//         </div>
+//       </div>
