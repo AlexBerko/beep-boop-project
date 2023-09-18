@@ -15,6 +15,7 @@ from .forms import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django.contrib.auth import get_user
 from rest_framework.authtoken.models import Token
+from user.serializers import OrgDetailSerializer
 import re
 import datetime
 
@@ -48,13 +49,6 @@ class Help_list(APIView):
         serializer = HelpListSerializer(help_objects, many=True)
         json = JSONRenderer().render(serializer.data)
         return Response(json, status=200)
-        #return Response({}, status=200)
-        
-        #if help_objects:
-         #   json = JSONRenderer().render(serializer.data)
-          #  return Response(json, status=200)
-        #else:
-         #   return Response({}, status=200)
 
 
 @permission_classes([IsAuthenticated])
@@ -64,10 +58,18 @@ class HelpDetailView(APIView):
             h = Help.objects.get(id=pk)  # search by id
         except Help.DoesNotExist:
             return Response({'error': 'Просьба с данным id не обнаружена'}, status=400)
-        serializer = HelpDetailSerializer(h)
-        json = JSONRenderer().render(serializer.data)
-        return Response(json, status=200)
-        #return Response(serializer.data, status=200)
+        usr = h.who_asked
+        serializer1 = HelpDetailSerializer(h)
+        serializer2 = OrgDetailSerializer(usr)
+        json1 = JSONRenderer().render(serializer1.data)
+        json2 = JSONRenderer().render(serializer2.data)
+
+        result1 = json1.decode('utf-8').replace('}', '')
+        result1 += ','
+        result2 = json2.decode('utf-8').replace('{', '')
+        result3 = result1 + result2
+        result = result3.encode('utf-8')
+        return Response(result, status=200)
 
     def put(self, request, pk):
         try:
