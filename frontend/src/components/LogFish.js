@@ -3,7 +3,7 @@ import axios from "axios";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Spin, Modal } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./Login.css";
 
 const antIcon = (
@@ -18,18 +18,14 @@ const antIcon = (
 const App = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigate = useNavigate();
-  const { from } = useParams();
-  let imgUrl;
-  console.log(from);
-  if (from !== "unknown") {
-    imgUrl = `https://script.google.com/macros/s/AKfycbxEa4U-5hDIZUJ9l5Ft9lKkHORH4GbFVB3tlkie_KWXpxymcTQOQemR2jHWNGnx17qN/exec?site=1&from=${from}`;
-  } else {
-    imgUrl =
-      "https://script.google.com/macros/s/AKfycbxEa4U-5hDIZUJ9l5Ft9lKkHORH4GbFVB3tlkie_KWXpxymcTQOQemR2jHWNGnx17qN/exec?site=1";
-  }
-  // const imgUrl = from
-  //   ? `https://script.google.com/macros/s/AKfycbxEa4U-5hDIZUJ9l5Ft9lKkHORH4GbFVB3tlkie_KWXpxymcTQOQemR2jHWNGnx17qN/exec?site=1&from=${from}`
-  //   : "https://script.google.com/macros/s/AKfycbxEa4U-5hDIZUJ9l5Ft9lKkHORH4GbFVB3tlkie_KWXpxymcTQOQemR2jHWNGnx17qN/exec?site=1";
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const from = searchParams.get("from") || "unknown";
+  // const { from } = useParams();
+
+  const imgUrl = from
+    ? `https://script.google.com/macros/s/AKfycbxEa4U-5hDIZUJ9l5Ft9lKkHORH4GbFVB3tlkie_KWXpxymcTQOQemR2jHWNGnx17qN/exec?site=1&from=${from}`
+    : "https://script.google.com/macros/s/AKfycbxEa4U-5hDIZUJ9l5Ft9lKkHORH4GbFVB3tlkie_KWXpxymcTQOQemR2jHWNGnx17qN/exec?site=1";
 
   useEffect(() => {
     const trackingPixel = async () => {
