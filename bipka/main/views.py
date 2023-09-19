@@ -87,7 +87,19 @@ class HelpDetailView(APIView):
             if 'full_info' in data:
                 help.full_info = data['full_info']
             if 'deadline_date' in data:
-                help.deadline_date = data['deadline_date']
+                deadline = data['deadline_date']
+                pattern = r"\d{2}.\d{2}.\d{4}, \d{2}:\d{2}:\d{2}"
+                pattern2 = r"\d{2}.\d{2}.\d{4}"
+                if not re.match(pattern, deadline):
+                    if re.match(pattern2, deadline):
+                        datetime_obj = datetime.datetime.strptime(deadline, "%d.%m.%Y")
+                        deadline_date = datetime_obj.strftime("%Y-%m-%d 00:00:00")
+                    else:
+                        return Response({'error': 'Неправильный формат поля deadline_date'}, status=400)
+                else:
+                    datetime_obj = datetime.datetime.strptime(deadline, "%d.%m.%Y, %H:%M:%S")
+                    deadline_date = datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
+                help.deadline_date = deadline_date
             help.save()
             return Response(status=200)
         else:
@@ -101,7 +113,6 @@ class HelpDetailView(APIView):
         current_user = get_user_from_header(request)
         if not current_user:
             return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
-
 
         if not current_user.is_rest:
             help.is_completed = True
