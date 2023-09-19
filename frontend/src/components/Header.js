@@ -19,6 +19,8 @@ function Header(props) {
     .get("https://95.140.148.239/user/profile/", config)
     .then((res) => {
       is_rest = res.is_rest;
+      console.log(res);
+      console.log(is_rest);
     })
     .catch((err) => {
       console.log(err);
