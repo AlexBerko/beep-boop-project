@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import "./Header.css";
 import { connect } from "react-redux";
@@ -15,18 +15,20 @@ function Header(props) {
     },
   };
 
-  axios
-    .get("https://95.140.148.239/user/profile/", config)
-    .then((res) => {
-      const data = JSON.parse(res.data);
-      is_rest = data.is_rest;
-      console.log(res);
-      console.log(data);
-      console.log(is_rest);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  useEffect(() => {
+    axios
+      .get("https://95.140.148.239/user/profile/", config)
+      .then((res) => {
+        const data = JSON.parse(res.data);
+        is_rest = data.is_rest;
+        console.log(res);
+        console.log(data);
+        console.log(is_rest);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [token]);
 
   return (
     <header>
