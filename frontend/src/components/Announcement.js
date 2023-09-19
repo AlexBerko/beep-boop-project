@@ -10,26 +10,6 @@ export default function Announcement(props) {
   let datestring;
   let full_info;
 
-  // useEffect(() => {
-  //   props.apiFunc("https://95.140.148.239/user/profile/", "GET", token);
-  // }, [token]);
-
-  // if (props.recordsJS.username !== undefined) {
-  //   axios
-  //     .get(
-  //       `https://api.checko.ru/v2/search?key=CAYR4QAsioUmKS5o&by=name&obj=${
-  //         props.recordsJS.is_ind_pred ? "ent" : "org"
-  //       }&query=${props.recordsJS.username}&limit=1/`
-  //     )
-  //     .then((res) => {
-  //       console.log(res);
-  //       props.handler(res);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }
-
   if (props.recordsJS.pub_date !== undefined) {
     datestring = `${props.recordsJS.pub_date.substr(
       8,
@@ -81,7 +61,7 @@ export default function Announcement(props) {
             <p className="orgData">ОГРН: {props.recordsJS.ogrn}</p>
             <p className="orgData">ИНН: {props.recordsJS.inn}</p>
             <p className="orgData">Ген. директор: {props.recordsJS.head}</p>
-            <p className="orgData">Статус: {props.recordsJS.email}</p>
+            <p className="orgData">Email: {props.recordsJS.email}</p>
             <p className="orgData">Юр. адрес: {props.recordsJS.address_reg}</p>
             <p className="orgData">
               Факт. адрес: {props.recordsJS.address_fact}
@@ -122,40 +102,3 @@ export default function Announcement(props) {
     );
   }
 }
-
-// <div className="org_info">
-//           <h2 className="second_block">Данные о компании</h2>
-//           <p className="orgData">
-//             {props.recordsJS.data.data.Записи[0].НаимПолн
-//               ? props.recordsJS.data.data.Записи[0].НаимПолн
-//               : props.recordsJS.data.data.Записи[0].Тип}
-//           </p>
-//           <p className="orgData">
-//             ОГРН:{" "}
-//             {props.recordsJS.data.data.Записи[0].ОГРН
-//               ? props.recordsJS.data.data.Записи[0].ОГРН
-//               : props.recordsJS.data.data.Записи[0].ОГРНИП}
-//           </p>
-//           <p className="orgData">
-//             ОКВЭД: {props.recordsJS.data.data.Записи[0].ОКВЭД}
-//           </p>
-//           <p className="orgData">
-//             Статус: {props.recordsJS.data.data.Записи[0].Статус}
-//           </p>
-//           <p className="orgData">
-//             {props.recordsJS.data.data.Записи[0].ОГРН
-//               ? "Директор: "
-//               : "ФИО: "}
-//             :{" "}
-//             {props.recordsJS.data.data.Записи[0].ОГРН
-//               ? props.recordsJS.data.data.Записи[0].Руковод[0].ФИО
-//               : props.recordsJS.data.data.Записи[0].ФИО}
-//           </p>
-//           <p className="orgData">
-//             Юр. адрес:{" "}
-//             {props.recordsJS.data.data.Записи[0].ЮрАдрес
-//               ? props.recordsJS.data.data.Записи[0].ЮрАдрес
-//               : "-"}
-//           </p>
-//         </div>
-//       </div>

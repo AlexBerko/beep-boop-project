@@ -11,7 +11,6 @@ export default function Lists(props) {
     props.apiFunc("https://95.140.148.239/help/list/", "GET", token);
   }, [token]);
 
-  console.log(props.recordsObj);
   console.log(props.recordsJS);
 
   if (token === null) {
@@ -47,8 +46,6 @@ export default function Lists(props) {
                   apiFunc={props.apiFunc}
                   recordsObj={props.recordsObj}
                   recordsJS={props.recordsJS}
-                  handlerObj={props.handlerObj}
-                  handler={props.handler}
                 />
               );
             }
