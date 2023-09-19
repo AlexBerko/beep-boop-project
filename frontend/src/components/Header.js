@@ -18,8 +18,10 @@ function Header(props) {
   axios
     .get("https://95.140.148.239/user/profile/", config)
     .then((res) => {
-      is_rest = res.is_rest;
+      const data = JSON.parse(res.data);
+      is_rest = data.is_rest;
       console.log(res);
+      console.log(data);
       console.log(is_rest);
     })
     .catch((err) => {
@@ -72,6 +74,7 @@ function Header(props) {
                     token
                   );
                 }}
+                to="/login"
               >
                 Выйти
               </Link>
