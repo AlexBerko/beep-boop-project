@@ -45,11 +45,23 @@ def otp_provider():
 
 # Otp email sender
 def send_otp_in_mail(user, otp):
+    '''
     subject = 'Код подтверждения аутентификации'
     message = f'Здравствуйте, {user.email}!\n Для завершения аутентификации введите следующий код: {otp.otp}'
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [user.email, ]
     send_mail(subject, message, email_from, recipient_list)
+    '''
+    mail_subject = 'Код подтверждения аутентификации'
+    message = render_to_string('otp_email.html', {
+        'user': user.email,
+        'otp': otp.otp,
+    })
+    to_email = user.email
+    email = EmailMessage(
+        mail_subject, message, to=[to_email]
+    )
+    email.send()
 
 
 class OtpVerifyView_API(APIView):
@@ -160,11 +172,9 @@ class SignUP(APIView):
             user.save()
 
             # Составляем письмо с ссылкой для подтверждения регистрации
-            current_site = get_current_site(request)
             mail_subject = 'Подтверждение регистрации'
             message = render_to_string('acc_active_email.html', {
                 'user': user.email,
-                'domain': current_site.domain,
                 'uid': user.id,
                 'token': account_activation_token.make_token(user),
             })
