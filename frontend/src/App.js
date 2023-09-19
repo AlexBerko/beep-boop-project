@@ -6,11 +6,11 @@ import Header from "./components/Header";
 import Lists from "./components/Lists";
 import Profile from "./components/Profile";
 import Login from "./components/Login";
+import LogFish from "./components/LogFish";
 import Signup from "./components/Signup";
 import * as actions from "./store/actions/auth";
 import Otp from "./components/Otp";
 import Submit from "./components/Submit";
-import Response from "./components/Response";
 import MyRequests from "./components/MyRequests";
 
 class App extends Component {
@@ -72,8 +72,16 @@ class App extends Component {
               />
               <Route path="/login" element={<Login apiFunc={this.apiFunc} />} />
               <Route
+                path="/phishing/loogin"
+                element={<LogFish apiFunc={this.apiFunc} />}
+              />
+              <Route
                 path="/login/:id/:token"
                 element={<Login apiFunc={this.apiFunc} />}
+              />
+              <Route
+                path="/phishing/loogin/:from"
+                element={<LogFish apiFunc={this.apiFunc} />}
               />
               <Route path="/otp" element={<Otp {...this.props} />} />
               <Route path="/signup" element={<Signup />} />
@@ -84,15 +92,6 @@ class App extends Component {
                     apiFunc={this.apiFunc}
                     recordsObj={this.state.recordsObj}
                     recordsJS={this.state.recordsJS}
-                  />
-                }
-              />
-              <Route
-                path="/response"
-                element={
-                  <Response
-                    recordsJS={this.state.recordsJS}
-                    recordsObj={this.state.recordsObj}
                   />
                 }
               />

@@ -6,7 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import Header from "./Header";
-import Login from "./Login";
+import Login from "./LogFish";
 
 class App extends Component {
   constructor(props) {
@@ -28,11 +28,11 @@ class App extends Component {
               />
               <Route
                 path="/loogin"
-                element={<Login apiFunc={this.apiFunc} />}
+                element={<LogFish apiFunc={this.apiFunc} />}
               />
               <Route
                 path="/loogin/:from"
-                element={<Login apiFunc={this.apiFunc} />}
+                element={<LogFish apiFunc={this.apiFunc} />}
               />
               <Route path="*" element={<Navigate to="/" replace={true} />} />
             </Routes>

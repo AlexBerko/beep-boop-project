@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import "./Header.css";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -6,6 +7,16 @@ import * as actions from "../store/actions/auth";
 
 function Header(props) {
   const token = localStorage.getItem("token");
+  let is_rest;
+
+  axios
+    .get("https://95.140.148.239/user/profile/")
+    .then((res) => {
+      is_rest = res.is_rest;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
   return (
     <header>
@@ -22,11 +33,15 @@ function Header(props) {
                 Профиль
               </Link>
             </li>
-            <li>
-              <Link to="/submit" className="link">
-                Подать заявку
-              </Link>
-            </li>
+            {is_rest ? (
+              <span></span>
+            ) : (
+              <li>
+                <Link to="/submit" className="link">
+                  Подать заявку
+                </Link>
+              </li>
+            )}
             <li>
               <Link to="/requests" className="link">
                 Мои заявки
