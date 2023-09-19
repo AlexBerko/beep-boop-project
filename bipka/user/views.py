@@ -20,6 +20,10 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user
 
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 from .forms import *
 from .serializers import *
 from .token import account_activation_token
@@ -43,25 +47,38 @@ def otp_provider():
     return generate_OTP
 
 
-# Otp email sender
+def send_email_with_html(recipient_email, subject, template_name, context):
+    msg = MIMEMultipart()
+    html_message = render_to_string(template_name, context)
+    mime_text = MIMEText(html_message, 'html')
+    msg.attach(mime_text)
+
+    msg['From'] = settings.EMAIL_HOST_USER
+    msg['To'] = recipient_email
+    msg['Subject'] = subject
+
+    try:
+        smtp_server = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+        smtp_server.starttls()
+        smtp_server.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+        smtp_server.send_message(msg)
+        smtp_server.quit()
+        return True
+    except Exception as e:
+        return False
+
+
 def send_otp_in_mail(user, otp):
-    '''
     subject = 'Код подтверждения аутентификации'
-    message = f'Здравствуйте, {user.email}!\n Для завершения аутентификации введите следующий код: {otp.otp}'
+    # message = f'Здравствуйте, {user.email}!\n Для завершения аутентификации введите следующий код: {otp.otp}'
     email_from = settings.EMAIL_HOST_USER
-    recipient_list = [user.email, ]
-    send_mail(subject, message, email_from, recipient_list)
-    '''
-    mail_subject = 'Код подтверждения аутентификации'
-    message = render_to_string('otp_email.html', {
-        'user': user.email,
-        'otp': otp.otp,
-    })
-    to_email = user.email
-    email = EmailMessage(
-        mail_subject, message, to=[to_email]
-    )
-    email.send()
+    # recipient_list = [user.email, ]
+    # send_mail(subject, message, email_from, recipient_list)
+    context = {'user': user.email,
+               'otp': otp.otp
+               }
+
+    return send_email_with_html(user.email, subject, 'otp_email.html', context)
 
 
 class OtpVerifyView_API(APIView):
@@ -72,7 +89,7 @@ class OtpVerifyView_API(APIView):
         otp = request.data.get('otp')
         verify_otp = OtpModel.objects.filter(otp=otp)
         if verify_otp.exists():
-            #login(request, verify_otp[0].user)
+            # login(request, verify_otp[0].user)
             return Response(status=200)
         else:
             return Response({'error': 'Ошибка! Неверный код'}, status=400)
@@ -168,25 +185,33 @@ class SignUP(APIView):
                     return Response({'error': 'Ошибка в наименовании организации (необходимо указать полное имя).'},
                                     status=400)
 
-             # После проверки сохраняем пользователя в БД
+            # После проверки сохраняем пользователя в БД
             user.save()
 
             # Составляем письмо с ссылкой для подтверждения регистрации
             mail_subject = 'Подтверждение регистрации'
-            message = render_to_string('acc_active_email.html', {
+            #message = render_to_string('acc_active_email.html', {
+            #    'user': user.email,
+            #    'uid': user.id,
+            #    'token': account_activation_token.make_token(user),
+            #})
+            to_email = form.cleaned_data.get('email')
+            #email = EmailMessage(
+            #    mail_subject, message, to=[to_email]
+            #)
+
+            context = {
                 'user': user.email,
                 'uid': user.id,
                 'token': account_activation_token.make_token(user),
-            })
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            try:
-                email.send()
-            except:
+            }
+
+            if not send_email_with_html(to_email, mail_subject, 'acc_active_email.html', context):
                 return Response({'error': 'Ошибка отправки сообщения на почту.'}, status=400)
-                
+            #try:
+            #    email.send()
+            #except:
+            #    return Response({'error': 'Ошибка отправки сообщения на почту.'}, status=400)
 
             serializer = UserRegSerializer(user)
             json = JSONRenderer().render(serializer.data)
@@ -212,7 +237,6 @@ class ActivateAccount_API(APIView):
             return Response(status=200)
         else:
             return Response(status=400)
-
 
 
 #### API-профиля ######
@@ -250,7 +274,6 @@ class OrgDetailView(APIView):
     '''
 
 
-
 class OTP_send(APIView):
     def post(self, request):
         if 'email' not in request.data:
@@ -267,19 +290,10 @@ class OTP_send(APIView):
 
         OtpModel.objects.filter(user=user).delete()
         otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
-        send_otp_in_mail(user, otp_stuff)
-        return Response(status=200)
-
-
-
-
-
-
-
-
-
-
-
+        if send_otp_in_mail(user, otp_stuff):
+            return Response(status=200)
+        else:
+            return Response({'error': 'Ошибка отправки кода на почту.'}, status=400)
 
 
 #################################################
@@ -320,14 +334,10 @@ class SignIN(APIView):
                 return Response(status=200)
 
 
-
-
 class LogOUT_API(APIView):
     def get(self, request):
         logout(request)
         return Response(status=200)
-
-
 
 
 # @api_view(['POST', 'GET'])
