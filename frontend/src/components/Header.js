@@ -9,8 +9,14 @@ function Header(props) {
   const token = localStorage.getItem("token");
   let is_rest;
 
+  let config = {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  };
+
   axios
-    .get("https://95.140.148.239/user/profile/")
+    .get("https://95.140.148.239/user/profile/", config)
     .then((res) => {
       is_rest = res.is_rest;
     })
