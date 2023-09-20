@@ -10,17 +10,17 @@ export default function Announcement(props) {
   let datestring;
   let full_info;
 
-  if (props.recordsJS.pub_date !== undefined) {
-    datestring = `${props.recordsJS.pub_date.substr(
+  if (props.recordsJS.deadline_date !== undefined) {
+    datestring = `${props.recordsJS.deadline_date.substr(
       8,
       2
-    )}.${props.recordsJS.pub_date.substr(
+    )}.${props.recordsJS.deadline_date.substr(
       5,
       2
-    )}.${props.recordsJS.pub_date.substr(
+    )}.${props.recordsJS.deadline_date.substr(
       0,
       4
-    )} ${props.recordsJS.pub_date.substr(11, 8)}`;
+    )} ${props.recordsJS.deadline_date.substr(11, 8)}`;
 
     full_info = props.recordsJS.full_info.split("\r\n");
   }
@@ -69,10 +69,13 @@ export default function Announcement(props) {
           </div>
         </div>
         <div className="date">
-          <time>{datestring}</time>
+          <div>
+            <p className="date_time">Срок выполнения:</p>
+            <time>{datestring}</time>
+          </div>
           {props.recordsJS.who_complete_id ? (
-            <div>
-              <p>Вы откликнулись на эту просьбу</p>
+            <div className="btn">
+              <p className="anstxt">Вы откликнулись на эту просьбу</p>
               <button
                 className="delete"
                 onClick={() => {

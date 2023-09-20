@@ -82,7 +82,8 @@ const App = (props) => {
             },
           ]}
         >
-          <Input value={props.recordsJS.title} />
+          <input value={props.recordsJS.title} />
+          {/* <Input value={props.recordsJS.title} /> */}
         </Form.Item>
 
         <Form.Item name="full_info" label="Описание">

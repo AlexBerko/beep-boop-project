@@ -40,6 +40,11 @@
 
 .date {
   margin-top: 40px;
+  display: flex;
+}
+
+.btn {
+  margin-left: 50px;
 }
 
 .answer {
@@ -54,8 +59,8 @@
   cursor: pointer;
 }
 
-/* .edit {
-  margin-left: 22%;
+.edit {
+  margin-left: 10%;
   padding: 15px;
   font-size: medium;
   font-weight: 300;
@@ -64,10 +69,10 @@
   border-radius: 20px;
   color: aliceblue;
   cursor: pointer;
-} */
+}
 
 .delete {
-  margin-left: 22%;
+  margin-left: 10%;
   padding: 15px;
   font-size: medium;
   font-weight: 300;
@@ -86,4 +91,8 @@
   height: 100vh;
   font-size: xx-large;
   font-weight: 500;
+}
+
+.date_time {
+  margin-bottom: 3px;
 }
