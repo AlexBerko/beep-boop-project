@@ -28,6 +28,7 @@ const App = (props) => {
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const token = localStorage.getItem("token");
+  console.log(props.recordsJS);
 
   const onFinish = (values) => {
     const formData = new FormData();
@@ -82,7 +83,7 @@ const App = (props) => {
             },
           ]}
         >
-          <input value={props.recordsJS.title} />
+          <input type="text" value={props.recordsJS.title} />
           {/* <Input value={props.recordsJS.title} /> */}
         </Form.Item>
 

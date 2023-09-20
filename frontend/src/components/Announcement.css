@@ -47,6 +47,10 @@
   margin-left: 50px;
 }
 
+.btn3 {
+  display: flex;
+}
+
 .answer {
   margin-left: 22%;
   padding: 15px;

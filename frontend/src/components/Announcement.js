@@ -93,7 +93,7 @@ export default function Announcement(props) {
           ) : (
             <span>
               {props.recordsJS.username === props.username ? (
-                <div>
+                <div className="btn3">
                   <button
                     className="answer"
                     onClick={() => {
