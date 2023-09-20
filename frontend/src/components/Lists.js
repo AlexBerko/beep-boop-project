@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import List from "./List";
 import "./List.css";
@@ -6,9 +7,28 @@ import "./List.css";
 export default function Lists(props) {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  let config = {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  };
+
+  // https://95.140.148.239
+  // http://127.0.0.1:8000
 
   useEffect(() => {
     props.apiFunc("https://95.140.148.239/help/list/", "GET", token);
+    axios
+      .get("https://95.140.148.239/user/profile/", config)
+      .then((res) => {
+        const data = JSON.parse(res.data);
+        props.handler(data.is_rest);
+        console.log(res);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [token]);
 
   console.log(props.recordsJS);

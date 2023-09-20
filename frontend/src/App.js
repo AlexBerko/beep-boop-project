@@ -20,9 +20,11 @@ class App extends Component {
     this.state = {
       recordsJS: [],
       recordsObj: [],
+      is_rest: undefined,
     };
 
     this.apiFunc = this.apiFunc.bind(this);
+    this.handler = this.handler.bind(this);
   }
 
   componentDidMount() {
@@ -33,7 +35,12 @@ class App extends Component {
     return (
       <div className="app">
         <Router>
-          <Header {...this.props} apiFunc={this.apiFunc} />
+          <Header
+            {...this.props}
+            apiFunc={this.apiFunc}
+            handler={this.handler}
+            is_rest={this.state.is_rest}
+          />
           <div className="container">
             <Routes>
               <Route
@@ -43,6 +50,8 @@ class App extends Component {
                     apiFunc={this.apiFunc}
                     recordsObj={this.state.recordsObj}
                     recordsJS={this.state.recordsJS}
+                    is_rest={this.state.is_rest}
+                    handler={this.handler}
                   />
                 }
               />
@@ -54,6 +63,7 @@ class App extends Component {
                     recordsJS={this.state.recordsJS}
                     recordsObj={this.state.recordsObj}
                     id={this.state.id}
+                    handler={this.handler}
                   />
                 }
               />
@@ -100,6 +110,13 @@ class App extends Component {
         </Router>
       </div>
     );
+  }
+
+  handler(data) {
+    this.setState({
+      is_rest: data,
+    });
+    console.log(this.state.is_rest);
   }
 
   async apiFunc(url, method, token, data) {

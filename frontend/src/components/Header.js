@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import "./Header.css";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -7,28 +6,6 @@ import * as actions from "../store/actions/auth";
 
 function Header(props) {
   const token = localStorage.getItem("token");
-  let is_rest;
-
-  let config = {
-    headers: {
-      Authorization: `Token ${token}`,
-    },
-  };
-
-  useEffect(() => {
-    axios
-      .get("https://95.140.148.239/user/profile/", config)
-      .then((res) => {
-        const data = JSON.parse(res.data);
-        is_rest = data.is_rest;
-        console.log(res);
-        console.log(data);
-        console.log(is_rest);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [is_rest]);
 
   return (
     <header>
@@ -45,7 +22,7 @@ function Header(props) {
                 Профиль
               </Link>
             </li>
-            {is_rest ? (
+            {props.is_rest ? (
               <span></span>
             ) : (
               <li>
