@@ -144,6 +144,7 @@ class HelpDetailView(APIView):
         else:
             if help.who_complete == current_user:
                 help.who_complete = None
+                help.is_taken = False
                 help.save()
                 return Response(status=200)
             else:
