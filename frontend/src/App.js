@@ -11,6 +11,7 @@ import Signup from "./components/Signup";
 import * as actions from "./store/actions/auth";
 import Otp from "./components/Otp";
 import Submit from "./components/Submit";
+import Editing from "./components/Editing";
 import MyRequests from "./components/MyRequests";
 
 class App extends Component {
@@ -21,6 +22,7 @@ class App extends Component {
       recordsJS: [],
       recordsObj: [],
       is_rest: undefined,
+      username: undefined,
     };
 
     this.apiFunc = this.apiFunc.bind(this);
@@ -62,7 +64,7 @@ class App extends Component {
                     apiFunc={this.apiFunc}
                     recordsJS={this.state.recordsJS}
                     recordsObj={this.state.recordsObj}
-                    id={this.state.id}
+                    username={this.state.username}
                     handler={this.handler}
                   />
                 }
@@ -96,6 +98,15 @@ class App extends Component {
               <Route path="/otp" element={<Otp {...this.props} />} />
               <Route path="/signup" element={<Signup />} />
               <Route
+                path="/editing"
+                element={
+                  <Editing
+                    apiFunc={this.apiFunc}
+                    recordsJS={this.state.recordsJS}
+                  />
+                }
+              />
+              <Route
                 path="/requests"
                 element={
                   <MyRequests
@@ -112,11 +123,11 @@ class App extends Component {
     );
   }
 
-  handler(data) {
+  handler(is_rest, username) {
     this.setState({
-      is_rest: data,
+      is_rest: is_rest,
+      username: username,
     });
-    console.log(this.state.is_rest);
   }
 
   async apiFunc(url, method, token, data) {

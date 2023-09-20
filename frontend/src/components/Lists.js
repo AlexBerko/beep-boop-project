@@ -22,9 +22,7 @@ export default function Lists(props) {
       .get("https://95.140.148.239/user/profile/", config)
       .then((res) => {
         const data = JSON.parse(res.data);
-        props.handler(data.is_rest);
-        console.log(res);
-        console.log(data);
+        props.handler(data.is_rest, data.username);
       })
       .catch((err) => {
         console.log(err);

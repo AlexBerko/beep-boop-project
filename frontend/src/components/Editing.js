@@ -46,8 +46,8 @@ const App = (props) => {
     );
 
     props.apiFunc(
-      "https://95.140.148.239/help/create/",
-      "POST",
+      `https://95.140.148.239/help/${props.recordsJS.id}/`,
+      "PUT",
       token,
       formData
     );
@@ -82,11 +82,11 @@ const App = (props) => {
             },
           ]}
         >
-          <Input />
+          <Input value={props.recordsJS.title} />
         </Form.Item>
 
         <Form.Item name="full_info" label="Описание">
-          <Input.TextArea rows={9} />
+          <Input.TextArea rows={9} value={props.recordsJS.full_info} />
         </Form.Item>
 
         <Form.Item name="deadline_date" label="Срок выполнения">
@@ -100,21 +100,19 @@ const App = (props) => {
           }}
         >
           <Button type="primary" htmlType="submit">
-            Подать
+            Сохранить
           </Button>
         </Form.Item>
       </Form>
 
       <Modal
-        title="Отлично!"
+        title="Изменения сохранены"
         visible={isModalVisible}
         onOk={handleModalOk}
         closable={false}
         maskClosable={false}
         onCancel={handleModalOk}
-      >
-        <p>Вы подали заявку</p>
-      </Modal>
+      />
     </div>
   );
 };

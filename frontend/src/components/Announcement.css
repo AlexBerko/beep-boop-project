@@ -54,6 +54,30 @@
   cursor: pointer;
 }
 
+/* .edit {
+  margin-left: 22%;
+  padding: 15px;
+  font-size: medium;
+  font-weight: 300;
+  background-color: rgb(74, 108, 244);
+  border: none;
+  border-radius: 20px;
+  color: aliceblue;
+  cursor: pointer;
+} */
+
+.delete {
+  margin-left: 22%;
+  padding: 15px;
+  font-size: medium;
+  font-weight: 300;
+  background-color: rgb(233, 48, 48);
+  border: none;
+  border-radius: 20px;
+  color: aliceblue;
+  cursor: pointer;
+}
+
 .loading {
   display: flex;
   justify-content: center;
