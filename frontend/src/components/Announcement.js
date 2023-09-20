@@ -31,7 +31,6 @@ export default function Announcement(props) {
   };
 
   console.log(props.recordsJS);
-  console.log(props.recordsObj);
 
   if (props.recordsJS.title === undefined) {
     return <div className="loading">Loading...</div>;

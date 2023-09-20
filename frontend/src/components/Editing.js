@@ -83,7 +83,7 @@ const App = (props) => {
             },
           ]}
         >
-          <input type="text" value={props.recordsJS.title} />
+          <input type="text">{props.recordsJS.title}</input>
           {/* <Input value={props.recordsJS.title} /> */}
         </Form.Item>
 
