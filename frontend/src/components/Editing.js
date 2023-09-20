@@ -85,7 +85,7 @@ const App = (props) => {
         >
           <input type="text">{props.recordsJS.title}</input>
           <input type="text" value={props.recordsJS.title} />
-          <Input type="text">{props.recordsJS.title}</Input>
+          {/* <Input type="text">{props.recordsJS.title}</Input> */}
           <Input type="text" value={props.recordsJS.title} />
         </Form.Item>
 
