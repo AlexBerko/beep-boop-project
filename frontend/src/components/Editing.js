@@ -74,7 +74,7 @@ const App = (props) => {
         }}
         validateMessages={validateMessages}
       >
-        <Form.Item
+        {/* <Form.Item
           name="title"
           label="Название"
           rules={[
@@ -84,7 +84,7 @@ const App = (props) => {
           ]}
         >
           <input type="text">{props.recordsJS.title}</input>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="title2"
           label="Название2"
@@ -96,7 +96,7 @@ const App = (props) => {
         >
           <input type="text" value={props.recordsJS.title} />
         </Form.Item>
-        {/* <Form.Item
+        <Form.Item
           name="title3"
           label="Название3"
           rules={[
@@ -106,7 +106,7 @@ const App = (props) => {
           ]}
         >
           <Input type="text">{props.recordsJS.title}</Input>
-        </Form.Item> */}
+        </Form.Item>
         <Form.Item
           name="title4"
           label="Название4"
