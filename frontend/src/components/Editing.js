@@ -96,7 +96,7 @@ const App = (props) => {
         >
           <input type="text" value={props.recordsJS.title} />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="title3"
           label="Название3"
           rules={[
@@ -106,7 +106,7 @@ const App = (props) => {
           ]}
         >
           <Input type="text">{props.recordsJS.title}</Input>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="title4"
           label="Название4"
