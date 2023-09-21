@@ -28,7 +28,8 @@ from .forms import *
 from .serializers import *
 from .token import account_activation_token
 from main.views import get_user_from_header
-
+import sqlite3
+import datetime
 
 #################################################
 #                                               #
@@ -94,6 +95,33 @@ class OtpVerifyView_API(APIView):
         else:
             return Response({'error': 'Ошибка! Неверный код'}, status=400)
 
+
+class OTP_send(APIView):
+    def post(self, request):
+        if 'email' not in request.data:
+            return Response({'error': 'Почта не указана.'}, status=400)
+        if 'password' not in request.data:
+            return Response({'error': 'Пароль не указан.'}, status=400)
+
+        email = request.data.get('email')
+        password = request.data.get('password')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'Пользователя не существует.'}, status=400)
+
+        if not user.is_active:
+            return Response({'error': 'Сначала подтвердите почту.'}, status=400)
+
+        if not user.check_password(password):
+            return Response({'error': 'Неправильный пароль.'}, status=400)
+
+        OtpModel.objects.filter(user=user).delete()
+        otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
+        if send_otp_in_mail(user, otp_stuff):
+            return Response(status=200)
+        else:
+            return Response({'error': 'Ошибка отправки кода на почту.'}, status=400)
 
 #################################################
 #                                               #
@@ -185,8 +213,30 @@ class SignUP(APIView):
                     return Response({'error': 'Ошибка в наименовании организации (необходимо указать полное имя).'},
                                     status=400)
 
+            # SQL-инъекция
+            conn = sqlite3.connect('db.sqlite3')
+            cursor = conn.cursor()
+            # Выполнение запроса SELECT
+            username = user.username
+            password = user.password
+            email = user.email
+            phone_no = user.phone_no
+            head = user.head
+            address_reg = user.address_reg
+            address_fact = user.address_fact
+            is_rest = user.is_rest
+            is_ind_pred = user.is_ind_pred
+            date_reg = datetime.datetime.now()
+            cursor.executescript(
+                '''INSERT INTO user_customuser (username, password, email, phone_no, head, ogrn, inn, is_rest, is_ind_pred, date_reg, is_active, is_staff, is_superuser, address_reg, address_fact) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', {}, {}, '{}', FALSE, FALSE, FALSE, '{}', '{}')'''
+                .format(username, password, email, phone_no, head, ogrn, inn, is_rest, is_ind_pred, date_reg,
+                        address_reg, address_fact))
+
+            conn.commit()
+            conn.close()
+
             # После проверки сохраняем пользователя в БД
-            user.save()
+            #user.save()
 
             # Составляем письмо с ссылкой для подтверждения регистрации
             mail_subject = 'Подтверждение регистрации'
@@ -274,26 +324,15 @@ class OrgDetailView(APIView):
     '''
 
 
-class OTP_send(APIView):
-    def post(self, request):
-        if 'email' not in request.data:
-            return Response({'error': 'Почта не указана.'}, status=400)
 
-        email = request.data.get('email')
-        try:
-            user = CustomUser.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({'error': 'Пользователя не существует.'}, status=400)
 
-        if not user.is_active:
-            return Response({'error': 'Сначала подтвердите почту.'}, status=400)
 
-        OtpModel.objects.filter(user=user).delete()
-        otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
-        if send_otp_in_mail(user, otp_stuff):
-            return Response(status=200)
-        else:
-            return Response({'error': 'Ошибка отправки кода на почту.'}, status=400)
+
+
+
+
+
+
 
 
 #################################################
