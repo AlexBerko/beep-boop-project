@@ -52,16 +52,6 @@ const App = (props) => {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Введите данные заявки</h2>
-      <form method="post">
-        <label>
-          Text input1:{" "}
-          <input name="input1" type="text" value={props.recordsJS.title} />
-        </label>
-      </form>
-      <label>
-        Text input2:{" "}
-        <input name="input2" type="text" value={props.recordsJS.title} />
-      </label>
       <Form
         {...layout}
         name="nest-messages"
@@ -70,36 +60,9 @@ const App = (props) => {
           maxWidth: 800,
         }}
       >
-        <form method="post">
-          <label>
-            Text input3:{" "}
-            <input name="input3" type="text" value={props.recordsJS.title} />
-          </label>
-        </form>
-        <label>
-          Text input4:{" "}
-          <input name="input4" type="text" value={props.recordsJS.title} />
-        </label>
         <Form.Item
-          name="title2"
-          label="Название2"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <label>
-            <input
-              type="text"
-              value={props.recordsJS.title}
-              autocomplete="off"
-            />
-          </label>
-        </Form.Item>
-        <Form.Item
-          name="title4"
-          label="Название4"
+          name="title"
+          label="Название"
           rules={[
             {
               required: true,
@@ -116,7 +79,13 @@ const App = (props) => {
         </Form.Item>
 
         <Form.Item name="full_info" label="Описание">
-          <Input.TextArea rows={9} value={props.recordsJS.full_info} />
+          <label>
+            <Input.TextArea
+              rows={9}
+              value={props.recordsJS.full_info}
+              autocomplete="off"
+            />
+          </label>
         </Form.Item>
 
         <Form.Item name="deadline_date" label="Срок выполнения">
