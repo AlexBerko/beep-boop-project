@@ -15,6 +15,5 @@ urlpatterns = [
     path('activate/<str:uidb64>/<str:token>/', ActivateAccount_API.as_view(), name='activate'),
     path('auth/', include('djoser.urls')),
     re_path(r'^auth/', include('djoser.urls.authtoken')),
-    # path('signin/', SignIN.as_view(), name='login-user'),
-    # path('logout/', LogOUT_API.as_view(), name='user-logout'),
+    path('<int:pk>/', UserByID_API.as_view(), name='user_id'),
 ]

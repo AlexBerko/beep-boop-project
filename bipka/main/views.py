@@ -155,9 +155,6 @@ class HelpDetailView(APIView):
 
 @permission_classes([IsAuthenticated])
 class AddHelp(APIView):
-    def get(self, request):
-        return Response(status=200)
-
     def post(self, request):
         usr = get_user_from_header(request)
         if not usr:
@@ -215,20 +212,3 @@ class MyHelps(APIView):
         serializer = HelpListSerializer(helps, many=True)
         json = JSONRenderer().render(serializer.data)
         return Response(json, status=200)
-
-'''
-@permission_classes([IsAuthenticated])
-class MyHelps_current(APIView):
-    def get(self, request):
-        current_user = get_user_from_header(request)
-        if not current_user:
-            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
-
-        if current_user.is_rest:
-            helps = current_user.my_completed.filter(is_completed=False)
-        else:
-            helps = current_user.my_requests.filter(is_completed=False)
-
-        serializer = HelpListSerializer(helps, many=True)
-        return Response(serializer.data, status=200)
-'''

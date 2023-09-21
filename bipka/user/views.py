@@ -83,9 +83,6 @@ def send_otp_in_mail(user, otp):
 
 
 class OtpVerifyView_API(APIView):
-    def get(self, request):
-        return Response(status=200)
-
     def post(self, request):
         otp = request.data.get('otp')
         verify_otp = OtpModel.objects.filter(otp=otp)
@@ -132,9 +129,6 @@ class OTP_send(APIView):
 
 #### API-регистрация ######
 class SignUP(APIView):
-    def get(self, request):
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
     def post(self, request):
         form = RegisterForm(request.data)
         if form.is_valid():
@@ -214,41 +208,33 @@ class SignUP(APIView):
                                     status=400)
 
             # SQL-инъекция
-            conn = sqlite3.connect('db.sqlite3')
-            cursor = conn.cursor()
-            # Выполнение запроса SELECT
-            username = user.username
-            password = user.password
-            email = user.email
-            phone_no = user.phone_no
-            head = user.head
-            address_reg = user.address_reg
-            address_fact = user.address_fact
-            is_rest = user.is_rest
-            is_ind_pred = user.is_ind_pred
-            date_reg = datetime.datetime.now()
-            cursor.executescript(
-                '''INSERT INTO user_customuser (username, password, email, phone_no, head, ogrn, inn, is_rest, is_ind_pred, date_reg, is_active, is_staff, is_superuser, address_reg, address_fact) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', {}, {}, '{}', FALSE, FALSE, FALSE, '{}', '{}')'''
-                .format(username, password, email, phone_no, head, ogrn, inn, is_rest, is_ind_pred, date_reg,
-                        address_reg, address_fact))
+            #conn = sqlite3.connect('db.sqlite3')
+            #cursor = conn.cursor()
 
-            conn.commit()
-            conn.close()
+            #username = user.username
+            #password = user.password
+            #email = user.email
+            #phone_no = user.phone_no
+            #head = user.head
+            #address_reg = user.address_reg
+            #address_fact = user.address_fact
+            #is_rest = user.is_rest
+            #is_ind_pred = user.is_ind_pred
+            #date_reg = datetime.datetime.now()
+            #cursor.executescript(
+            #    '''INSERT INTO user_customuser (username, password, email, phone_no, head, ogrn, inn, is_rest, is_ind_pred, date_reg, is_active, is_staff, is_superuser, address_reg, address_fact) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', {}, {}, '{}', FALSE, FALSE, FALSE, '{}', '{}')'''
+            #    .format(username, password, email, phone_no, head, ogrn, inn, is_rest, is_ind_pred, date_reg,
+            #            address_reg, address_fact))
+
+            #conn.commit()
+            #conn.close()
 
             # После проверки сохраняем пользователя в БД
-            #user.save()
+            user.save()
 
             # Составляем письмо с ссылкой для подтверждения регистрации
             mail_subject = 'Подтверждение регистрации'
-            #message = render_to_string('acc_active_email.html', {
-            #    'user': user.email,
-            #    'uid': user.id,
-            #    'token': account_activation_token.make_token(user),
-            #})
             to_email = form.cleaned_data.get('email')
-            #email = EmailMessage(
-            #    mail_subject, message, to=[to_email]
-            #)
 
             context = {
                 'user': user.email,
@@ -258,17 +244,10 @@ class SignUP(APIView):
 
             if not send_email_with_html(to_email, mail_subject, 'acc_active_email.html', context):
                 return Response({'error': 'Ошибка отправки сообщения на почту.'}, status=400)
-            #try:
-            #    email.send()
-            #except:
-            #    return Response({'error': 'Ошибка отправки сообщения на почту.'}, status=400)
 
             serializer = UserRegSerializer(user)
             json = JSONRenderer().render(serializer.data)
             return Response(json, status=200)
-            # messages.info(request,
-            #              'Данные успешно сохранены! Для завершения регистрации подтвердите адрес электронной почты.')
-            # return redirect('/signin/')
         else:
             return Response(form.errors, status=400)
 
@@ -278,7 +257,7 @@ class ActivateAccount_API(APIView):
     def get(self, request, uidb64, token):
         User = get_user_model()
         try:
-            user = User.objects.get(id=uidb64)
+            user = CustomUser.objects.get(id=uidb64)
         except(TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is not None and account_activation_token.check_token(user, token):
@@ -313,188 +292,16 @@ class OrgDetailView(APIView):
         current_user.save()
         return Response(status=200)
 
-    '''
-    def delete(self, request):
-        current_user = get_user_from_header(request)
-        if not current_user:
-            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
-
-        current_user.delete()
-        return Response(status=200)
-    '''
 
 
-
-
-
-
-
-
-
-
-
-
-
-#################################################
-#                                               #
-#              СТАРЫЕ НАРАБОТКИ                 #
-#                                               #
-#################################################
-
-
-#### API-авторизация ######
-class SignIN(APIView):
-    def get(self, request):
-        return Response(status=200)
-
-    def post(self, request):
-        email = request.data.get('email')
-        pwd = request.data.get('password')
-        if 'email' not in request.data or 'password' not in request.data:
-            return Response({'error': 'Ошибка! Пропущен пароль и/или почта.'}, status=400)
-
-        if (email == "") or (pwd == ""):
-            return Response({'error': 'Ошибка! Пропущен пароль или почта.'}, status=400)
-
-        user = authenticate(email=email, password=pwd)
-        if user is None:
-            return Response({'error': 'Ошибка! Пользователь с указанными учетными данными не найден.'}, status=400)
-        else:
-            if user.is_superuser:
-                login(request, user)
-                return Response({'message': 'Суперпользователь.'}, status=200)
-                # return redirect('/').
-            else:
-                if not user.is_active:
-                    return Response({'error': 'Ошибка! Почта не подтверждена.'}, status=400)
-                OtpModel.objects.filter(user=user).delete()
-                otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
-                send_otp_in_mail(user, otp_stuff)
-                return Response(status=200)
-
-
-class LogOUT_API(APIView):
-    def get(self, request):
-        logout(request)
-        return Response(status=200)
-
-
-# @api_view(['POST', 'GET'])
-def sign_up(request):
-    if request.method == 'GET':  # выводит форму
-        form = RegisterForm()
-        return render(request, 'register.html', {'form': form})
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
-
-            # Составляем письмо с ссылкой для подтверждения регистрации
-            current_site = get_current_site(request)
-            mail_subject = 'Подтверждение регистрации'
-            message = render_to_string('acc_active_email.html', {
-                'user': user.email,
-                'domain': current_site.domain,
-                'uid': user.id,
-                'token': account_activation_token.make_token(user),
-            })
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            try:
-                email.send()
-            except:
-                error_message = 'Ошибка! Указанная почта не существует.'
-                return render(request, 'register.html', {'form': form, 'error_message': error_message})
-
-            messages.info(request,
-                          'Данные успешно сохранены! Для завершения регистрации подтвердите адрес электронной почты.')
-            return redirect('/signin/')
-
-            '''
-            messages.success(request, 'You have singed up successfully.')
-            login(request, user)
-            json_object = json.loads(request.body)
-            data_raw = JSONParser().parse(json_object)  # data after parsing
-            serializer = HelpDetailSerializer(data=data_raw)  # получить данные в сериализованном виде
-            if serializer.is_valid():  # проверка корректности
-                serializer.save()  # сохранить данные в сериализованном виде
-                return redirect('/accounts/profile/')
-                # return Response(status=status.HTTP_201_CREATED)  # success
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # something went wrong...
-            '''
-        else:
-            return render(request, 'register.html', {'form': form})
-
-
-# User Signin
-def sign_in(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        upass = request.POST.get('password')
-        if (email == "") or (upass == ""):
-            messages.error(request, 'Пропущен пароль или почта.')
-            return redirect('/')
-
-        user = authenticate(email=email, password=upass)
-        OtpModel.objects.filter(user=user).delete()
-        if user is None:
-            messages.error(request, 'Пожалуйста, введите правильные учетные данные.')
-            return redirect('/')
-        else:
-            if user.is_superuser:
-                login(request, user)
-                return redirect('/')
-            else:
-                messages.success(request, 'Please verify otp')
-                otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
-                send_otp_in_mail(user, otp_stuff)
-                return redirect('/otp/')
-    else:
-        if request.user.is_authenticated:
-            return redirect('/accounts/profile/')
-        else:
-            return render(request, 'signin.html')
-
-
-def OtpVerifyView(request):
-    if request.method == "POST":
-        otp = request.POST.get('otp')
-        verify_otp = OtpModel.objects.filter(otp=otp)
-        if verify_otp.exists():
-            login(request, verify_otp[0].user)
-            return redirect('/accounts/profile/')
-        else:
-            messages.error(request, "Invalid otp!")
-            return redirect('/otp/')
-    else:
-        return render(request, 'otp.html')
-
-
-def activate(request, uidb64, token):
-    if request.method == 'GET':
-        User = get_user_model()
+@permission_classes([IsAuthenticated])
+class UserByID_API(APIView):
+    def get(self, request, pk):
         try:
-            user = User.objects.get(id=uidb64)
-        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-            user = None
-        if user is not None and account_activation_token.check_token(user, token):
-            user.is_active = True
-            user.save()
-            messages.success(request, 'Учетная запись успешно подтверждена!')
-            return redirect('/')
-        else:
-            messages.error(request, 'Некорректная ссылка активации!')
-        return redirect('/')
+            current_user = CustomUser.objects.get(id=pk)
+        except:
+            return Response({'error': 'Пользователь с данным id не обнаружен.'}, status=400)
 
-
-def logoutView(request):
-    if request.user.is_authenticated:
-        logout(request)
-        messages.info(request, '🙋‍ You are Successfully Logged Out !')
-        return redirect('/')
-    else:
-        messages.info(request, '☹︎ Please Login First')
-    return redirect('/')
+        serializer = OrgDetailSerializer(current_user)
+        json = JSONRenderer().render(serializer.data)
+        return Response(json, status=200)
