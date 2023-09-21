@@ -52,13 +52,15 @@ const App = (props) => {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Введите данные заявки</h2>
-      <form>
+      <form method="post">
         <label>
-          Text input1: <input type="text" value={props.recordsJS.title} />
+          Text input1:{" "}
+          <input name="input1" type="text" value={props.recordsJS.title} />
         </label>
       </form>
       <label>
-        Text input2: <input type="text" value={props.recordsJS.title} />
+        Text input2:{" "}
+        <input name="input2" type="text" value={props.recordsJS.title} />
       </label>
       <Form
         {...layout}
@@ -68,13 +70,15 @@ const App = (props) => {
           maxWidth: 800,
         }}
       >
-        <form>
+        <form method="post">
           <label>
-            Text input3: <input type="text" value={props.recordsJS.title} />
+            Text input3:{" "}
+            <input name="input3" type="text" value={props.recordsJS.title} />
           </label>
         </form>
         <label>
-          Text input4: <input type="text" value={props.recordsJS.title} />
+          Text input4:{" "}
+          <input name="input4" type="text" value={props.recordsJS.title} />
         </label>
         <Form.Item
           name="title2"
