@@ -52,6 +52,16 @@ const App = (props) => {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Введите данные заявки</h2>
+      <form method="post">
+        <label>
+          Text input1:{" "}
+          <input name="input1" type="text" value={props.recordsJS.title} />
+        </label>
+      </form>
+      <label>
+        Text input2:{" "}
+        <input name="input2" type="text" value={props.recordsJS.title} />
+      </label>
       <Form
         {...layout}
         name="nest-messages"
@@ -60,6 +70,16 @@ const App = (props) => {
           maxWidth: 800,
         }}
       >
+        <form method="post">
+          <label>
+            Text input3:{" "}
+            <input name="input3" type="text" value={props.recordsJS.title} />
+          </label>
+        </form>
+        <label>
+          Text input4:{" "}
+          <input name="input4" type="text" value={props.recordsJS.title} />
+        </label>
         <Form.Item
           name="title"
           label="Название"
@@ -73,6 +93,9 @@ const App = (props) => {
             <Input type="text" value={props.recordsJS.title} />
           </label>
         </Form.Item>
+        <label>
+          <Input name="title5" type="text" value={props.recordsJS.title} />
+        </label>
 
         <Form.Item name="full_info" label="Описание">
           <label>

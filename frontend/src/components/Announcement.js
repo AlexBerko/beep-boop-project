@@ -25,6 +25,8 @@ export default function Announcement(props) {
       )
       .then((res) => {
         who_complete_data = JSON.parse(res.data);
+        console.log(res);
+        console.log(who_complete_data);
       })
       .catch((err) => {
         console.log(err);
