@@ -14,6 +14,7 @@ const layout = {
 const App = (props) => {
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  let [titleField, setTitleField] = useState(props.recordsJS.title);
   const token = localStorage.getItem("token");
   console.log(props.recordsJS);
 
@@ -49,18 +50,32 @@ const App = (props) => {
     navigate("/requests", { replace: true });
   };
 
+  const handleChangeTitle = (e) => {
+    setTitleField(e.target.value);
+  };
+
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Введите данные заявки</h2>
       <form method="post">
         <label>
           Text input1:{" "}
-          <input name="input1" type="text" value={props.recordsJS.title} />
+          <input
+            name="input1"
+            type="text"
+            value={titleField}
+            onChange={handleChangeTitle}
+          />
         </label>
       </form>
       <label>
         Text input2:{" "}
-        <input name="input2" type="text" value={props.recordsJS.title} />
+        <input
+          name="input2"
+          type="text"
+          value={titleField}
+          onChange={handleChangeTitle}
+        />
       </label>
       <Form
         {...layout}
@@ -73,12 +88,22 @@ const App = (props) => {
         <form method="post">
           <label>
             Text input3:{" "}
-            <input name="input3" type="text" value={props.recordsJS.title} />
+            <input
+              name="input3"
+              type="text"
+              value={titleField}
+              onChange={handleChangeTitle}
+            />
           </label>
         </form>
         <label>
           Text input4:{" "}
-          <input name="input4" type="text" value={props.recordsJS.title} />
+          <input
+            name="input4"
+            type="text"
+            value={titleField}
+            onChange={handleChangeTitle}
+          />
         </label>
         <Form.Item
           name="title"
@@ -90,11 +115,20 @@ const App = (props) => {
           ]}
         >
           <label>
-            <Input type="text" value={props.recordsJS.title} />
+            <Input
+              type="text"
+              value={titleField}
+              onChange={handleChangeTitle}
+            />
           </label>
         </Form.Item>
         <label>
-          <Input name="title5" type="text" value={props.recordsJS.title} />
+          <Input
+            name="title5"
+            type="text"
+            value={titleField}
+            onChange={handleChangeTitle}
+          />
         </label>
 
         <Form.Item name="full_info" label="Описание">

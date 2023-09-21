@@ -7,6 +7,7 @@ import "./Announcement.css";
 export default function Announcement(props) {
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [whoCompleteData, setWhoCompleteData] = useState(false);
   const token = localStorage.getItem("token");
   let config = {
     headers: {
@@ -15,7 +16,6 @@ export default function Announcement(props) {
   };
   let datestring;
   let full_info;
-  let who_complete_data;
 
   if (props.recordsJS.who_complete_id) {
     axios
@@ -24,9 +24,9 @@ export default function Announcement(props) {
         config
       )
       .then((res) => {
-        who_complete_data = JSON.parse(res.data);
+        setWhoCompleteData(JSON.parse(res.data));
         console.log(res);
-        console.log(who_complete_data);
+        console.log(whoCompleteData);
       })
       .catch((err) => {
         console.log(err);
@@ -212,23 +212,24 @@ export default function Announcement(props) {
         </div>
         <div className="answer_info">
           {props.recordsJS.username === props.username &&
-          props.recordsJS.who_complete_id ? (
+          props.recordsJS.who_complete_id &&
+          whoCompleteData.username ? (
             <div>
               <p style={{ marginTop: "40px", fontWeight: "400" }}>
                 На вашу просьбу откликнулись
               </p>
               <div className="org_info_2">
                 <div>
-                  <p className="orgData">{who_complete_data.username}</p>
-                  <p className="orgData">ОГРН: {who_complete_data.ogrn}</p>
-                  <p className="orgData">ИНН: {who_complete_data.inn}</p>
+                  <p className="orgData">{whoCompleteData.username}</p>
+                  <p className="orgData">ОГРН: {whoCompleteData.ogrn}</p>
+                  <p className="orgData">ИНН: {whoCompleteData.inn}</p>
                 </div>
                 <div>
                   <p className="orgData">
-                    Ген. директор: {who_complete_data.head}
+                    Ген. директор: {whoCompleteData.head}
                   </p>
-                  <p className="orgData">Email: {who_complete_data.email}</p>
-                  <p className="orgData">Тел: {who_complete_data.phone_no}</p>
+                  <p className="orgData">Email: {whoCompleteData.email}</p>
+                  <p className="orgData">Тел: {whoCompleteData.phone_no}</p>
                 </div>
               </div>
             </div>
