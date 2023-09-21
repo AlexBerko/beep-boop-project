@@ -94,6 +94,7 @@ const App = (props) => {
               prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Password"
+              autoComplete="off"
             />
           </Form.Item>
 

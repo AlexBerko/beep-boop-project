@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Modal } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ export default function Announcement(props) {
   let datestring;
   let full_info;
 
-  if (props.recordsJS.who_complete_id) {
+  useEffect(() => {
     axios
       .get(
         `https://95.140.148.239/user/${props.recordsJS.who_complete_id}/`,
@@ -31,7 +31,7 @@ export default function Announcement(props) {
       .catch((err) => {
         console.log(err);
       });
-  }
+  }, [props.recordsJS.who_complete_id]);
 
   if (props.recordsJS.deadline_date !== undefined) {
     datestring = `${props.recordsJS.deadline_date.substr(
