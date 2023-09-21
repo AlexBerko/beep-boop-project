@@ -84,8 +84,38 @@ const App = (props) => {
           ]}
         >
           <input type="text">{props.recordsJS.title}</input>
+        </Form.Item>
+        <Form.Item
+          name="title2"
+          label="Название2"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
           <input type="text" value={props.recordsJS.title} />
-          {/* <Input type="text">{props.recordsJS.title}</Input> */}
+        </Form.Item>
+        <Form.Item
+          name="title3"
+          label="Название3"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input type="text">{props.recordsJS.title}</Input>
+        </Form.Item>
+        <Form.Item
+          name="title4"
+          label="Название4"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
           <Input type="text" value={props.recordsJS.title} />
         </Form.Item>
 
