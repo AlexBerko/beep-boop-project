@@ -70,21 +70,13 @@ const App = (props) => {
           ]}
         >
           <label>
-            <Input
-              type="text"
-              value={props.recordsJS.title}
-              autocomplete="off"
-            />
+            <Input type="text" value={props.recordsJS.title} />
           </label>
         </Form.Item>
 
         <Form.Item name="full_info" label="Описание">
           <label>
-            <Input.TextArea
-              rows={9}
-              value={props.recordsJS.full_info}
-              autocomplete="off"
-            />
+            <Input.TextArea rows={9} value={props.recordsJS.full_info} />
           </label>
         </Form.Item>
 

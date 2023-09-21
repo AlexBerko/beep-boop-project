@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { Modal } from "antd";
 import { useNavigate } from "react-router-dom";
 import "./Announcement.css";
@@ -7,8 +8,28 @@ export default function Announcement(props) {
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const token = localStorage.getItem("token");
+  let config = {
+    headers: {
+      Authorization: `Token ${token}`,
+    },
+  };
   let datestring;
   let full_info;
+  let who_complete_data;
+
+  if (props.recordsJS.who_complete_id) {
+    axios
+      .get(
+        `https://95.140.148.239/user/${props.recordsJS.who_complete_id}/`,
+        config
+      )
+      .then((res) => {
+        who_complete_data = JSON.parse(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   if (props.recordsJS.deadline_date !== undefined) {
     datestring = `${props.recordsJS.deadline_date.substr(
@@ -194,6 +215,20 @@ export default function Announcement(props) {
               <p style={{ marginTop: "40px", fontWeight: "400" }}>
                 На вашу просьбу откликнулись
               </p>
+              <div className="org_info_2">
+                <div>
+                  <p className="orgData">{who_complete_data.username}</p>
+                  <p className="orgData">ОГРН: {who_complete_data.ogrn}</p>
+                  <p className="orgData">ИНН: {who_complete_data.inn}</p>
+                </div>
+                <div>
+                  <p className="orgData">
+                    Ген. директор: {who_complete_data.head}
+                  </p>
+                  <p className="orgData">Email: {who_complete_data.email}</p>
+                  <p className="orgData">Тел: {who_complete_data.phone_no}</p>
+                </div>
+              </div>
             </div>
           ) : (
             <span></span>
