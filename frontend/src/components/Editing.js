@@ -11,19 +11,6 @@ const layout = {
   },
 };
 
-/* eslint-disable no-template-curly-in-string */
-const validateMessages = {
-  required: "${label} is required!",
-  types: {
-    email: "${label} is not a valid email!",
-    number: "${label} is not a valid number!",
-  },
-  number: {
-    range: "${label} must be between ${min} and ${max}",
-  },
-};
-/* eslint-enable no-template-curly-in-string */
-
 const App = (props) => {
   const navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -65,6 +52,14 @@ const App = (props) => {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Введите данные заявки</h2>
+      <form>
+        <label>
+          Text input1: <input type="text" value={props.recordsJS.title} />
+        </label>
+      </form>
+      <label>
+        Text input2: <input type="text" value={props.recordsJS.title} />
+      </label>
       <Form
         {...layout}
         name="nest-messages"
@@ -72,19 +67,15 @@ const App = (props) => {
         style={{
           maxWidth: 800,
         }}
-        validateMessages={validateMessages}
       >
-        {/* <Form.Item
-          name="title"
-          label="Название"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <input type="text">{props.recordsJS.title}</input>
-        </Form.Item> */}
+        <form>
+          <label>
+            Text input3: <input type="text" value={props.recordsJS.title} />
+          </label>
+        </form>
+        <label>
+          Text input4: <input type="text" value={props.recordsJS.title} />
+        </label>
         <Form.Item
           name="title2"
           label="Название2"
@@ -94,19 +85,14 @@ const App = (props) => {
             },
           ]}
         >
-          <input type="text" value={props.recordsJS.title} />
+          <label>
+            <input
+              type="text"
+              value={props.recordsJS.title}
+              autocomplete="off"
+            />
+          </label>
         </Form.Item>
-        {/* <Form.Item
-          name="title3"
-          label="Название3"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input type="text">{props.recordsJS.title}</Input>
-        </Form.Item> */}
         <Form.Item
           name="title4"
           label="Название4"
@@ -116,7 +102,13 @@ const App = (props) => {
             },
           ]}
         >
-          <Input type="text" value={props.recordsJS.title} />
+          <label>
+            <Input
+              type="text"
+              value={props.recordsJS.title}
+              autocomplete="off"
+            />
+          </label>
         </Form.Item>
 
         <Form.Item name="full_info" label="Описание">

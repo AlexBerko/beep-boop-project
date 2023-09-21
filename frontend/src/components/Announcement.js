@@ -191,7 +191,9 @@ export default function Announcement(props) {
           {props.recordsJS.username === props.username &&
           props.recordsJS.who_complete_id ? (
             <div>
-              <p>На вашу просьбу откликнулись</p>
+              <p style={{ marginTop: "40px", fontWeight: "400" }}>
+                На вашу просьбу откликнулись
+              </p>
             </div>
           ) : (
             <span></span>
