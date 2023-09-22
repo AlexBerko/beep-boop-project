@@ -70,15 +70,7 @@ const App = (props) => {
           maxWidth: 800,
         }}
       >
-        <Form.Item
-          name="title"
-          label="Название"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
+        <Form.Item name="title" label="Название">
           <label>
             <Input
               type="text"

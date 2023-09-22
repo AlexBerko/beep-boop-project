@@ -29,6 +29,7 @@
 
 .org_info_2 {
   display: flex;
+  margin-top: 10px;
   padding: 10px;
   border: 1px solid;
   border-radius: 20px;
