@@ -10,10 +10,11 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('register/', SignUP.as_view(), name='signup'),
     path('profile/', OrgDetailView.as_view(), name='user-profile'),
-    path('otp/', OtpVerifyView_API.as_view(), name='otp'),
-    path('send/otp/', OTP_send.as_view(), name='otp_send'),
-    path('activate/<str:uidb64>/<str:token>/', ActivateAccount_API.as_view(), name='activate'),
-    path('auth/', include('djoser.urls')),
-    re_path(r'^auth/', include('djoser.urls.authtoken')),
+    path('otp/', OtpCheck_API.as_view(), name='otp'),
+    path('login/', SignIN_API.as_view(), name='signin'),
     path('<int:pk>/', UserByID_API.as_view(), name='user_id'),
+
+    # path('activate/<str:uidb64>/<str:token>/', ActivateAccount_API.as_view(), name='activate'),
+    # path('auth/', include('djoser.urls')),
+    # re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]

@@ -207,7 +207,7 @@ class MyHelps(APIView):
             helps = current_user.my_completed.all()
         else:
             current_time = datetime.datetime.now()
-            helps = current_user.my_requests.filter(is_completed=False, deadline_date__gt=current_time)
+            helps = current_user.my_requests.all()
 
         serializer = HelpListSerializer(helps, many=True)
         json = JSONRenderer().render(serializer.data)
