@@ -59,10 +59,7 @@ export const authLogin = (email, password) => {
 
     axios
       .post("https://95.140.148.239/user/auth/token/login/", formData)
-      .then((res) => {
-        const tokenTmp = res.data.auth_token;
-        localStorage.setItem("tokenTmp", tokenTmp);
-      })
+      .then((res) => {})
       .catch((err) => {
         dispatch(authFail(err));
       });
@@ -87,13 +84,19 @@ export const authOtp = (otp) => {
     axios
       .post("https://95.140.148.239/user/otp/", formData)
       .then((res) => {
-        const token = localStorage.getItem("tokenTmp");
-        const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-        localStorage.setItem("token", token);
-        localStorage.setItem("expirationDate", expirationDate);
-        localStorage.removeItem("tokenTmp");
-        dispatch(authSuccess(token));
-        dispatch(checkAuthTimeout(3600));
+        axios
+          .post("https://95.140.148.239/user/auth/token/login/", formData)
+          .then((res) => {
+            const token = res.data.auth_token;
+            localStorage.setItem("token", token);
+            const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+            localStorage.setItem("expirationDate", expirationDate);
+            dispatch(authSuccess(token));
+            dispatch(checkAuthTimeout(3600));
+          })
+          .catch((err) => {
+            dispatch(authFail(err));
+          });
       })
       .catch((err) => {
         dispatch(authFail(err));

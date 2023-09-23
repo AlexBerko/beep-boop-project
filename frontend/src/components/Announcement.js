@@ -95,117 +95,127 @@ export default function Announcement(props) {
             <p className="date_time">Срок выполнения:</p>
             <time>{datestring}</time>
           </div>
-          {props.recordsJS.who_complete_id ? (
+          {props.recordsJS.is_completed ? (
             <span>
-              {props.recordsJS.username === props.username ? (
-                <div className="btn3">
-                  <button
-                    className="answer"
-                    onClick={() => {
-                      props.apiFunc(
-                        `https://95.140.148.239/help/${props.recordsJS.id}/`,
-                        "POST",
-                        token
-                      );
-                      navigate("/requests", { replace: true });
-                    }}
-                  >
-                    Завершить
-                  </button>
-                  <button
-                    className="edit"
-                    onClick={() => {
-                      navigate("/editing", { replace: true });
-                    }}
-                  >
-                    Редактировать
-                  </button>
-                  <button
-                    className="delete"
-                    onClick={() => {
-                      props.apiFunc(
-                        `https://95.140.148.239/help/${props.recordsJS.id}/`,
-                        "DELETE",
-                        token
-                      );
-                      navigate("/requests", { replace: true });
-                    }}
-                  >
-                    Удалить
-                  </button>
-                </div>
-              ) : (
-                <div className="btn">
-                  <p className="anstxt">Вы откликнулись на эту просьбу</p>
-                  <button
-                    className="delete"
-                    onClick={() => {
-                      props.apiFunc(
-                        `https://95.140.148.239/help/${props.recordsJS.id}/`,
-                        "DELETE",
-                        token
-                      );
-                      navigate("/requests", { replace: true });
-                    }}
-                  >
-                    Отказаться
-                  </button>
-                </div>
-              )}
+              <h2 style={{ color: "rgb(9, 180, 9)", marginLeft: "30px" }}>
+                Заявка завершена!
+              </h2>
             </span>
           ) : (
             <span>
-              {props.recordsJS.username === props.username ? (
-                <div className="btn3">
-                  <button
-                    className="answer"
-                    onClick={() => {
-                      props.apiFunc(
-                        `https://95.140.148.239/help/${props.recordsJS.id}/`,
-                        "POST",
-                        token
-                      );
-                      navigate("/requests", { replace: true });
-                    }}
-                  >
-                    Завершить
-                  </button>
-                  <button
-                    className="edit"
-                    onClick={() => {
-                      navigate("/editing", { replace: true });
-                    }}
-                  >
-                    Редактировать
-                  </button>
-                  <button
-                    className="delete"
-                    onClick={() => {
-                      props.apiFunc(
-                        `https://95.140.148.239/help/${props.recordsJS.id}/`,
-                        "DELETE",
-                        token
-                      );
-                      navigate("/requests", { replace: true });
-                    }}
-                  >
-                    Удалить
-                  </button>
-                </div>
+              {props.recordsJS.who_complete_id ? (
+                <span>
+                  {props.recordsJS.username === props.username ? (
+                    <div className="btn3">
+                      <button
+                        className="answer"
+                        onClick={() => {
+                          props.apiFunc(
+                            `https://95.140.148.239/help/${props.recordsJS.id}/`,
+                            "POST",
+                            token
+                          );
+                          navigate("/requests", { replace: true });
+                        }}
+                      >
+                        Завершить
+                      </button>
+                      <button
+                        className="edit"
+                        onClick={() => {
+                          navigate("/editing", { replace: true });
+                        }}
+                      >
+                        Редактировать
+                      </button>
+                      <button
+                        className="delete"
+                        onClick={() => {
+                          props.apiFunc(
+                            `https://95.140.148.239/help/${props.recordsJS.id}/`,
+                            "DELETE",
+                            token
+                          );
+                          navigate("/requests", { replace: true });
+                        }}
+                      >
+                        Удалить
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="btn">
+                      <p className="anstxt">Вы откликнулись на эту просьбу</p>
+                      <button
+                        className="delete"
+                        onClick={() => {
+                          props.apiFunc(
+                            `https://95.140.148.239/help/${props.recordsJS.id}/`,
+                            "DELETE",
+                            token
+                          );
+                          navigate("/requests", { replace: true });
+                        }}
+                      >
+                        Отказаться
+                      </button>
+                    </div>
+                  )}
+                </span>
               ) : (
-                <button
-                  className="answer"
-                  onClick={() => {
-                    props.apiFunc(
-                      `https://95.140.148.239/help/${props.recordsJS.id}/`,
-                      "POST",
-                      token
-                    );
-                    setIsModalVisible(true);
-                  }}
-                >
-                  Откликнуться
-                </button>
+                <span>
+                  {props.recordsJS.username === props.username ? (
+                    <div className="btn3">
+                      <button
+                        className="answer"
+                        onClick={() => {
+                          props.apiFunc(
+                            `https://95.140.148.239/help/${props.recordsJS.id}/`,
+                            "POST",
+                            token
+                          );
+                          navigate("/requests", { replace: true });
+                        }}
+                      >
+                        Завершить
+                      </button>
+                      <button
+                        className="edit"
+                        onClick={() => {
+                          navigate("/editing", { replace: true });
+                        }}
+                      >
+                        Редактировать
+                      </button>
+                      <button
+                        className="delete"
+                        onClick={() => {
+                          props.apiFunc(
+                            `https://95.140.148.239/help/${props.recordsJS.id}/`,
+                            "DELETE",
+                            token
+                          );
+                          navigate("/requests", { replace: true });
+                        }}
+                      >
+                        Удалить
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="answer"
+                      onClick={() => {
+                        props.apiFunc(
+                          `https://95.140.148.239/help/${props.recordsJS.id}/`,
+                          "POST",
+                          token
+                        );
+                        setIsModalVisible(true);
+                      }}
+                    >
+                      Откликнуться
+                    </button>
+                  )}
+                </span>
               )}
             </span>
           )}

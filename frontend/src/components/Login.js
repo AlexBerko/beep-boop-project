@@ -17,20 +17,21 @@ const antIcon = (
   />
 );
 
-const App = (props) => {
+const App = (props, dispatch) => {
   const navigate = useNavigate();
   console.log(useParams());
   const { id, token } = useParams();
   console.log(id, token);
 
   const onFinish = (values) => {
-    // console.log("Received values of form: ", values);
     props.onAuth(values.email, values.password);
     navigate("/otp", { replace: true });
   };
 
   let errorMessage = null;
   if (props.error) {
+    console.log(props.error);
+    console.log(dispatch(actions.authFail(props.error)));
     errorMessage = <p>{props.error.message}</p>;
   }
 
