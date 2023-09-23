@@ -298,6 +298,14 @@ class OrgDetailView(APIView):
         else:
             return Response({'error': 'Неверный старый пароль.'}, status=400)
 
+    def delete(self, request):
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
+        current_user.delete()
+        return Response(status=200)
+
 
 
 @permission_classes([IsAuthenticated])
