@@ -58,16 +58,19 @@ export const authLogin = (email, password) => {
     formData.append("password", password);
 
     axios
-      .post("https://95.140.148.239/user/auth/token/login/", formData)
-      .then((res) => {})
-      .catch((err) => {
-        dispatch(authFail(err));
-      });
-
-    axios
-      .post("https://95.140.148.239/user/send/otp/", formData)
+      .post("https://95.140.148.239/user/login/", formData)
       .then((res) => {
-        dispatch(authLoading());
+        console.log(res);
+        const hash = res.data.hash;
+        localStorage.setItem("hash", hash);
+        axios
+          .post("https://95.140.148.239/user/send/otp/", formData)
+          .then((res) => {
+            dispatch(authLoading());
+          })
+          .catch((err) => {
+            dispatch(authFail(err));
+          });
       })
       .catch((err) => {
         dispatch(authFail(err));
@@ -82,21 +85,19 @@ export const authOtp = (otp) => {
     formData.append("otp", otp);
 
     axios
-      .post("https://95.140.148.239/user/otp/", formData)
+      .post(
+        "https://95.140.148.239/user/otp/",
+        formData,
+        localStorage.getItem("hash")
+      )
       .then((res) => {
-        axios
-          .post("https://95.140.148.239/user/auth/token/login/", formData)
-          .then((res) => {
-            const token = res.data.auth_token;
-            localStorage.setItem("token", token);
-            const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
-            localStorage.setItem("expirationDate", expirationDate);
-            dispatch(authSuccess(token));
-            dispatch(checkAuthTimeout(3600));
-          })
-          .catch((err) => {
-            dispatch(authFail(err));
-          });
+        console.log(res);
+        const token = res.data.auth_token;
+        localStorage.setItem("token", token);
+        const expirationDate = new Date(new Date().getTime() + 3600 * 1000);
+        localStorage.setItem("expirationDate", expirationDate);
+        dispatch(authSuccess(token));
+        dispatch(checkAuthTimeout(3600));
       })
       .catch((err) => {
         dispatch(authFail(err));

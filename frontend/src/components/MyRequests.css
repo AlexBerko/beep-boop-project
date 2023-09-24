@@ -1,0 +1,17 @@
+.completChange {
+  display: flex;
+}
+
+.completed {
+  margin-left: 10px;
+  color: rgb(114, 114, 114);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color, text-decoration;
+}
+
+.completed:hover,
+.completed.active {
+  color: black;
+  text-decoration: underline;
+}

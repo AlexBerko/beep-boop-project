@@ -13,6 +13,8 @@ import Otp from "./components/Otp";
 import Submit from "./components/Submit";
 import Editing from "./components/Editing";
 import MyRequests from "./components/MyRequests";
+import Footer from "./components/Footer";
+import EditProfile from "./components/EditProfile";
 
 class App extends Component {
   constructor(props) {
@@ -95,8 +97,12 @@ class App extends Component {
                 path="/phishing/loogin/:from"
                 element={<LogFish apiFunc={this.apiFunc} />}
               />
-              <Route path="/otp" element={<Otp {...this.props} />} />
+              <Route
+                path={`/otp/${localStorage.getItem("hash")}`}
+                element={<Otp {...this.props} />}
+              />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/editProfile" element={<EditProfile />} />
               <Route
                 path="/editing"
                 element={
@@ -118,6 +124,7 @@ class App extends Component {
               />
             </Routes>
           </div>
+          <Footer />
         </Router>
       </div>
     );

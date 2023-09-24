@@ -33,7 +33,6 @@ const App = (props, dispatch) => {
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <h1>Регистрация</h1>
       <Form
         form={form}
         name="register"
@@ -44,6 +43,7 @@ const App = (props, dispatch) => {
         scrollToFirstError
         id="regForm"
       >
+        <h1>Регистрация</h1>
         <Form.Item
           name="username"
           label="Полное имя организации:"
@@ -261,9 +261,9 @@ const App = (props, dispatch) => {
           </NavLink>
         </Form.Item>
       </Form>
-      <div style={{ width: "600" }}>
+      <div style={{ width: 600 }}>
         <h2>Инструкция</h2>
-        <p>
+        <p style={{ marginTop: "10px" }}>
           Для того, чтобы посмотреть все необходимые для регистрации данные вы
           можете воспользоваться сайтом https://checko.ru/.
         </p>
@@ -271,8 +271,9 @@ const App = (props, dispatch) => {
           className="checko"
           src={require("../img/checko.png")}
           alt="checko"
+          style={{ marginTop: "10px" }}
         />
-        <p>
+        <p style={{ marginTop: "10px" }}>
           В строке поиска введите свои фамилию, имя, отчество или название
           организации. Затем в результатах поиска выберите свою компанию,
           перейдите на её страницу и там вы сможете найти всю необходимую
@@ -282,10 +283,12 @@ const App = (props, dispatch) => {
           className="checko"
           src={require("../img/checkoData.png")}
           alt="checkoData"
+          style={{ marginTop: "10px" }}
         />
-        <p>
+        <p style={{ marginTop: "10px" }}>
           Кроме того эти данные вы можете найти в своём аккаунте на госуслугах
-          или в регистрационных документах.
+          или в регистрационных документах. При возникновении трудностей просим
+          вас обращаться по адресу тех. поддержки: berko_aleksandr@mail.ru.
         </p>
       </div>
     </div>

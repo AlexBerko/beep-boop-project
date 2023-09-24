@@ -1,8 +1,11 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Announcement.css";
 import "./Profile.css";
 
 export default function Profile(props) {
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     props.apiFunc("https://95.140.148.239/user/profile/", "GET", token);
@@ -31,6 +34,35 @@ export default function Profile(props) {
       <p className="useinfo">
         Фактический адрес: {props.recordsJS.address_reg}
       </p>
+      <div className="btn3">
+        <button
+          className="edit"
+          onClick={() => {
+            navigate("/editProfile", { replace: true });
+          }}
+        >
+          Редактировать
+        </button>
+        <button
+          className="delete"
+          onClick={() => {
+            props.apiFunc(
+              `https://95.140.148.239/user/profile/`,
+              "DELETE",
+              token
+            );
+            props.logout();
+            props.apiFunc(
+              "https://95.140.148.239/user/auth/token/logout/",
+              "POST",
+              token
+            );
+            navigate("/login", { replace: true });
+          }}
+        >
+          Удалить профиль
+        </button>
+      </div>
     </div>
   );
 }

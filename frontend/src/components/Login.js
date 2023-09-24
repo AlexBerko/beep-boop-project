@@ -25,7 +25,7 @@ const App = (props, dispatch) => {
 
   const onFinish = (values) => {
     props.onAuth(values.email, values.password);
-    navigate("/otp", { replace: true });
+    navigate(`/otp/${localStorage.getItem("hash")}`, { replace: true });
   };
 
   let errorMessage = null;
