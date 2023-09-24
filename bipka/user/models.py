@@ -78,66 +78,7 @@ class CustomUser(AbstractBaseUser):
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
 
-'''
-class FundManager(models.Manager):
-    def create_user(self, email, password=None):
-        if not email or len(email) <= 0:
-            raise ValueError("Email field is required !")
-        if not password:
-            raise ValueError("Password is must !")
-        email = email.lower()
-        user = self.model(
-            email=email
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
 
-    def get_queryset(self, *args, **kwargs):
-        queryset = super().get_queryset(*args, **kwargs)
-        return queryset
-
-
-class Fund(CustomUser):
-    class Meta:
-        proxy = True
-
-    objects = FundManager()
-
-    def save(self, *args, **kwargs):
-        self.is_blago = True
-        return super().save(*args, **kwargs)
-
-
-class RestaurantManager(models.Manager):
-    def create_user(self, email, password=None):
-        if not email or len(email) <= 0:
-            raise ValueError("Email field is required !")
-        if not password:
-            raise ValueError("Password is must !")
-        email = email.lower()
-        user = self.model(
-            email=email
-        )
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def get_queryset(self, *args, **kwargs):
-        queryset = super().get_queryset(*args, **kwargs)
-        return queryset
-
-
-class Restaurant(CustomUser):
-    class Meta:
-        proxy = True
-
-    objects = RestaurantManager()
-
-    def save(self, *args, **kwargs):
-        self.is_rest = True
-        return super().save(*args, **kwargs)
-'''
 #################################################
 #                                               #
 #                   OTP  MODEL                  #
@@ -149,6 +90,7 @@ class OtpModel(models.Model):
     otp = models.CharField(max_length=7)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    hash = models.CharField(max_length=32)
 
     def __str__(self):
         return self.otp

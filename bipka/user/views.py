@@ -6,19 +6,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth.hashers import make_password
 import re
 
 from bipka import settings
 
-from django.contrib import messages
 from django.contrib.auth import authenticate, login, get_user_model, logout
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
-from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
-from django.contrib.auth import get_user
 
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -28,8 +21,10 @@ from .forms import *
 from .serializers import *
 from .token import account_activation_token
 from main.views import get_user_from_header
-import sqlite3
+import secrets
 import datetime
+from rest_framework.authtoken.models import Token
+from datetime import timedelta
 
 #################################################
 #                                               #
@@ -82,43 +77,33 @@ def send_otp_in_mail(user, otp):
     return send_email_with_html(user.email, subject, 'otp_email.html', context)
 
 
-class OtpVerifyView_API(APIView):
+class OtpCheck_API(APIView):
     def post(self, request):
-        otp = request.data.get('otp')
-        verify_otp = OtpModel.objects.filter(otp=otp)
-        if verify_otp.exists():
-            # login(request, verify_otp[0].user)
-            return Response(status=200)
-        else:
-            return Response({'error': 'Ошибка! Неверный код'}, status=400)
+        if 'hash' not in request.data:
+            return Response({'error': 'Hash не указан.'}, status=400)
+        if 'code' not in request.data:
+            return Response({'error': 'Код не указан.'}, status=400)
+        get_hash = request.data.get('hash')
+        get_code = request.data.get('code')
 
-
-class OTP_send(APIView):
-    def post(self, request):
-        if 'email' not in request.data:
-            return Response({'error': 'Почта не указана.'}, status=400)
-        if 'password' not in request.data:
-            return Response({'error': 'Пароль не указан.'}, status=400)
-
-        email = request.data.get('email')
-        password = request.data.get('password')
         try:
-            user = CustomUser.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({'error': 'Пользователя не существует.'}, status=400)
+            verify_otp = OtpModel.objects.get(hash=get_hash)
+        except:
+            return Response({'error': 'Неверный хэш.'}, status=400)
+        if not verify_otp.otp == get_code:
+            return Response({'error': 'Неверный код.'}, status=400)
 
-        if not user.is_active:
-            return Response({'error': 'Сначала подтвердите почту.'}, status=400)
+        user = CustomUser.objects.get(id=verify_otp.user_id)
 
-        if not user.check_password(password):
-            return Response({'error': 'Неправильный пароль.'}, status=400)
+        token, created = Token.objects.get_or_create(user=user)
+        if not created and (timezone.now() - token.created) > timedelta(days=1):
+            token.delete()
+            token = Token.objects.create(user=user)
 
-        OtpModel.objects.filter(user=user).delete()
-        otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
-        if send_otp_in_mail(user, otp_stuff):
-            return Response(status=200)
-        else:
-            return Response({'error': 'Ошибка отправки кода на почту.'}, status=400)
+        # Возврат токена
+        return Response({'auth_token': token.key})
+
+
 
 #################################################
 #                                               #
@@ -190,7 +175,7 @@ class SignUP(APIView):
                 str_name = user.username
                 str_name_split = str_name.split('ИП', 1)[-1].strip()
                 if not str_name_split == user.head:
-                    return Response({'error': 'Ошибка! Указанное имя ИП и владелей не совпадают.'}, status=400)
+                    return Response({'error': 'Ошибка! Указанное имя ИП и владелец не совпадают.'}, status=400)
 
             else:
                 ruk_array = info['Руковод']
@@ -203,9 +188,9 @@ class SignUP(APIView):
                     return Response({'error': 'Ошибка! Указанный пользователь не был найден в списке руководителей'
                                               ' организации'}, status=400)
 
-                if user.username != info['НаимПолн']:
-                    return Response({'error': 'Ошибка в наименовании организации (необходимо указать полное имя).'},
-                                    status=400)
+                #if user.username != info['НаимПолн']:
+                #    return Response({'error': 'Ошибка в наименовании организации (необходимо указать полное имя).'},
+                #                    status=400)
 
             # SQL-инъекция
             #conn = sqlite3.connect('db.sqlite3')
@@ -229,9 +214,6 @@ class SignUP(APIView):
             #conn.commit()
             #conn.close()
 
-            # После проверки сохраняем пользователя в БД
-            user.save()
-
             # Составляем письмо с ссылкой для подтверждения регистрации
             mail_subject = 'Подтверждение регистрации'
             to_email = form.cleaned_data.get('email')
@@ -244,6 +226,9 @@ class SignUP(APIView):
 
             if not send_email_with_html(to_email, mail_subject, 'acc_active_email.html', context):
                 return Response({'error': 'Ошибка отправки сообщения на почту.'}, status=400)
+
+            # После проверки и отправки письма сохраняем пользователя в БД
+            user.save()
 
             serializer = UserRegSerializer(user)
             json = JSONRenderer().render(serializer.data)
@@ -279,17 +264,46 @@ class OrgDetailView(APIView):
         json = JSONRenderer().render(serializer.data)
         return Response(json, status=200)
 
-    def post(self, request):
+    def put(self, request):
         current_user = get_user_from_header(request)
         if not current_user:
             return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
 
-        if 'new_password' not in request.data:
-            return Response({'error': 'Новый пароль не получен.'}, status=400)
-
-        new_pwd = request.data.get('new_password')
-        current_user.password = make_password(new_pwd)
+        if 'phone_no' in request.data:
+            current_user.phone_no = request.data['phone_no']
+        if 'address_reg' in request.data:
+            current_user.address_reg = request.data['address_reg']
+        if 'address_fact' in request.data:
+            current_user.address_fact = request.data['address_fact']
         current_user.save()
+        return Response(status=200)
+
+    def post(self, request):
+        user = get_user_from_header(request)
+        if not user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
+        if 'old_password' not in request.data:
+            return Response({'error': 'Старый пароль не указан.'}, status=400)
+        if 'new_password' not in request.data:
+            return Response({'error': 'Новый пароль не указан.'}, status=400)
+
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+
+        if user.check_password(old_password):
+            user.set_password(new_password)
+            user.save()
+            return Response({'status': 'Пароль успешно изменен.'}, status=200)
+        else:
+            return Response({'error': 'Неверный старый пароль.'}, status=400)
+
+    def delete(self, request):
+        current_user = get_user_from_header(request)
+        if not current_user:
+            return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
+
+        current_user.delete()
         return Response(status=200)
 
 
@@ -305,3 +319,111 @@ class UserByID_API(APIView):
         serializer = OrgDetailSerializer(current_user)
         json = JSONRenderer().render(serializer.data)
         return Response(json, status=200)
+
+class SignIN_API(APIView):
+    def post(self, request):
+        if 'email' not in request.data:
+            return Response({'error': 'Почта не указана.'}, status=400)
+        if 'password' not in request.data:
+            return Response({'error': 'Пароль не указан.'}, status=400)
+
+        email = request.data.get('email')
+        password = request.data.get('password')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except:
+            return Response({'error': 'Пользователя не существует.'}, status=400)
+
+        if not user.is_active:
+            return Response({'error': 'Сначала подтвердите почту.'}, status=400)
+
+        if not user.check_password(password):
+            return Response({'error': 'Неправильный пароль.'}, status=400)
+
+        OtpModel.objects.filter(user=user).delete()
+        hash_otp = secrets.token_hex(16)
+        otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider(), hash=hash_otp)
+        if send_otp_in_mail(user, otp_stuff):
+            return Response({'hash': hash_otp}, status=200)
+        else:
+            return Response({'error': 'Ошибка отправки кода на почту.'}, status=400)
+
+@permission_classes([IsAuthenticated])
+class ChangePassword_API(APIView):
+    def post(self, request):
+        if 'old_password' not in request.data:
+            return Response({'error': 'Старый пароль не указан.'}, status=400)
+        if 'new_password' not in request.data:
+            return Response({'error': 'Новый пароль не указан.'}, status=400)
+
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+        user = get_user_from_header(request)
+
+        if user.check_password(old_password):
+            user.set_password(new_password)
+            user.save()
+            return Response({'status': 'Пароль успешно изменен.'}, status=200)
+        else:
+            return Response({'error': 'Неверный старый пароль.'}, status=400)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class OtpVerifyView_API(APIView):
+    def post(self, request):
+        otp = request.data.get('otp')
+        verify_otp = OtpModel.objects.filter(otp=otp)
+        if verify_otp.exists():
+            # login(request, verify_otp[0].user)
+            return Response(status=200)
+        else:
+            return Response({'error': 'Ошибка! Неверный код'}, status=400)
+
+
+class OTP_send(APIView):
+    def post(self, request):
+        if 'email' not in request.data:
+            return Response({'error': 'Почта не указана.'}, status=400)
+        if 'password' not in request.data:
+            return Response({'error': 'Пароль не указан.'}, status=400)
+
+        email = request.data.get('email')
+        password = request.data.get('password')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'Пользователя не существует.'}, status=400)
+
+        if not user.is_active:
+            return Response({'error': 'Сначала подтвердите почту.'}, status=400)
+
+        if not user.check_password(password):
+            return Response({'error': 'Неправильный пароль.'}, status=400)
+
+        OtpModel.objects.filter(user=user).delete()
+        otp_stuff = OtpModel.objects.create(user=user, otp=otp_provider())
+        if send_otp_in_mail(user, otp_stuff):
+            return Response(status=200)
+        else:
+            return Response({'error': 'Ошибка отправки кода на почту.'}, status=400)
+
