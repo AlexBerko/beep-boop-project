@@ -61,18 +61,9 @@ export const authLogin = (email, password) => {
       .post("https://95.140.148.239/user/login/", formData)
       .then((res) => {
         console.log(res);
-        const hash = res.data.hash;
+        // const hash = res.data.hash;
         // localStorage.setItem("hash", hash);
-        axios
-          .post("https://95.140.148.239/user/send/otp/", formData)
-          .then((res) => {
-            dispatch(authLoading());
-            document.location.href = `https://95.140.148.239/otp/${hash}/`;
-          })
-          .catch((err) => {
-            console.log(err);
-            dispatch(authFail(err));
-          });
+        document.location.href = `https://95.140.148.239/otp/${res.data.hash}/`;
       })
       .catch((err) => {
         console.log(err);
