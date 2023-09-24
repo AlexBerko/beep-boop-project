@@ -1,13 +1,12 @@
 import React from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { connect } from "react-redux";
 import { Button, Form, Input, Radio } from "antd";
 import * as actions from "../store/actions/auth";
 
 const App = (props) => {
   const [form] = Form.useForm();
-  const navigate = useNavigate();
 
   const onFinish = (values) => {
     props.onAuth(
@@ -25,11 +24,6 @@ const App = (props) => {
       values.password2,
       props.regDone
     );
-    if (localStorage.getItem("err") === null) {
-      navigate("/login", { replace: true });
-    } else {
-      console.log(localStorage.getItem("err"));
-    }
   };
 
   return (
@@ -39,7 +33,7 @@ const App = (props) => {
         name="register"
         onFinish={onFinish}
         style={{
-          maxWidth: 600,
+          maxWidth: 700,
         }}
         scrollToFirstError
         id="regForm"
@@ -262,7 +256,7 @@ const App = (props) => {
           </NavLink>
         </Form.Item>
       </Form>
-      <div style={{ maxWidth: 600 }}>
+      <div style={{ width: 600 }}>
         <h2>Инструкция</h2>
         <p style={{ marginTop: "10px" }}>
           Для того, чтобы посмотреть все необходимые для регистрации данные вы
@@ -273,6 +267,7 @@ const App = (props) => {
           src={require("../img/checko.png")}
           alt="checko"
           style={{ marginTop: "10px" }}
+          width={300}
         />
         <p style={{ marginTop: "10px" }}>
           В строке поиска введите свои фамилию, имя, отчество или название
@@ -285,6 +280,7 @@ const App = (props) => {
           src={require("../img/checkoData.png")}
           alt="checkoData"
           style={{ marginTop: "10px" }}
+          width={500}
         />
         <p style={{ marginTop: "10px" }}>
           Кроме того эти данные вы можете найти в своём аккаунте на госуслугах

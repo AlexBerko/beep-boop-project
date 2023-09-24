@@ -60,9 +60,7 @@ export const authLogin = (email, password) => {
     axios
       .post("https://95.140.148.239/user/login/", formData)
       .then((res) => {
-        console.log(res);
-        // const hash = res.data.hash;
-        // localStorage.setItem("hash", hash);
+        localStorage.setItem("hash", res.data.hash);
         document.location.href = `https://95.140.148.239/otp/${res.data.hash}/`;
       })
       .catch((err) => {
@@ -92,6 +90,7 @@ export const authOtp = (otp) => {
         localStorage.setItem("expirationDate", expirationDate);
         dispatch(authSuccess(token));
         dispatch(checkAuthTimeout(3600));
+        document.location.href = `https://95.140.148.239/`;
       })
       .catch((err) => {
         console.log(err);
@@ -135,11 +134,10 @@ export const authSignup = (
       .then((res) => {
         dispatch(authLoading());
         dispatch(authRegDone());
+        document.location.href = `https://95.140.148.239/login/`;
       })
       .catch((err) => {
-        console.log(err);
         dispatch(authFail(err));
-        localStorage.setItem("err", err);
       });
   };
 };

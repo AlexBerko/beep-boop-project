@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form, Input, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import * as actions from "../store/actions/auth";
 import "./Otp.css";
 
@@ -16,12 +16,9 @@ const antIcon = (
 );
 
 const App = (props) => {
-  const navigate = useNavigate();
-
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
     props.onAuth(values.otp);
-    navigate("/", { replace: true });
   };
 
   let errorMessage = null;

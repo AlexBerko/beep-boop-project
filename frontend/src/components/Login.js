@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { connect } from "react-redux";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import * as actions from "../store/actions/auth";
 import "./Login.css";
 
@@ -18,20 +18,18 @@ const antIcon = (
 );
 
 const App = (props) => {
-  // const navigate = useNavigate();
   console.log(useParams());
   const { id, token } = useParams();
   console.log(id, token);
 
   const onFinish = (values) => {
     props.onAuth(values.email, values.password);
-    // if (localStorage.getItem("hash") !== null) {
-    //   navigate(`/otp/${localStorage.getItem("hash")}/`, { replace: true });
-    // }
   };
 
   let errorMessage = null;
   if (props.error) {
+    console.log(props.error);
+    console.log(props.error.response.data.error);
     errorMessage = <p>{props.error.message}</p>;
   }
 
