@@ -5,12 +5,12 @@ import { connect } from "react-redux";
 import { Button, Form, Input, Radio } from "antd";
 import * as actions from "../store/actions/auth";
 
-const App = (props, dispatch) => {
+const App = (props) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
   const onFinish = (values) => {
-    const res = props.onAuth(
+    props.onAuth(
       values.username,
       values.email,
       values.phone_no,
@@ -25,10 +25,11 @@ const App = (props, dispatch) => {
       values.password2,
       props.regDone
     );
-    console.log(res);
-    console.log(props.error);
-    console.log(dispatch(actions.authFail(props.error)));
-    navigate("/login", { replace: true });
+    if (localStorage.getItem("err") === null) {
+      navigate("/login", { replace: true });
+    } else {
+      console.log(localStorage.getItem("err"));
+    }
   };
 
   return (
@@ -43,7 +44,7 @@ const App = (props, dispatch) => {
         scrollToFirstError
         id="regForm"
       >
-        <h1>Регистрация</h1>
+        <h1 style={{ marginBottom: "10px" }}>Регистрация</h1>
         <Form.Item
           name="username"
           label="Полное имя организации:"
@@ -261,7 +262,7 @@ const App = (props, dispatch) => {
           </NavLink>
         </Form.Item>
       </Form>
-      <div style={{ width: 600 }}>
+      <div style={{ maxWidth: 600 }}>
         <h2>Инструкция</h2>
         <p style={{ marginTop: "10px" }}>
           Для того, чтобы посмотреть все необходимые для регистрации данные вы

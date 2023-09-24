@@ -97,10 +97,7 @@ class App extends Component {
                 path="/phishing/loogin/:from"
                 element={<LogFish apiFunc={this.apiFunc} />}
               />
-              <Route
-                path={`/otp/${localStorage.getItem("hash")}`}
-                element={<Otp {...this.props} />}
-              />
+              <Route path={`/otp/:hash`} element={<Otp {...this.props} />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/editProfile" element={<EditProfile />} />
               <Route

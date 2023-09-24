@@ -1,5 +1,10 @@
 footer {
+  padding: 15px;
   text-align: center;
   color: white;
   background-color: black;
+  width: 100%;
+  position: absolute;
+  height: 100px;
+  bottom: 0;
 }

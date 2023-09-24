@@ -5,7 +5,9 @@ export default function Footer() {
   return (
     <footer>
       <p>Все права защищены &copy;</p>
-      <p>Тех. поддержка: berko_aleksandr@mail.ru</p>
+      <p style={{ marginTop: "5px" }}>
+        Тех. поддержка: berko_aleksandr@mail.ru
+      </p>
     </footer>
   );
 }

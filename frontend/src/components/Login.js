@@ -17,21 +17,21 @@ const antIcon = (
   />
 );
 
-const App = (props, dispatch) => {
-  const navigate = useNavigate();
+const App = (props) => {
+  // const navigate = useNavigate();
   console.log(useParams());
   const { id, token } = useParams();
   console.log(id, token);
 
   const onFinish = (values) => {
     props.onAuth(values.email, values.password);
-    navigate(`/otp/${localStorage.getItem("hash")}`, { replace: true });
+    // if (localStorage.getItem("hash") !== null) {
+    //   navigate(`/otp/${localStorage.getItem("hash")}/`, { replace: true });
+    // }
   };
 
   let errorMessage = null;
   if (props.error) {
-    console.log(props.error);
-    console.log(dispatch(actions.authFail(props.error)));
     errorMessage = <p>{props.error.message}</p>;
   }
 

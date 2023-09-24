@@ -62,17 +62,20 @@ export const authLogin = (email, password) => {
       .then((res) => {
         console.log(res);
         const hash = res.data.hash;
-        localStorage.setItem("hash", hash);
+        // localStorage.setItem("hash", hash);
         axios
           .post("https://95.140.148.239/user/send/otp/", formData)
           .then((res) => {
             dispatch(authLoading());
+            document.location.href = `https://95.140.148.239/otp/${hash}/`;
           })
           .catch((err) => {
+            console.log(err);
             dispatch(authFail(err));
           });
       })
       .catch((err) => {
+        console.log(err);
         dispatch(authFail(err));
       });
   };
@@ -100,6 +103,7 @@ export const authOtp = (otp) => {
         dispatch(checkAuthTimeout(3600));
       })
       .catch((err) => {
+        console.log(err);
         dispatch(authFail(err));
       });
   };
@@ -142,7 +146,9 @@ export const authSignup = (
         dispatch(authRegDone());
       })
       .catch((err) => {
+        console.log(err);
         dispatch(authFail(err));
+        localStorage.setItem("err", err);
       });
   };
 };
