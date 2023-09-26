@@ -19,9 +19,8 @@ const antIcon = (
 );
 
 const App = (props) => {
-  console.log(useParams());
+  const [form] = Form.useForm();
   const { id, token } = useParams();
-  console.log(id, token);
 
   const onFinish = (values) => {
     props.onAuth(values.email, values.password);
@@ -53,6 +52,7 @@ const App = (props) => {
         <Spin indicator={antIcon} />
       ) : (
         <Form
+          form={form}
           name="normal_login"
           className="login-form"
           initialValues={{

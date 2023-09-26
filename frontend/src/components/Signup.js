@@ -26,21 +26,37 @@ const App = (props) => {
     );
   };
 
-  let errorMessage = null;
+  let errorEmail,
+    errorInn,
+    errorOgrn,
+    errorPswd = null;
   if (props.error) {
-    console.log(props.error);
-    errorMessage = <p className="error">{props.error.response.data.error}</p>;
+    errorEmail = <p className="error">{props.error.response.data.email}</p>;
+    errorOgrn = <p className="error">{props.error.response.data.ogrn}</p>;
+    errorInn = <p className="error">{props.error.response.data.inn}</p>;
+    errorPswd = () => {
+      const options = [];
+
+      for (let i = 0; i < props.error.response.data.password2.length; i++) {
+        options.push(
+          <p key={i} className="error">
+            {props.error.response.data.password2[i]}
+          </p>
+        );
+      }
+
+      return options;
+    };
   }
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      {errorMessage}
       <Form
         form={form}
         name="register"
         onFinish={onFinish}
         style={{
-          maxWidth: 700,
+          width: 580,
         }}
         scrollToFirstError
         id="regForm"
@@ -77,6 +93,8 @@ const App = (props) => {
         >
           <Input prefix={<UserOutlined className="site-form-item-icon" />} />
         </Form.Item>
+
+        {errorEmail}
 
         <Form.Item
           name="phone_no"
@@ -123,6 +141,8 @@ const App = (props) => {
           <Input />
         </Form.Item>
 
+        {errorOgrn}
+
         <Form.Item
           name="inn"
           label="ИНН:"
@@ -136,6 +156,8 @@ const App = (props) => {
         >
           <Input />
         </Form.Item>
+
+        {errorInn}
 
         <Form.Item
           name="address_reg"
@@ -175,7 +197,7 @@ const App = (props) => {
           ]}
         >
           <Radio.Group>
-            <Radio value="True"> Ресторан </Radio>
+            <Radio value="True"> Меценат </Radio>
             <Radio value="False"> Благотворительная организация </Radio>
           </Radio.Group>
         </Form.Item>
@@ -247,6 +269,8 @@ const App = (props) => {
             autoComplete="off"
           />
         </Form.Item>
+
+        {errorPswd}
 
         <Form.Item>
           <Button
