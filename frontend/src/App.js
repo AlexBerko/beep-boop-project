@@ -99,7 +99,10 @@ class App extends Component {
               />
               <Route path={`/otp/:hash`} element={<Otp {...this.props} />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/editProfile" element={<EditProfile />} />
+              <Route
+                path="/editProfile"
+                element={<EditProfile recordsJS={this.state.recordsJS} />}
+              />
               <Route
                 path="/editing"
                 element={

@@ -34,9 +34,10 @@ export default function Profile(props) {
       <p className="useinfo">
         Фактический адрес: {props.recordsJS.address_reg}
       </p>
-      <div className="btn3">
+      <div className="btn3" style={{ marginTop: "15px" }}>
         <button
           className="edit"
+          style={{ marginLeft: 0 }}
           onClick={() => {
             navigate("/editProfile", { replace: true });
           }}

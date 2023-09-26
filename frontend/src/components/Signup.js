@@ -26,9 +26,27 @@ const App = (props) => {
     );
   };
 
-  let errorMessage = null;
+  let errorMessage,
+    errorEmail,
+    errorOgrn,
+    errorInn = null;
   if (props.error) {
     errorMessage = <p className="error">{props.error.response.data.error}</p>;
+    if (props.error.response.data.email) {
+      errorEmail = (
+        <p className="error">Пользователь с таким email уже существует</p>
+      );
+    }
+    if (props.error.response.data.ogrn) {
+      errorOgrn = (
+        <p className="error">Пользователь с таким ОГРН уже существует</p>
+      );
+    }
+    if (props.error.response.data.inn) {
+      errorInn = (
+        <p className="error">Пользователь с таким ИНН уже существует</p>
+      );
+    }
   }
 
   const errorPswd = () => {
@@ -75,9 +93,7 @@ const App = (props) => {
           <Input />
         </Form.Item>
 
-        {props.error.response.data.email && (
-          <p className="error">Пользователь с таким email уже существует</p>
-        )}
+        {errorEmail}
 
         <Form.Item
           name="email"
@@ -127,9 +143,7 @@ const App = (props) => {
           <Input />
         </Form.Item>
 
-        {props.error.response.data.ogrn && (
-          <p className="error">Пользователь с таким ОГРН уже существует</p>
-        )}
+        {errorOgrn}
 
         <Form.Item
           name="ogrn"
@@ -145,9 +159,7 @@ const App = (props) => {
           <Input />
         </Form.Item>
 
-        {props.error.response.data.inn && (
-          <p className="error">Пользователь с таким ИНН уже существует</p>
-        )}
+        {errorInn}
 
         <Form.Item
           name="inn"

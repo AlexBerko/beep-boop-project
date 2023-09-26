@@ -9,7 +9,7 @@ export default function MyRequests(props) {
 
   useEffect(() => {
     props.apiFunc("https://95.140.148.239/help/my/", "GET", token);
-  }, [token]);
+  }, []);
 
   console.log(props.recordsJS);
 
@@ -19,13 +19,17 @@ export default function MyRequests(props) {
       <div className="completChange">
         <p
           className={`completed ${!isCompleted && "active"}`}
-          onClick={setIsCompleted(false)}
+          onClick={() => {
+            setIsCompleted(false);
+          }}
         >
           В работе
         </p>
         <p
           className={`completed ${isCompleted && "active"}`}
-          onClick={setIsCompleted(true)}
+          onClick={() => {
+            setIsCompleted(true);
+          }}
         >
           Завершённые
         </p>
