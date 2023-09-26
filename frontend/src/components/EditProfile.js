@@ -20,9 +20,21 @@ const App = (props) => {
 
   const onFinish = (values) => {
     const formData = new FormData();
-    formData.append("phone_no", values.phone_no);
-    formData.append("address_reg", values.address_reg);
-    formData.append("address_fact", values.address_fact);
+    if (values.phone_no === undefined || values.phone_no === "") {
+      formData.append("phone_no", props.recordsJS.phone_no);
+    } else {
+      formData.append("phone_no", values.phone_no);
+    }
+    if (values.address_reg === undefined || values.address_reg === "") {
+      formData.append("address_reg", props.recordsJS.address_reg);
+    } else {
+      formData.append("address_reg", values.address_reg);
+    }
+    if (values.address_fact === undefined || values.address_fact === "") {
+      formData.append("address_fact", props.recordsJS.address_fact);
+    } else {
+      formData.append("address_fact", values.address_fact);
+    }
 
     const formPswd = new FormData();
     if (

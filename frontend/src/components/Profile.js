@@ -29,10 +29,10 @@ export default function Profile(props) {
         {props.recordsJS.is_rest ? "Ресторан" : "Благотворительная организация"}
       </p>
       <p className="useinfo">
-        Адрес регистрации: {props.recordsJS.address_fact}
+        Юридический регистрации: {props.recordsJS.address_reg}
       </p>
       <p className="useinfo">
-        Фактический адрес: {props.recordsJS.address_reg}
+        Фактический адрес: {props.recordsJS.address_fact}
       </p>
       <div className="btn3" style={{ marginTop: "35px" }}>
         <button
