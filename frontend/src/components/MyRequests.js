@@ -33,8 +33,8 @@ export default function MyRequests(props) {
         >
           Завершённые
         </p>
-        <hr />
       </div>
+      <hr></hr>
       {isCompleted ? (
         <div style={{ marginTop: "30px" }}>
           {(() => {

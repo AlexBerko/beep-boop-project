@@ -4,6 +4,7 @@
 
 .completed {
   margin-left: 10px;
+  font-weight: 500;
   color: rgb(114, 114, 114);
   text-decoration: none;
   cursor: pointer;

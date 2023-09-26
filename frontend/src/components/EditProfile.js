@@ -36,24 +36,21 @@ const App = (props) => {
       formPswd.append("new_password", values.new_password);
     }
 
-    try {
-      axios
-        .put(`https://95.140.148.239/user/profile/`, config, formData)
-        .then((res) => {})
-        .catch((err) => {
-          console.log(err);
-        });
-      axios
-        .post(`https://95.140.148.239/user/profile/`, config, formPswd)
-        .then((res) => {})
-        .catch((err) => {
-          console.log(err);
-        });
-
-      setIsModalVisible(true);
-    } catch (error) {
-      console.log(error);
-    }
+    axios
+      .put(`https://95.140.148.239/user/profile/`, formData, config)
+      .then((res) => {
+        axios
+          .post(`https://95.140.148.239/user/profile/`, formPswd, config)
+          .then((res) => {
+            setIsModalVisible(true);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleModalOk = () => {

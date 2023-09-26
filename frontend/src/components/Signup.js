@@ -58,7 +58,7 @@ const App = (props) => {
   const errorPswd = () => {
     const options = [];
 
-    if (props.error.response.data.password2.length) {
+    if (props.error) {
       for (let i = 0; i < props.error.response.data.password2.length; i++) {
         options.push(
           <p key={i} className="error">
