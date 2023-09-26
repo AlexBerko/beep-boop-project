@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { NavLink, useParams } from "react-router-dom";
 import * as actions from "../store/actions/auth";
 import "./Login.css";
+import "./Otp.css";
 
 const antIcon = (
   <LoadingOutlined
@@ -28,9 +29,7 @@ const App = (props) => {
 
   let errorMessage = null;
   if (props.error) {
-    console.log(props.error);
-    console.log(props.error.response.data.error);
-    errorMessage = <p>{props.error.message}</p>;
+    errorMessage = <p className="error">{props.error.response.data.error}</p>;
   }
 
   if (id !== undefined && token !== undefined) {

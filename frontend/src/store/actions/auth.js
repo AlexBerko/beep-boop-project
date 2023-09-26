@@ -75,13 +75,10 @@ export const authOtp = (otp) => {
     dispatch(authStart());
     const formData = new FormData();
     formData.append("otp", otp);
+    formData.append("hash", localStorage.getItem("hash"));
 
     axios
-      .post(
-        "https://95.140.148.239/user/otp/",
-        formData,
-        localStorage.getItem("hash")
-      )
+      .post("https://95.140.148.239/user/otp/", formData)
       .then((res) => {
         console.log(res);
         const token = res.data.auth_token;

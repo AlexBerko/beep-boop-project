@@ -26,8 +26,15 @@ const App = (props) => {
     );
   };
 
+  let errorMessage = null;
+  if (props.error) {
+    console.log(props.error);
+    errorMessage = <p className="error">{props.error.response.data.error}</p>;
+  }
+
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
+      {errorMessage}
       <Form
         form={form}
         name="register"
@@ -267,7 +274,7 @@ const App = (props) => {
           src={require("../img/checko.png")}
           alt="checko"
           style={{ marginTop: "10px" }}
-          width={300}
+          width={600}
         />
         <p style={{ marginTop: "10px" }}>
           В строке поиска введите свои фамилию, имя, отчество или название
@@ -280,7 +287,7 @@ const App = (props) => {
           src={require("../img/checkoData.png")}
           alt="checkoData"
           style={{ marginTop: "10px" }}
-          width={500}
+          width={600}
         />
         <p style={{ marginTop: "10px" }}>
           Кроме того эти данные вы можете найти в своём аккаунте на госуслугах

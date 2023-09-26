@@ -23,13 +23,12 @@ const App = (props) => {
 
   let errorMessage = null;
   if (props.error) {
-    errorMessage = <p>{props.error.message}</p>;
+    errorMessage = <p className="error">{props.error.response.data.error}</p>;
   }
 
   return (
     <div className="otp">
-      {errorMessage}
-      <p>Двухфакторная аутентификация</p>
+      <p style={{ marginBottom: "5px" }}>Двухфакторная аутентификация</p>
       {props.loading ? (
         <Spin indicator={antIcon} />
       ) : (
@@ -52,6 +51,8 @@ const App = (props) => {
           >
             <Input />
           </Form.Item>
+
+          {errorMessage}
 
           <Form.Item>
             <Button
