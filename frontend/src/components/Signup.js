@@ -26,17 +26,15 @@ const App = (props) => {
     );
   };
 
-  let errorEmail,
-    errorInn,
-    errorOgrn,
-    errorPswd = null;
+  let errorMessage = null;
   if (props.error) {
-    errorEmail = <p className="error">{props.error.response.data.email}</p>;
-    errorOgrn = <p className="error">{props.error.response.data.ogrn}</p>;
-    errorInn = <p className="error">{props.error.response.data.inn}</p>;
-    errorPswd = () => {
-      const options = [];
+    errorMessage = <p className="error">{props.error.response.data.error}</p>;
+  }
 
+  const errorPswd = () => {
+    const options = [];
+
+    if (props.error.response.data.password2.length) {
       for (let i = 0; i < props.error.response.data.password2.length; i++) {
         options.push(
           <p key={i} className="error">
@@ -44,10 +42,10 @@ const App = (props) => {
           </p>
         );
       }
+    }
 
-      return options;
-    };
-  }
+    return options;
+  };
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -77,6 +75,10 @@ const App = (props) => {
           <Input />
         </Form.Item>
 
+        {props.error.response.data.email && (
+          <p className="error">Пользователь с таким email уже существует</p>
+        )}
+
         <Form.Item
           name="email"
           label="E-mail"
@@ -93,8 +95,6 @@ const App = (props) => {
         >
           <Input prefix={<UserOutlined className="site-form-item-icon" />} />
         </Form.Item>
-
-        {errorEmail}
 
         <Form.Item
           name="phone_no"
@@ -127,6 +127,10 @@ const App = (props) => {
           <Input />
         </Form.Item>
 
+        {props.error.response.data.ogrn && (
+          <p className="error">Пользователь с таким ОГРН уже существует</p>
+        )}
+
         <Form.Item
           name="ogrn"
           label="ОГРН/ОГРНИП:"
@@ -141,7 +145,9 @@ const App = (props) => {
           <Input />
         </Form.Item>
 
-        {errorOgrn}
+        {props.error.response.data.inn && (
+          <p className="error">Пользователь с таким ИНН уже существует</p>
+        )}
 
         <Form.Item
           name="inn"
@@ -156,8 +162,6 @@ const App = (props) => {
         >
           <Input />
         </Form.Item>
-
-        {errorInn}
 
         <Form.Item
           name="address_reg"
@@ -217,6 +221,8 @@ const App = (props) => {
           </Radio.Group>
         </Form.Item>
 
+        {errorPswd}
+
         <Form.Item
           name="password1"
           label="Пароль:"
@@ -270,8 +276,6 @@ const App = (props) => {
           />
         </Form.Item>
 
-        {errorPswd}
-
         <Form.Item>
           <Button
             type="primary"
@@ -286,6 +290,7 @@ const App = (props) => {
             Войти
           </NavLink>
         </Form.Item>
+        {errorMessage}
       </Form>
       <div style={{ width: 600 }}>
         <h2>Инструкция</h2>

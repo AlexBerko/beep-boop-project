@@ -74,7 +74,7 @@ export const authOtp = (otp) => {
   return (dispatch) => {
     dispatch(authStart());
     const formData = new FormData();
-    formData.append("otp", otp);
+    formData.append("code", otp);
     formData.append("hash", localStorage.getItem("hash"));
 
     axios
