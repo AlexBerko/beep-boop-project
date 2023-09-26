@@ -34,7 +34,7 @@ export default function MyRequests(props) {
           Завершённые
         </p>
       </div>
-      <hr></hr>
+      <hr style={{ border: "2px solid grey", marginTop: "10px" }}></hr>
       {isCompleted ? (
         <div style={{ marginTop: "30px" }}>
           {(() => {

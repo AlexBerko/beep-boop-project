@@ -29,28 +29,33 @@ const App = (props) => {
       values.old_password === undefined &&
       values.new_password === undefined
     ) {
-      formPswd.append("old_password", props.recordsJS.password1);
-      formPswd.append("new_password", props.recordsJS.password1);
+      axios
+        .put(`https://95.140.148.239/user/profile/`, formData, config)
+        .then((res) => {
+          setIsModalVisible(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } else {
       formPswd.append("old_password", values.old_password);
       formPswd.append("new_password", values.new_password);
+      axios
+        .put(`https://95.140.148.239/user/profile/`, formData, config)
+        .then((res) => {
+          axios
+            .post(`https://95.140.148.239/user/profile/`, formPswd, config)
+            .then((res) => {
+              setIsModalVisible(true);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-
-    axios
-      .put(`https://95.140.148.239/user/profile/`, formData, config)
-      .then((res) => {
-        axios
-          .post(`https://95.140.148.239/user/profile/`, formPswd, config)
-          .then((res) => {
-            setIsModalVisible(true);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   const handleModalOk = () => {
@@ -67,7 +72,11 @@ const App = (props) => {
   };
 
   const handleChangeAdrFact = (e) => {
-    setAdrFactField(e.target.value);
+    if (e.target.value) {
+      setAdrFactField(e.target.value);
+    } else {
+      setAdrFactField(adrFactField);
+    }
   };
 
   return (
