@@ -13,6 +13,10 @@
 
 .completed:hover,
 .completed.active {
+  padding: 10px;
   color: black;
   text-decoration: underline;
+  background-color: rgb(198, 198, 198);
+  border: none;
+  border-radius: 20px;
 }
