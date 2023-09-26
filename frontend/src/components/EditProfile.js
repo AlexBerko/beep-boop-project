@@ -75,7 +75,7 @@ const App = (props) => {
 
   return (
     <div>
-      <h2>Редактирование профиля</h2>
+      <h2 style={{ marginBottom: "15px" }}>Редактирование профиля</h2>
       <Form
         form={form}
         name="register"
@@ -87,31 +87,37 @@ const App = (props) => {
         id="regForm"
       >
         <Form.Item name="phone_no" label="Телефон">
-          <Input
-            style={{
-              width: "100%",
-            }}
-            type="text"
-            value={phoneField}
-            onChange={handleChangePhone}
-            prefix={"+"}
-          />
+          <label>
+            <Input
+              style={{
+                width: "100%",
+              }}
+              type="text"
+              value={phoneField}
+              onChange={handleChangePhone}
+              prefix={"+"}
+            />
+          </label>
         </Form.Item>
 
         <Form.Item name="address_reg" label="Юридический регистрации:">
-          <Input
-            type="text"
-            value={adrRegField}
-            onChange={handleChangeAdrReg}
-          />
+          <label>
+            <Input
+              type="text"
+              value={adrRegField}
+              onChange={handleChangeAdrReg}
+            />
+          </label>
         </Form.Item>
 
         <Form.Item name="address_fact" label="Фактический адрес:">
-          <Input
-            type="text"
-            value={adrFactField}
-            onChange={handleChangeAdrFact}
-          />
+          <label>
+            <Input
+              type="text"
+              value={adrFactField}
+              onChange={handleChangeAdrFact}
+            />
+          </label>
         </Form.Item>
 
         <Form.Item

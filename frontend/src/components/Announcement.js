@@ -97,7 +97,7 @@ export default function Announcement(props) {
           </div>
           {props.recordsJS.is_completed ? (
             <span>
-              <h2 style={{ color: "rgb(9, 180, 9)", marginLeft: "30px" }}>
+              <h2 style={{ color: "rgb(9, 180, 9)", marginLeft: "170px" }}>
                 Заявка завершена!
               </h2>
             </span>

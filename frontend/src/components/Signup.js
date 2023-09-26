@@ -29,12 +29,18 @@ const App = (props) => {
   let errorMessage,
     errorEmail,
     errorOgrn,
-    errorInn = null;
+    errorInn,
+    errorPhone = null;
   if (props.error) {
     errorMessage = <p className="error">{props.error.response.data.error}</p>;
     if (props.error.response.data.email) {
       errorEmail = (
         <p className="error">Пользователь с таким email уже существует</p>
+      );
+    }
+    if (props.error.response.data.phone_no) {
+      errorPhone = (
+        <p className="error">{props.error.response.data.phone_no}</p>
       );
     }
     if (props.error.response.data.ogrn) {
@@ -62,6 +68,7 @@ const App = (props) => {
       }
     }
 
+    console.log(options);
     return options;
   };
 
@@ -111,6 +118,8 @@ const App = (props) => {
         >
           <Input prefix={<UserOutlined className="site-form-item-icon" />} />
         </Form.Item>
+
+        {errorPhone}
 
         <Form.Item
           name="phone_no"
@@ -233,7 +242,7 @@ const App = (props) => {
           </Radio.Group>
         </Form.Item>
 
-        {errorPswd}
+        {errorPswd()}
 
         <Form.Item
           name="password1"

@@ -33,9 +33,10 @@ export default function MyRequests(props) {
         >
           Завершённые
         </p>
+        <hr />
       </div>
       {isCompleted ? (
-        <span>
+        <div style={{ marginTop: "30px" }}>
           {(() => {
             const options = [];
 
@@ -57,9 +58,9 @@ export default function MyRequests(props) {
 
             return options;
           })()}
-        </span>
+        </div>
       ) : (
-        <span>
+        <div style={{ marginTop: "30px" }}>
           {(() => {
             const options = [];
 
@@ -71,6 +72,7 @@ export default function MyRequests(props) {
                     arrayId={i}
                     apiFunc={props.apiFunc}
                     recordsObj={props.recordsObj}
+                    div
                     recordsJS={props.recordsJS}
                     handler={props.handler}
                     handlerObj={props.handlerObj}
@@ -81,7 +83,7 @@ export default function MyRequests(props) {
 
             return options;
           })()}
-        </span>
+        </div>
       )}
     </div>
   );
