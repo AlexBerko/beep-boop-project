@@ -114,7 +114,7 @@ class HelpDetailView(APIView):
         if not current_user:
             return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
 
-        if not current_user.is_rest:
+        if help.who_asked == current_user:
             help.is_completed = True
             help.complete_date = timezone.now()
             help.save()
@@ -135,20 +135,14 @@ class HelpDetailView(APIView):
         if not current_user:
             return Response({'error': 'Пользователь c таким токеном не обнаружен'}, status=400)
 
-        if not current_user.is_rest:
-            if help.who_asked == current_user:
-                help.delete()
-                return Response(status=200)
-            else:
-                return Response({'error': 'Пользователь не является автором просьбы'}, status=400)
+        if help.who_asked == current_user:
+            help.delete()
+            return Response(status=200)
         else:
-            if help.who_complete == current_user:
-                help.who_complete = None
-                help.is_taken = False
-                help.save()
-                return Response(status=200)
-            else:
-                return Response({'error': 'Пользователь не откликался на данную помощь'}, status=400)
+            help.who_complete = None
+            help.is_taken = False
+            help.save()
+            return Response(status=200)
 
 
 
@@ -206,8 +200,9 @@ class MyHelps(APIView):
         if current_user.is_rest:
             helps = current_user.my_completed.all()
         else:
-            current_time = datetime.datetime.now()
-            helps = current_user.my_requests.all()
+            help1 = current_user.my_requests.all()
+            help2 = current_user.my_completed.all()
+            helps = help1.union(help2)
 
         serializer = HelpListSerializer(helps, many=True)
         json = JSONRenderer().render(serializer.data)
